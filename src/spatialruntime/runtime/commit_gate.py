@@ -9,7 +9,8 @@ class StalePolicyActionError(CommitGateError): pass
 
 def gate_action(*, observation: dict[str, Any], proposed_action: dict[str, Any],
                 runtime_state: dict[str, Any], expected_step: int, expected_revision: int,
-                max_open_ratio_delta: float = 0.25) -> dict[str, Any]:
+                max_open_ratio_delta: float = 0.25,
+                safety_override_entities: set[str] | None = None) -> dict[str, Any]:
     if observation.get("schema") != "windowpilot_observation_v1.8":
         raise CommitGateError("expected windowpilot_observation_v1.8")
     if int(observation.get("step", -1)) != int(expected_step) or int(observation.get("revision", -1)) != int(expected_revision):
@@ -21,6 +22,7 @@ def gate_action(*, observation: dict[str, Any], proposed_action: dict[str, Any],
         raise CommitGateError("proposed_action.changes must be object")
 
     safe = bool(observation.get("quality", {}).get("safe_for_control", False))
+    safety_override_entities = set(safety_override_entities or ())
     decisions: dict[str, Any] = {}
     reasons: list[dict[str, Any]] = []
 
@@ -36,26 +38,44 @@ def gate_action(*, observation: dict[str, Any], proposed_action: dict[str, Any],
         if not isinstance(change, dict):
             decisions[entity_id] = {"decision":"reject","reason":"invalid_change"}
             continue
+
         target = dict(current)
         clamped = False
+        safety_override = entity_id in safety_override_entities
         for k,v in change.items():
             if k == "open_ratio":
                 x = float(v)
-                if x < 0.0 or x > 1.0: raise CommitGateError(f"{entity_id}.open_ratio outside [0,1]")
+                if x < 0.0 or x > 1.0:
+                    raise CommitGateError(f"{entity_id}.open_ratio outside [0,1]")
                 cur = float(current.get("open_ratio", x))
-                lo, hi = max(0.0, cur-max_open_ratio_delta), min(1.0, cur+max_open_ratio_delta)
-                if x < lo: x, clamped = lo, True
-                if x > hi: x, clamped = hi, True
+                # Ordinary policy/recovery motion is rate limited. A change explicitly
+                # produced/overridden by the safety pipeline must not be weakened by
+                # this lower-priority software comfort limit.
+                if not safety_override:
+                    lo, hi = max(0.0, cur-max_open_ratio_delta), min(1.0, cur+max_open_ratio_delta)
+                    if x < lo: x, clamped = lo, True
+                    if x > hi: x, clamped = hi, True
                 target[k] = round(x, 10)
             else:
                 target[k] = v
-        decisions[entity_id] = {"decision":"commit_clamped" if clamped else "commit", "executed_state":target,
-                                "requested_change":change}
+
+        decision = "commit_safety_override" if safety_override else ("commit_clamped" if clamped else "commit")
+        decisions[entity_id] = {
+            "decision": decision,
+            "executed_state": target,
+            "requested_change": change,
+            "safety_override": safety_override,
+        }
+
     rejected = sum(1 for d in decisions.values() if d["decision"] == "reject")
     held = sum(1 for d in decisions.values() if d["decision"] == "hold")
     committed = sum(1 for d in decisions.values() if d["decision"].startswith("commit"))
-    return {"schema":SCHEMA,"source_step":expected_step,"source_revision":expected_revision,
-            "observation_safe":safe,"decisions":decisions,
-            "summary":{"committed":committed,"held":held,"rejected":rejected,
-                       "ready_to_dispatch":safe and rejected==0},
-            "policy":{"max_open_ratio_delta":max_open_ratio_delta},"reasons":reasons}
+    return {
+        "schema":SCHEMA,"source_step":expected_step,"source_revision":expected_revision,
+        "observation_safe":safe,"decisions":decisions,
+        "summary":{"committed":committed,"held":held,"rejected":rejected,
+                   "ready_to_dispatch":safe and rejected==0},
+        "policy":{"max_open_ratio_delta":max_open_ratio_delta},
+        "safety_override_entities":sorted(safety_override_entities),
+        "reasons":reasons,
+    }
