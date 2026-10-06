@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from hashlib import sha256
 from typing import Any, Mapping
 
 from spatialruntime.solver.contract import (
     SolverAdapter,
     SolverRequest,
     normalize_solver_feedback,
+    payload_hash,
 )
 
 
@@ -20,8 +20,11 @@ class DeterministicSolverAdapter(SolverAdapter):
 
     @property
     def fingerprint(self) -> str:
-        body = repr((sorted(self._zones), sorted(self._flow_paths))).encode()
-        return sha256(body).hexdigest()
+        return payload_hash({
+            "adapter_id": self.adapter_id,
+            "zones": self._zones,
+            "flow_paths": self._flow_paths,
+        })
 
     def solve(self, request: SolverRequest) -> dict[str, Any]:
         raw = {
