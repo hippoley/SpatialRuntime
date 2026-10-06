@@ -9,8 +9,11 @@ from spatialruntime.hardware.contract import CommandLedger, MockGateway
 from spatialruntime.runtime.replay import ReplayValidationError, make_bundle, validate_bundle
 from spatialruntime.runtime.session import RuntimeSession
 from spatialruntime.safety.dependency_graph import compile_safety_graph
+from spatialruntime.solver.contract import build_solver_request, SolverContractError
+from spatialruntime.solver.fixture import DeterministicSolverAdapter
 
-SCHEMA = "runtime_scenario_spec_v0.5"
+SCHEMA = "runtime_scenario_spec_v0.6"
+LEGACY_SCHEMA = "runtime_scenario_spec_v0.5"
 
 
 class ScenarioSpecError(ReplayValidationError):
@@ -65,8 +68,26 @@ def _normalize_recovery(actions: Any, *, step: int, revision: int) -> list[dict[
     return out
 
 
+def _build_fixture_solver(config: Mapping[str, Any] | None) -> DeterministicSolverAdapter | None:
+    if config is None:
+        return None
+    if not isinstance(config, Mapping):
+        raise ScenarioSpecError("solver must be object")
+    mode = config.get("mode")
+    if mode != "fixture":
+        raise ScenarioSpecError(
+            "scenario files only support solver.mode='fixture'; external solver processes "
+            "must be instantiated explicitly by application code"
+        )
+    zones = config.get("zones", {})
+    flow_paths = config.get("flow_paths", {})
+    if not isinstance(zones, Mapping) or not isinstance(flow_paths, Mapping):
+        raise ScenarioSpecError("fixture solver zones/flow_paths must be objects")
+    return DeterministicSolverAdapter(zones=zones, flow_paths=flow_paths)
+
+
 def validate_scenario_spec(spec: Mapping[str, Any]) -> None:
-    if spec.get("schema") != SCHEMA:
+    if spec.get("schema") not in {SCHEMA, LEGACY_SCHEMA}:
         raise ScenarioSpecError(f"unsupported scenario schema: {spec.get('schema')}")
     case_id = spec.get("case_id")
     if not isinstance(case_id, str) or not case_id:
@@ -90,6 +111,55 @@ def validate_scenario_spec(spec: Mapping[str, Any]) -> None:
         if not isinstance(bindings, Mapping) or not bindings:
             raise ScenarioSpecError("fixture hardware requires device_bindings")
 
+    solver_cfg = spec.get("solver")
+    if solver_cfg is not None:
+        _build_fixture_solver(solver_cfg)
+
+    for index, raw_step in enumerate(steps):
+        if not isinstance(raw_step, Mapping):
+            raise ScenarioSpecError(f"steps[{index}] must be object")
+        if solver_cfg is None and raw_step.get("solver_feedback") is None:
+            raise ScenarioSpecError(
+                f"steps[{index}].solver_feedback required when no solver adapter is configured"
+            )
+        if solver_cfg is not None and raw_step.get("solver_feedback") is not None:
+            raise ScenarioSpecError(
+                f"steps[{index}] cannot provide solver_feedback when a solver adapter is configured"
+            )
+
+
+def _solve_step(
+    *,
+    adapter: DeterministicSolverAdapter | None,
+    raw_step: Mapping[str, Any],
+    case_id: str,
+    step: int,
+    revision: int,
+    runtime_state: Mapping[str, Any],
+) -> dict[str, Any]:
+    if adapter is None:
+        solver = _with_envelope(raw_step.get("solver_feedback"), step=step, revision=revision)
+        if solver is None:
+            raise ScenarioSpecError("solver_feedback required")
+        return solver
+
+    model = raw_step.get("solver_model", {})
+    boundary = raw_step.get("boundary_conditions", {})
+    if not isinstance(model, Mapping) or not isinstance(boundary, Mapping):
+        raise ScenarioSpecError("solver_model/boundary_conditions must be objects")
+    request = build_solver_request(
+        case_id=case_id,
+        source_step=step,
+        source_revision=revision,
+        world_state=runtime_state,
+        model=model,
+        boundary_conditions=boundary,
+    )
+    try:
+        return adapter.solve(request)
+    except SolverContractError as exc:
+        raise ScenarioSpecError(f"solver adapter failed: {exc}") from exc
+
 
 def run_scenario_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
     validate_scenario_spec(spec)
@@ -97,6 +167,7 @@ def run_scenario_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
     initial = deepcopy(dict(spec["initial_runtime_state"]))
     catalog = deepcopy(dict(spec["entity_catalog"]))
     compiled = compile_safety_graph(spec["safety_graph"], catalog)
+    solver_adapter = _build_fixture_solver(spec.get("solver"))
 
     session = RuntimeSession(
         case_id=case_id,
@@ -119,11 +190,14 @@ def run_scenario_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
     traces: list[dict[str, Any]] = []
     stop_reason = None
     for index, raw_step in enumerate(spec["steps"]):
-        if not isinstance(raw_step, Mapping):
-            raise ScenarioSpecError(f"steps[{index}] must be object")
-        solver = _with_envelope(raw_step.get("solver_feedback"), step=session.step, revision=session.revision)
-        if solver is None:
-            raise ScenarioSpecError(f"steps[{index}].solver_feedback required")
+        solver = _solve_step(
+            adapter=solver_adapter,
+            raw_step=raw_step,
+            case_id=case_id,
+            step=session.step,
+            revision=session.revision,
+            runtime_state=session.runtime_state,
+        )
         context = _with_envelope(raw_step.get("safety_context", {}), step=session.step, revision=session.revision)
         policy = _with_envelope(raw_step.get("policy_action", {"changes": {}}), step=session.step, revision=session.revision)
         device_feedback = _with_envelope(raw_step.get("device_feedback"), step=session.step, revision=session.revision)
@@ -166,7 +240,8 @@ def run_scenario_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
         case_id=case_id,
         traces=traces,
         metadata={
-            "scenario_schema": SCHEMA,
+            "scenario_schema": spec.get("schema"),
+            "runtime_scenario_schema": SCHEMA,
             "scenario_name": spec.get("name"),
             "executed_steps": len(traces),
             "requested_steps": len(spec["steps"]),
@@ -175,6 +250,8 @@ def run_scenario_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
             "final_revision": session.revision,
             "final_runtime_state": session.runtime_state,
             "hardware_mode": hardware.get("mode") if isinstance(hardware, Mapping) else None,
+            "solver_mode": spec.get("solver", {}).get("mode") if isinstance(spec.get("solver"), Mapping) else "embedded_feedback",
+            "solver_adapter_fingerprint": solver_adapter.fingerprint if solver_adapter is not None else None,
         },
     )
     validate_bundle(bundle)
