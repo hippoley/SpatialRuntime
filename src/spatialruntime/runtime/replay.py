@@ -6,6 +6,11 @@ import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+from spatialruntime.runtime.manifest import (
+    ExecutionManifestError,
+    fingerprint,
+    validate_execution_manifest,
+)
 from spatialruntime.runtime.session import TRACE_SCHEMA, trace_hash, state_hash
 
 BUNDLE_SCHEMA = "runtime_episode_bundle_v0.4"
@@ -24,10 +29,11 @@ class ReplayReport:
     last_step: int
     final_state_hash: str
     bundle_hash: str
+    manifest_hash: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "schema": "runtime_replay_report_v0.4",
+            "schema": "runtime_replay_report_v0.7",
             "valid": self.valid,
             "case_id": self.case_id,
             "trace_count": self.trace_count,
@@ -35,6 +41,7 @@ class ReplayReport:
             "last_step": self.last_step,
             "final_state_hash": self.final_state_hash,
             "bundle_hash": self.bundle_hash,
+            "manifest_hash": self.manifest_hash,
         }
 
 
@@ -48,13 +55,16 @@ def bundle_hash(bundle: Mapping[str, Any]) -> str:
 
 
 def make_bundle(*, case_id: str, traces: Sequence[Mapping[str, Any]],
-                metadata: Mapping[str, Any] | None = None) -> dict[str, Any]:
+                metadata: Mapping[str, Any] | None = None,
+                execution_manifest: Mapping[str, Any] | None = None) -> dict[str, Any]:
     out = {
         "schema": BUNDLE_SCHEMA,
         "case_id": case_id,
         "traces": [dict(t) for t in traces],
         "metadata": dict(metadata or {}),
     }
+    if execution_manifest is not None:
+        out["execution_manifest"] = dict(execution_manifest)
     out["bundle_hash"] = bundle_hash(out)
     return out
 
@@ -99,6 +109,54 @@ def validate_trace(trace: Mapping[str, Any]) -> None:
             )
 
 
+def _validate_manifest_against_traces(
+    manifest: Mapping[str, Any],
+    *,
+    case_id: str,
+    traces: Sequence[Mapping[str, Any]],
+) -> None:
+    try:
+        validate_execution_manifest(manifest)
+    except ExecutionManifestError as exc:
+        raise ReplayValidationError(str(exc)) from exc
+
+    if manifest.get("case_id") != case_id:
+        raise ReplayValidationError("execution manifest case_id mismatch")
+    if not traces:
+        raise ReplayValidationError("cannot validate manifest without traces")
+    first = traces[0]
+    if manifest.get("initial_runtime_state_fingerprint") != first.get("runtime_state_before_hash"):
+        raise ReplayValidationError("execution manifest initial state fingerprint mismatch")
+
+    expected_safety = manifest.get("safety_graph_fingerprint")
+    solver_manifest = manifest.get("solver") or {}
+    expected_solver_fp = solver_manifest.get("adapter_fingerprint")
+    expected_solver_id = solver_manifest.get("adapter_id")
+
+    for idx, trace in enumerate(traces):
+        stages = trace.get("stages") or {}
+        safety = stages.get("safety")
+        if isinstance(safety, Mapping):
+            if safety.get("graph_fingerprint") != expected_safety:
+                raise ReplayValidationError(
+                    f"safety graph fingerprint drift at trace[{idx}]"
+                )
+
+        solver = stages.get("solver")
+        if expected_solver_fp is not None:
+            if not isinstance(solver, Mapping):
+                raise ReplayValidationError(f"solver evidence missing at trace[{idx}]")
+            provenance = solver.get("solver_provenance")
+            if not isinstance(provenance, Mapping):
+                raise ReplayValidationError(f"solver provenance missing at trace[{idx}]")
+            if provenance.get("adapter_fingerprint") != expected_solver_fp:
+                raise ReplayValidationError(
+                    f"solver adapter fingerprint drift at trace[{idx}]"
+                )
+            if expected_solver_id is not None and provenance.get("adapter_id") != expected_solver_id:
+                raise ReplayValidationError(f"solver adapter id drift at trace[{idx}]")
+
+
 def validate_bundle(bundle: Mapping[str, Any]) -> ReplayReport:
     if bundle.get("schema") != BUNDLE_SCHEMA:
         raise ReplayValidationError(f"unsupported bundle schema: {bundle.get('schema')}")
@@ -138,6 +196,14 @@ def validate_bundle(bundle: Mapping[str, Any]) -> ReplayReport:
                 )
         previous = trace
 
+    manifest = bundle.get("execution_manifest")
+    manifest_hash_value = None
+    if manifest is not None:
+        if not isinstance(manifest, Mapping):
+            raise ReplayValidationError("execution_manifest must be object")
+        _validate_manifest_against_traces(manifest, case_id=case_id, traces=traces)
+        manifest_hash_value = str(manifest.get("manifest_hash"))
+
     return ReplayReport(
         valid=True,
         case_id=case_id,
@@ -146,6 +212,7 @@ def validate_bundle(bundle: Mapping[str, Any]) -> ReplayReport:
         last_step=int(traces[-1]["step"]),
         final_state_hash=str(traces[-1]["next_runtime_state_hash"]),
         bundle_hash=str(bundle["bundle_hash"]),
+        manifest_hash=manifest_hash_value,
     )
 
 
