@@ -117,6 +117,33 @@ scenario spec
  strict replay
 ```
 
+## Preflight drift gate
+
+For pinned runs, create an approved execution plan first:
+
+```bash
+spatialruntime plan examples/kitchen_living.scenario.json -o execution.plan.json
+```
+
+Then require that exact plan at execution time:
+
+```bash
+spatialruntime run examples/kitchen_living.scenario.json \
+  --plan execution.plan.json \
+  -o episode.json
+```
+
+Preflight happens before solver, safety, commit, or hardware stages run. It rejects changes to:
+
+- initial runtime state
+- entity catalog
+- safety graph
+- solver mode / adapter / fingerprint
+- hardware mode / fixture bindings
+- the plan file itself
+
+The resulting episode records both the approved `preflight_plan_hash` and `preflight_manifest_hash`.
+
 ## CLI
 
 Install in editable mode:
