@@ -138,3 +138,15 @@ def test_solver_and_embedded_feedback_are_mutually_exclusive():
     spec["steps"][0]["solver_feedback"] = {"zones": {}, "flow_paths": {}}
     with pytest.raises(ScenarioSpecError, match="cannot provide solver_feedback"):
         run_scenario_spec(spec)
+
+
+def test_fixture_fingerprint_changes_when_physical_values_change():
+    a = DeterministicSolverAdapter(
+        zones={"kitchen": {"pressure_pa": 0.5}},
+        flow_paths={"window": {"flow_m3_s": 0.02}},
+    )
+    b = DeterministicSolverAdapter(
+        zones={"kitchen": {"pressure_pa": 5.0}},
+        flow_paths={"window": {"flow_m3_s": 0.02}},
+    )
+    assert a.fingerprint != b.fingerprint
