@@ -5,8 +5,16 @@ import json
 import sys
 from typing import Sequence
 
+from spatialruntime.runtime.preflight import (
+    PreflightError,
+    build_preflight_plan,
+    load_preflight_plan,
+    save_preflight_plan,
+    verify_preflight_plan,
+)
 from spatialruntime.runtime.replay import (
     ReplayValidationError,
+    bundle_hash,
     load_bundle,
     make_bundle,
     save_bundle,
@@ -49,9 +57,34 @@ def _run_scenario(args: argparse.Namespace) -> int:
     return _write_or_print_bundle(bundle, args.output)
 
 
+def _plan_spec(args: argparse.Namespace) -> int:
+    spec = load_scenario_spec(args.path)
+    plan = build_preflight_plan(spec)
+    if args.output:
+        path = save_preflight_plan(plan, args.output)
+        _print_json({
+            "written": str(path),
+            "valid": True,
+            "case_id": plan["case_id"],
+            "plan_hash": plan["plan_hash"],
+            "manifest_hash": plan["execution_manifest"]["manifest_hash"],
+        })
+    else:
+        _print_json(plan)
+    return 0
+
+
 def _run_spec(args: argparse.Namespace) -> int:
     spec = load_scenario_spec(args.path)
+    preflight_report = None
+    if args.plan:
+        plan = load_preflight_plan(args.plan)
+        preflight_report = verify_preflight_plan(plan, spec)
     bundle = run_scenario_spec(spec)
+    if preflight_report is not None:
+        bundle["metadata"]["preflight_plan_hash"] = preflight_report["plan_hash"]
+        bundle["metadata"]["preflight_manifest_hash"] = preflight_report["manifest_hash"]
+        bundle["bundle_hash"] = bundle_hash(bundle)
     return _write_or_print_bundle(bundle, args.output)
 
 
@@ -96,8 +129,14 @@ def build_parser() -> argparse.ArgumentParser:
     scenario.add_argument("-o", "--output", help="Write a validated episode bundle JSON file.")
     scenario.set_defaults(func=_run_scenario)
 
+    plan = sub.add_parser("plan", help="Create a pinned preflight execution plan.")
+    plan.add_argument("path")
+    plan.add_argument("-o", "--output", help="Write the preflight plan JSON file.")
+    plan.set_defaults(func=_plan_spec)
+
     run = sub.add_parser("run", help="Run a scene-source-neutral scenario JSON spec.")
     run.add_argument("path")
+    run.add_argument("--plan", help="Require this approved preflight plan before execution.")
     run.add_argument("-o", "--output", help="Write a validated episode bundle JSON file.")
     run.set_defaults(func=_run_spec)
 
@@ -116,7 +155,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         return int(args.func(args))
-    except ReplayValidationError as exc:
+    except (ReplayValidationError, PreflightError) as exc:
         print(json.dumps({"valid": False, "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
         return 2
 
