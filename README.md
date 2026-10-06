@@ -32,15 +32,49 @@ SpatialRuntime does not reconstruct a 3D scene, train perception models, or defi
 - ACK != physical convergence
 - proposed action != committed action != observed device state
 - recovery cannot bypass safety
+- safety-forced motion cannot be weakened by ordinary policy rate limits
 - unreviewed rule/source drift fails closed
 - durable ledgers survive restart and detect tampering
 
+## RuntimeSession
+
+`RuntimeSession` is the fail-closed top-level orchestration surface:
+
+```text
+solver + sensor + device feedback
+  -> reconcile
+  -> observation
+  -> policy / recovery
+  -> whole-home safety
+  -> commit gate
+  -> optional hardware dispatch
+  -> deterministic episode trace
+```
+
+Hard disagreements stop the pipeline before control. Every completed step produces a trace with an integrity hash and an explicit next runtime state.
+
+## Closed-loop example
+
+The repository includes a deterministic Kitchen/Living demo:
+
+```bash
+python examples/kitchen_living_closed_loop.py
+```
+
+It runs two timesteps:
+
+1. cooking activates the hood and a reviewed make-up-air window action;
+2. rain activates a higher-priority safety rule that force-closes the exterior window.
+
+The included gateway is a deterministic contract fixture. The example does **not** claim to drive real hardware.
+
 ## Package layout
 
-- `spatialruntime.runtime` - observations, reconciliation, commit gate
+- `spatialruntime.runtime` - observations, reconciliation, commit gate, RuntimeSession
 - `spatialruntime.hardware` - command contracts, Gateway, telemetry, ThingModel binding
 - `spatialruntime.safety` - arbitration, recovery, supervisor, dependency graph
 - `spatialruntime.spatial` - relation resolution, review, promotion and compile lineage
+- `spatialruntime.scenarios` - replayable reference scenarios
 - `spatialruntime.world` - scene-source-neutral world snapshot contract
 
 ## Development
@@ -50,4 +84,4 @@ python -m pip install -e '.[dev]'
 pytest
 ```
 
-The initial extraction preserves the battle-tested runtime modules while removing the original scene-reconstruction bridge from the core project.
+The project deliberately keeps perception/reconstruction outside the core runtime. Scene sources are adapters; reviewed spatial semantics and safe execution are the runtime boundary.
