@@ -19,6 +19,10 @@ def run_safety_pipeline(*, source_step:int, source_revision:int,
     Order is intentional: policy/recovery arbitration -> dependency graph propagation ->
     graph constraints/generated changes -> physical safety supervisor. STOP control actions
     remain non-motion intents and are preserved; every generated motion still reaches supervisor.
+
+    safety_forced_entities identifies motion that was generated/clamped/overridden by safety.
+    Downstream commit gates may use this signal to avoid weakening higher-priority safety actions
+    with ordinary policy rate limits.
     """
     arb=arbitrate_actions(source_step=source_step,source_revision=source_revision,
                           policy_action=policy_action,recovery_actions=recovery_actions)
@@ -28,12 +32,22 @@ def run_safety_pipeline(*, source_step:int, source_revision:int,
     supervised=supervise_actions(source_step=source_step,source_revision=source_revision,
                                  proposed_action=constrained,runtime_state=runtime_state,
                                  safety_context=ev['expanded_context'],policy=supervisor_policy)
-    # STOP is deliberately not converted into motion. It must use the control-action dispatch path.
+
+    forced=set((ev.get('generated_changes') or {}).keys())
+    for key in (constrained.get('decisions') or {}):
+        forced.add(str(key).split('.',1)[0])
+    for eid,decision in (supervised.get('decisions') or {}).items():
+        if decision.get('decision') in {'override_close'}:
+            forced.add(eid)
+    # Only entities that actually leave the safety pipeline with motion are relevant.
+    forced &= set(supervised.get('changes') or {})
+
     controls=list(arb.get('control_actions') or [])
     return {
         'schema':SCHEMA,'source_step':int(source_step),'source_revision':int(source_revision),
         'graph_fingerprint':compiled_graph.fingerprint,
         'motion_changes':supervised['changes'],'control_actions':controls,
+        'safety_forced_entities':sorted(forced),
         'safe_to_forward':bool(supervised['summary']['safe_to_forward']),
         'trace':{
             'arbitration':arb,
