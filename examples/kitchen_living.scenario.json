@@ -1,0 +1,64 @@
+{
+  "schema": "runtime_scenario_spec_v0.5",
+  "name": "kitchen-living-json",
+  "case_id": "kitchen-living-json-demo",
+  "initial_runtime_state": {
+    "window_kitchen": {"executed_state": {"open_ratio": 0.5}},
+    "hood_kitchen": {"executed_state": {"fan_level": 0}}
+  },
+  "entity_catalog": {
+    "window_kitchen": {"kind": "window", "exterior": true, "room": "kitchen"},
+    "hood_kitchen": {"kind": "hood", "room": "kitchen"}
+  },
+  "safety_graph": {
+    "schema": "whole_home_safety_graph_v3.3",
+    "rules": [
+      {
+        "id": "cooking",
+        "priority": 70,
+        "when": {"path": "sensors.cooking.value", "op": "eq", "value": true},
+        "effects": [
+          {"kind": "emit_change", "selector": {"ids": ["hood_kitchen"]}, "changes": {"fan_level": 1}},
+          {"kind": "emit_change", "selector": {"ids": ["window_kitchen"]}, "changes": {"open_ratio": 0.2}}
+        ]
+      },
+      {
+        "id": "rain",
+        "priority": 100,
+        "when": {"path": "sensors.rain.value", "op": "eq", "value": "wet"},
+        "effects": [
+          {"kind": "emit_change", "selector": {"ids": ["window_kitchen"]}, "changes": {"open_ratio": 0.0}}
+        ]
+      }
+    ]
+  },
+  "hardware": {
+    "mode": "fixture",
+    "device_bindings": {
+      "window_kitchen": {"device_id": "window-device-01"},
+      "hood_kitchen": {"device_id": "hood-device-01"}
+    }
+  },
+  "steps": [
+    {
+      "now_ms": 1000,
+      "solver_feedback": {"zones": {}, "flow_paths": {}},
+      "safety_context": {
+        "sensors": {
+          "cooking": {"value": true, "quality": 1.0},
+          "rain": {"value": "dry", "quality": 1.0}
+        }
+      }
+    },
+    {
+      "now_ms": 2000,
+      "solver_feedback": {"zones": {}, "flow_paths": {}},
+      "safety_context": {
+        "sensors": {
+          "cooking": {"value": false, "quality": 1.0},
+          "rain": {"value": "wet", "quality": 1.0}
+        }
+      }
+    }
+  ]
+}
