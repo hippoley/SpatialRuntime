@@ -1,0 +1,68 @@
+name: Bootstrap import v0.1.0
+
+on:
+  push:
+    branches: [import-v0.1.0]
+    paths:
+      - 'bootstrap/**'
+      - '.github/workflows/bootstrap-import.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  expand-validate-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: import-v0.1.0
+          fetch-depth: 0
+
+      - name: Rebuild validated source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat bootstrap/chunk_00.txt \
+              bootstrap/payload_01.b64 bootstrap/payload_02.b64 bootstrap/payload_03.b64 \
+              bootstrap/payload_04.b64 bootstrap/payload_05.b64 bootstrap/payload_06.b64 \
+              bootstrap/payload_07.b64 bootstrap/payload_08.b64 bootstrap/payload_09.b64 \
+              bootstrap/payload_10.b64 bootstrap/payload_11.b64 bootstrap/payload_12.b64 \
+              bootstrap/payload_13.b64 bootstrap/payload_14.b64 > /tmp/source.b64
+          test "$(wc -c < /tmp/source.b64)" = "121128"
+          base64 --decode /tmp/source.b64 > /tmp/SpatialRuntime-v0.1.0.zip
+          echo "798768e966302b540aaad11dfc006b38b2de527fd6e1261ba7a1bc968532359e  /tmp/SpatialRuntime-v0.1.0.zip" | sha256sum -c -
+          rm -rf /tmp/unpack
+          mkdir -p /tmp/unpack
+          unzip -q /tmp/SpatialRuntime-v0.1.0.zip -d /tmp/unpack
+          test -d /tmp/unpack/spatialruntime_repo
+
+      - name: Replace branch with exact validated source snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf src tests docs examples
+          rm -f README.md LICENSE pyproject.toml .gitignore
+          cp -a /tmp/unpack/spatialruntime_repo/. .
+          rm -rf bootstrap
+          rm -f .github/workflows/bootstrap-import.yml
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate source snapshot
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip pytest
+          PYTHONPATH=src pytest -q
+
+      - name: Commit exact source snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: import SpatialRuntime v0.1.0 validated source snapshot"
+          git push origin HEAD:import-v0.1.0
