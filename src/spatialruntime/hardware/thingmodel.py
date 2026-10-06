@@ -244,6 +244,7 @@ class ThingModelBackendBinding:
         if not isinstance(dev, str) or not dev or not isinstance(state, Mapping):
             raise ThingModelDescriptorError("telemetry device_id/state required")
         logical = decode_state(state, self.profile)
+        # online/fault are health metadata, not silently promoted to control properties unless explicitly bound.
         health: dict[str, Any] = {}
         online_prop = self.profile.get("online_property")
         fault_prop = self.profile.get("fault_property")

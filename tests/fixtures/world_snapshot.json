@@ -1,0 +1,36 @@
+{
+  "schema": "spatialruntime_world_fixture_v0.1",
+  "case_id": "kitchen_living_fixture",
+  "entities": [
+    {
+      "id": "hood_visual_01",
+      "name": "range hood",
+      "source": {
+        "system": "fixture",
+        "confidence": 0.96
+      },
+      "semantics": {
+        "type": "appliance.range_hood",
+        "room_id": "room_kitchen",
+        "provenance": {
+          "source": "fixture.reviewed_room_assignment",
+          "confidence": 0.9
+        }
+      },
+      "thing_model": {
+        "capabilities": [
+          "power",
+          "fan_level"
+        ],
+        "states": {
+          "power": null,
+          "fan_level": null
+        }
+      },
+      "physics": {
+        "airflow_source": true,
+        "flow_rate_m3_h": null
+      }
+    }
+  ]
+}

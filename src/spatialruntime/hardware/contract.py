@@ -145,6 +145,7 @@ class CommandLedger:
             raise StaleHardwareEventError("command no longer belongs to active revision")
         if event.get("entity_id") != cmd["entity_id"] or event.get("device_id") != cmd["device_id"]:
             raise HardwareContractError("event identity does not match command")
+        # identical event replay is harmless
         digest = sha256(_canonical(event).encode()).hexdigest()
         if any(e.get("_digest") == digest for e in rec.events):
             return self.snapshot(cid)
@@ -234,6 +235,7 @@ class MockGateway:
                 "source_revision":command["source_revision"],"entity_id":command["entity_id"],"device_id":command["device_id"]}
         if command["device_id"] in self.offline_devices:
             return [{**base,"kind":"offline","event_at_ms":now_ms}]
+        # repeated delivery returns same logical success; devices must treat command_id idempotently.
         self.seen.add(command["command_id"])
         return [
             {**base,"kind":"ack","accepted":True,"event_at_ms":now_ms+10},

@@ -38,6 +38,7 @@ class DurableCommandLedger(CommandLedger):
 
     def _next_seq(self)->int:
         if not self.journal_path.exists(): return 1
+        # seq is derivable from non-empty line count; acceptable for append-only fixture.
         with self.journal_path.open("r",encoding="utf-8") as f:
             return sum(1 for line in f if line.strip())+1
 
