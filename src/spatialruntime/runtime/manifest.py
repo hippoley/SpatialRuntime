@@ -77,6 +77,10 @@ def validate_execution_manifest(manifest: Mapping[str, Any]) -> None:
         value = manifest.get(key)
         if not isinstance(value, str) or len(value) != 64:
             raise ExecutionManifestError(f"{key} must be SHA-256 hex")
+        try:
+            int(value, 16)
+        except ValueError as exc:
+            raise ExecutionManifestError(f"{key} must be SHA-256 hex") from exc
     if manifest.get("manifest_hash") != manifest_hash(manifest):
         raise ExecutionManifestError("execution manifest hash mismatch")
     solver = manifest.get("solver")
