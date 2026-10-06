@@ -31,12 +31,7 @@ def trace_hash(trace: Mapping[str, Any]) -> str:
 
 def _next_runtime_state(runtime_state: Mapping[str, Any], commit_decision: Mapping[str, Any],
                         hardware_feedback: Mapping[str, Any] | None) -> dict[str, Any]:
-    """Build the next recorded runtime state without equating ACK with convergence.
-
-    Confirmed hardware feedback wins. Otherwise a committed target becomes the recorded
-    executed state for the software runtime, but remains distinguishable from observed
-    hardware state in the trace.
-    """
+    """Build next recorded runtime state without equating ACK with convergence."""
     out = deepcopy(dict(runtime_state))
     feedback_devices = (hardware_feedback or {}).get("devices", {})
     for entity_id, decision in (commit_decision.get("decisions") or {}).items():
@@ -138,6 +133,7 @@ class RuntimeSession:
             expected_step=self.step,
             expected_revision=self.revision,
             max_open_ratio_delta=max_open_ratio_delta,
+            safety_override_entities=set(safe.get("safety_forced_entities") or ()),
         )
         stage_trace["commit"] = committed
 
