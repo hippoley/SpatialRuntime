@@ -90,6 +90,33 @@ The included `JsonProcessSolverAdapter` uses an explicit argv list, JSON stdin/s
 
 Scenario JSON deliberately supports only `solver.mode = "fixture"`. External solver processes such as CONTAM wrappers must be instantiated explicitly by application code; a scenario file is not permission to execute arbitrary local commands.
 
+## Execution manifest
+
+Every scenario-run episode now carries a `runtime_execution_manifest_v0.7` that fingerprints the configuration used to produce the traces:
+
+- scenario spec
+- initial runtime state
+- entity catalog
+- compiled safety graph
+- solver mode / adapter ID / adapter fingerprint
+- hardware mode / hardware config fingerprint
+
+Replay validates the manifest itself and cross-checks it against trace evidence. Re-hashing a tampered trace is not enough to hide solver drift, safety-graph drift, or initial-state substitution.
+
+```text
+scenario spec
+   + entity catalog
+   + safety graph
+   + solver adapter
+   + hardware config
+          ↓
+ execution manifest
+          ↓
+       episode
+          ↓
+ strict replay
+```
+
 ## CLI
 
 Install in editable mode:

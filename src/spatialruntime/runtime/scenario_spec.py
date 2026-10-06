@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from spatialruntime.hardware.contract import CommandLedger, MockGateway
+from spatialruntime.runtime.manifest import build_execution_manifest
 from spatialruntime.runtime.replay import ReplayValidationError, make_bundle, validate_bundle
 from spatialruntime.runtime.session import RuntimeSession
 from spatialruntime.safety.dependency_graph import compile_safety_graph
@@ -236,9 +237,27 @@ def run_scenario_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
             break
         session.advance(trace)
 
+    execution_manifest = build_execution_manifest(
+        case_id=case_id,
+        scenario_spec=spec,
+        initial_runtime_state=initial,
+        entity_catalog=catalog,
+        safety_graph_fingerprint=compiled.fingerprint,
+        solver_mode=(
+            spec.get("solver", {}).get("mode")
+            if isinstance(spec.get("solver"), Mapping)
+            else "embedded_feedback"
+        ),
+        solver_adapter_id=solver_adapter.adapter_id if solver_adapter is not None else None,
+        solver_adapter_fingerprint=solver_adapter.fingerprint if solver_adapter is not None else None,
+        hardware_mode=hardware.get("mode") if isinstance(hardware, Mapping) else None,
+        hardware_config=hardware if isinstance(hardware, Mapping) else None,
+    )
+
     bundle = make_bundle(
         case_id=case_id,
         traces=traces,
+        execution_manifest=execution_manifest,
         metadata={
             "scenario_schema": spec.get("schema"),
             "runtime_scenario_schema": SCHEMA,
