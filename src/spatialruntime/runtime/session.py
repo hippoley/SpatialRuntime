@@ -80,7 +80,7 @@ class RuntimeSession:
         now_ms: int | None = None,
     ) -> dict[str, Any]:
         before_state = deepcopy(self.runtime_state)
-        stage_trace: dict[str, Any] = {}
+        stage_trace: dict[str, Any] = {"solver": deepcopy(solver_feedback)}
         reconciled = reconcile(
             case_id=self.case_id,
             step=self.step,

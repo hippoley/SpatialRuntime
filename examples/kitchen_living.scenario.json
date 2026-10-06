@@ -1,5 +1,5 @@
 {
-  "schema": "runtime_scenario_spec_v0.5",
+  "schema": "runtime_scenario_spec_v0.6",
   "name": "kitchen-living-json",
   "case_id": "kitchen-living-json-demo",
   "initial_runtime_state": {
@@ -9,6 +9,24 @@
   "entity_catalog": {
     "window_kitchen": {"kind": "window", "exterior": true, "room": "kitchen"},
     "hood_kitchen": {"kind": "hood", "room": "kitchen"}
+  },
+  "solver": {
+    "mode": "fixture",
+    "zones": {
+      "kitchen": {
+        "pressure_pa": 0.0,
+        "temperature_c": 24.0,
+        "ach_1_h": 0.5,
+        "airflow_in_m3_s": 0.02,
+        "airflow_out_m3_s": 0.02
+      }
+    },
+    "flow_paths": {
+      "window_kitchen": {
+        "flow_m3_s": 0.02,
+        "delta_pressure_pa": 1.0
+      }
+    }
   },
   "safety_graph": {
     "schema": "whole_home_safety_graph_v3.3",
@@ -42,7 +60,7 @@
   "steps": [
     {
       "now_ms": 1000,
-      "solver_feedback": {"zones": {}, "flow_paths": {}},
+      "boundary_conditions": {"outdoor_temperature_c": 22.0},
       "safety_context": {
         "sensors": {
           "cooking": {"value": true, "quality": 1.0},
@@ -52,7 +70,7 @@
     },
     {
       "now_ms": 2000,
-      "solver_feedback": {"zones": {}, "flow_paths": {}},
+      "boundary_conditions": {"outdoor_temperature_c": 21.5},
       "safety_context": {
         "sensors": {
           "cooking": {"value": false, "quality": 1.0},

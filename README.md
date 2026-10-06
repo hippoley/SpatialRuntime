@@ -12,6 +12,7 @@ It is intentionally **scene-source agnostic**. A BIM model, CAD/floor-plan parse
 world snapshot
   -> reviewed spatial relations
   -> transitive relation graph
+  -> solver adapter
   -> whole-home safety graph
   -> policy/recovery arbitration
   -> commit gate
@@ -23,12 +24,13 @@ world snapshot
 
 ## What it does not own
 
-SpatialRuntime does not reconstruct a 3D scene, train perception models, or define vendor device protocols. Those are adapters.
+SpatialRuntime does not reconstruct a 3D scene, train perception models, implement a CFD solver, or define vendor device protocols. Those are adapters.
 
 ## Core invariants
 
 - candidate relation != reviewed fact
 - inferred relation != executable control rule
+- solver output is bound to case / step / revision / request hash
 - ACK != physical convergence
 - proposed action != committed action != observed device state
 - recovery cannot bypass safety
@@ -52,16 +54,41 @@ solver + sensor + device feedback
   -> deterministic episode trace
 ```
 
-Hard disagreements stop the pipeline before control. Each trace records:
+Hard disagreements stop the pipeline before control. Each trace records before/after state hashes, stage-level evidence, and the normalized solver feedback used for that exact step.
 
-- `runtime_state_before`
-- `runtime_state_before_hash`
-- stage-level evidence and decisions
-- `next_runtime_state`
-- `next_runtime_state_hash`
-- full `trace_hash`
+## Solver adapter contract
 
-That allows a replay validator to verify both trace integrity and cross-step state continuity.
+Physics is now a plugin boundary.
+
+```text
+World state + model + boundary conditions
+                ↓
+          SolverRequest
+                ↓
+     SolverAdapter.solve(...)
+       ┌────────┴─────────┐
+deterministic fixture   external JSON process
+       │                  │
+       └────────┬─────────┘
+                ↓
+      normalized solver_feedback
+                ↓
+          RuntimeSession
+```
+
+Every normalized solve result carries:
+
+- `case_id`
+- `source_step`
+- `source_revision`
+- `adapter_id`
+- `adapter_fingerprint`
+- `request_hash`
+- `result_hash`
+
+The included `JsonProcessSolverAdapter` uses an explicit argv list, JSON stdin/stdout, a timeout, and `shell=False`. It does not infer or download solver binaries.
+
+Scenario JSON deliberately supports only `solver.mode = "fixture"`. External solver processes such as CONTAM wrappers must be instantiated explicitly by application code; a scenario file is not permission to execute arbitrary local commands.
 
 ## CLI
 
@@ -71,45 +98,42 @@ Install in editable mode:
 python -m pip install -e '.[dev]'
 ```
 
-Run the built-in Kitchen/Living scenario and save a replay bundle:
+Run the built-in Kitchen/Living scenario:
 
 ```bash
 spatialruntime scenario kitchen-living -o episode.json
 ```
 
-Strictly validate the saved episode:
+Run a scene-source-neutral JSON scenario:
+
+```bash
+spatialruntime run examples/kitchen_living.scenario.json -o episode.json
+```
+
+Validate and inspect the resulting evidence:
 
 ```bash
 spatialruntime replay episode.json
-```
-
-Inspect a compact per-step summary:
-
-```bash
 spatialruntime inspect episode.json
 ```
 
-The replay command returns a non-zero exit code if a trace hash, state hash, step/revision sequence, case ID, or cross-step state chain has been tampered with.
-
-You can also run the package directly:
-
-```bash
-python -m spatialruntime scenario kitchen-living -o episode.json
-```
+Replay returns a non-zero exit code if trace hashes, state hashes, case identity, step/revision sequence, or cross-step state continuity have been tampered with.
 
 ## Closed-loop example
 
 The deterministic Kitchen/Living episode runs two timesteps:
 
-1. cooking activates the hood and a reviewed make-up-air window action;
-2. hardware feedback is reconciled and the session advances;
-3. rain activates a higher-priority safety rule that force-closes the exterior window.
+1. solver feedback is normalized and bound to the current session revision;
+2. cooking activates the hood and reviewed make-up-air action;
+3. hardware feedback is reconciled and the session advances;
+4. rain activates a higher-priority safety rule that force-closes the exterior window.
 
-The included gateway is a deterministic contract fixture. The example does **not** claim to drive real hardware.
+The included solver and gateway are deterministic contract fixtures. The example does **not** claim to run CONTAM, CFD, or real hardware.
 
 ## Package layout
 
-- `spatialruntime.runtime` - observations, reconciliation, commit gate, RuntimeSession, replay validation
+- `spatialruntime.runtime` - reconciliation, commit gate, RuntimeSession, replay, scenario runner
+- `spatialruntime.solver` - solver request/feedback contract and adapters
 - `spatialruntime.hardware` - command contracts, Gateway, telemetry, ThingModel binding
 - `spatialruntime.safety` - arbitration, recovery, supervisor, dependency graph
 - `spatialruntime.spatial` - relation resolution, review, promotion and compile lineage
@@ -123,4 +147,4 @@ python -m pip install -e '.[dev]'
 pytest
 ```
 
-The project deliberately keeps perception/reconstruction outside the core runtime. Scene sources are adapters; reviewed spatial semantics and safe execution are the runtime boundary.
+The project deliberately keeps perception/reconstruction and solver implementations outside the core runtime. Scene sources and physics engines are adapters; reviewed spatial semantics and safe execution are the runtime boundary.
