@@ -13,7 +13,7 @@ from spatialruntime.safety.pipeline import run_safety_pipeline
 from spatialruntime.safety.dependency_graph import CompiledSafetyGraph
 from spatialruntime.hardware.runtime import dispatch_once
 
-TRACE_SCHEMA = "runtime_episode_trace_v0.2"
+TRACE_SCHEMA = "runtime_episode_trace_v0.4"
 
 
 class RuntimeSessionError(RuntimeError):
@@ -29,9 +29,12 @@ def trace_hash(trace: Mapping[str, Any]) -> str:
     return sha256(_canonical(body).encode()).hexdigest()
 
 
+def state_hash(state: Mapping[str, Any]) -> str:
+    return sha256(_canonical(state).encode()).hexdigest()
+
+
 def _next_runtime_state(runtime_state: Mapping[str, Any], commit_decision: Mapping[str, Any],
                         hardware_feedback: Mapping[str, Any] | None) -> dict[str, Any]:
-    """Build next recorded runtime state without equating ACK with convergence."""
     out = deepcopy(dict(runtime_state))
     feedback_devices = (hardware_feedback or {}).get("devices", {})
     for entity_id, decision in (commit_decision.get("decisions") or {}).items():
@@ -76,6 +79,7 @@ class RuntimeSession:
         device_bindings: dict[str, dict[str, Any]] | None = None,
         now_ms: int | None = None,
     ) -> dict[str, Any]:
+        before_state = deepcopy(self.runtime_state)
         stage_trace: dict[str, Any] = {}
         reconciled = reconcile(
             case_id=self.case_id,
@@ -100,8 +104,11 @@ class RuntimeSession:
                 "status": "observation_blocked",
                 "blocked_at": "observation",
                 "error": str(exc),
+                "runtime_state_before": before_state,
+                "runtime_state_before_hash": state_hash(before_state),
                 "stages": stage_trace,
                 "next_runtime_state": deepcopy(self.runtime_state),
+                "next_runtime_state_hash": state_hash(self.runtime_state),
             }
             trace["trace_hash"] = trace_hash(trace)
             self.history.append(trace)
@@ -172,15 +179,17 @@ class RuntimeSession:
             "blocked_at": None if status == "completed" else (
                 "hardware" if status == "hardware_incomplete" else "commit"
             ),
+            "runtime_state_before": before_state,
+            "runtime_state_before_hash": state_hash(before_state),
             "stages": stage_trace,
             "next_runtime_state": next_state,
+            "next_runtime_state_hash": state_hash(next_state),
         }
         trace["trace_hash"] = trace_hash(trace)
         self.history.append(trace)
         return trace
 
     def advance(self, trace: Mapping[str, Any]) -> None:
-        """Advance only from a trace produced by this exact session revision."""
         if trace.get("schema") != TRACE_SCHEMA:
             raise RuntimeSessionError("invalid runtime trace schema")
         if trace.get("case_id") != self.case_id:
@@ -189,6 +198,12 @@ class RuntimeSession:
             raise RuntimeSessionError("stale runtime trace")
         if trace.get("trace_hash") != trace_hash(trace):
             raise RuntimeSessionError("runtime trace integrity mismatch")
+        if trace.get("runtime_state_before_hash") != state_hash(trace.get("runtime_state_before") or {}):
+            raise RuntimeSessionError("runtime_state_before integrity mismatch")
+        if trace.get("next_runtime_state_hash") != state_hash(trace.get("next_runtime_state") or {}):
+            raise RuntimeSessionError("next_runtime_state integrity mismatch")
+        if trace.get("runtime_state_before_hash") != state_hash(self.runtime_state):
+            raise RuntimeSessionError("trace input state does not match current session state")
         if trace.get("status") not in {"completed", "hardware_incomplete"}:
             raise RuntimeSessionError(f"cannot advance blocked trace: {trace.get('status')}")
         self.runtime_state = deepcopy(trace["next_runtime_state"])
