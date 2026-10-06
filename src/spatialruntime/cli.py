@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from pathlib import Path
 from typing import Sequence
 
 from spatialruntime.runtime.replay import (
@@ -13,11 +12,23 @@ from spatialruntime.runtime.replay import (
     save_bundle,
     validate_bundle,
 )
+from spatialruntime.runtime.scenario_spec import load_scenario_spec, run_scenario_spec
 from spatialruntime.scenarios import run_kitchen_living_demo
 
 
 def _print_json(value: object) -> None:
     print(json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False))
+
+
+def _write_or_print_bundle(bundle: dict, output: str | None) -> int:
+    report = validate_bundle(bundle)
+    if output:
+        path = save_bundle(bundle, output)
+        payload = {"written": str(path), **report.to_dict()}
+    else:
+        payload = {"bundle": bundle, "replay": report.to_dict()}
+    _print_json(payload)
+    return 0
 
 
 def _run_scenario(args: argparse.Namespace) -> int:
@@ -35,14 +46,13 @@ def _run_scenario(args: argparse.Namespace) -> int:
             "hardware": "deterministic_contract_fixture",
         },
     )
-    report = validate_bundle(bundle)
-    if args.output:
-        path = save_bundle(bundle, args.output)
-        payload = {"written": str(path), **report.to_dict()}
-    else:
-        payload = {"bundle": bundle, "replay": report.to_dict()}
-    _print_json(payload)
-    return 0
+    return _write_or_print_bundle(bundle, args.output)
+
+
+def _run_spec(args: argparse.Namespace) -> int:
+    spec = load_scenario_spec(args.path)
+    bundle = run_scenario_spec(spec)
+    return _write_or_print_bundle(bundle, args.output)
 
 
 def _replay(args: argparse.Namespace) -> int:
@@ -85,6 +95,11 @@ def build_parser() -> argparse.ArgumentParser:
     scenario.add_argument("name", choices=["kitchen-living"])
     scenario.add_argument("-o", "--output", help="Write a validated episode bundle JSON file.")
     scenario.set_defaults(func=_run_scenario)
+
+    run = sub.add_parser("run", help="Run a scene-source-neutral scenario JSON spec.")
+    run.add_argument("path")
+    run.add_argument("-o", "--output", help="Write a validated episode bundle JSON file.")
+    run.set_defaults(func=_run_spec)
 
     replay = sub.add_parser("replay", help="Validate a saved episode bundle.")
     replay.add_argument("path")
