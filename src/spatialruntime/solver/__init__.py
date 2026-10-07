@@ -7,6 +7,7 @@ from spatialruntime.solver.contract import (
 )
 from spatialruntime.solver.fixture import DeterministicSolverAdapter
 from spatialruntime.solver.process import JsonProcessSolverAdapter
+from spatialruntime.solver.contam import ContamProjectSolverAdapter
 
 __all__ = [
     "SolverAdapter",
@@ -16,4 +17,5 @@ __all__ = [
     "normalize_solver_feedback",
     "DeterministicSolverAdapter",
     "JsonProcessSolverAdapter",
+    "ContamProjectSolverAdapter",
 ]

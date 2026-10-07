@@ -90,6 +90,39 @@ The included `JsonProcessSolverAdapter` uses an explicit argv list, JSON stdin/s
 
 Scenario JSON deliberately supports only `solver.mode = "fixture"`. External solver processes such as CONTAM wrappers must be instantiated explicitly by application code; a scenario file is not permission to execute arbitrary local commands.
 
+## CONTAM project adapter
+
+SpatialRuntime now includes a conservative CONTAM integration layer:
+
+```text
+reviewed PRJ
+   ↓
+native inventory
+   ↓
+stable zone/path bindings
+   ↓
+explicit native result provider
+   ↓
+VAL / TSV / API normalization
+   ↓
+ContamProjectSolverAdapter
+   ↓
+solver_feedback_v0.6
+   ↓
+RuntimeSession
+```
+
+Key fail-closed rules:
+
+- required PRJ section markers must be present; the parser does not guess record boundaries
+- stable IDs bind to reviewed CONTAM zone/path/flow-element numbers
+- project SHA and structural inventory are checked before every solve
+- raw binary `.SIM` files are not guessed or decoded; use SimRead/Results Export or an explicit ContamX API wrapper
+- conflicting VAL / TSV / API values are rejected rather than silently overwritten
+- binding fingerprints are path-independent, so the same reviewed PRJ can be moved between machines without false drift
+
+`ContamCliRunner` can detect or explicitly resolve a ContamX executable and run an already-materialized PRJ with `shell=False`. CI does not currently contain ContamX, so the repository does **not** claim a real ContamX solve yet.
+
 ## Execution manifest
 
 Every scenario-run episode now carries a `runtime_execution_manifest_v0.7` that fingerprints the configuration used to produce the traces:
