@@ -17,9 +17,9 @@ class UnsupportedProjectFormat(InventoryError):
 
 
 SECTION_PATTERNS = {
-    "flow_elements": re.compile(r"airflow\s+elements", re.I),
+    "flow_elements": re.compile(r"(?:airflow|flow)\s+elements", re.I),
     "zones": re.compile(r"\bzones?\b", re.I),
-    "flow_paths": re.compile(r"airflow\s+paths", re.I),
+    "flow_paths": re.compile(r"(?:airflow|flow)\s+paths", re.I),
     "controls": re.compile(r"control\s+(nodes?|elements?|section)", re.I),
     "mechanical": re.compile(r"(simple\s+air\s+handling|\bAHS\b|mechanical)", re.I),
 }
