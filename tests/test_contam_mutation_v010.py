@@ -357,3 +357,26 @@ def test_advanced_registry_is_accepted_by_contam_adapter(tmp_path):
     assert feedback["metadata"]["engine"] == "CONTAM"
     assert feedback["flow_paths"]["flow::window"]["flow_m3_s"] == 0.04
     assert feedback["solver_provenance"]["adapter_id"] == "contam-project-v0.9"
+
+
+def test_in_place_mutation_is_forbidden_to_preserve_before_evidence(tmp_path):
+    project, inventory, registry = project_and_registry(tmp_path)
+    plan = build_mutation_plan(
+        case_id="case",
+        source_step=0,
+        source_revision=0,
+        project_path=project,
+        binding_registry=registry,
+        inventory=inventory,
+        operations=[{
+            "kind": "set_flow_path_parameters",
+            "flow_path_id": "flow::window",
+            "parameters": {"area_m2": 0.2},
+        }],
+    )
+    with pytest.raises(MutationValidationError, match="in-place CONTAM mutation is forbidden"):
+        apply_mutation_plan(
+            project_path=project,
+            output_path=project,
+            plan=plan,
+        )
