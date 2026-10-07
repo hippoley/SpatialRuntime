@@ -8,11 +8,13 @@ from spatialruntime.solver.contam.binding import (
     BindingDriftError,
     BindingValidationError,
     build_binding_registry,
+    registry_fingerprint,
 )
 from spatialruntime.solver.contam.inventory import (
     UnsupportedProjectFormat,
     parse_prj_inventory,
 )
+from spatialruntime.solver.contam.cli import ContamCliRunner
 from spatialruntime.solver.contam.results import (
     ResultBindingError,
     ResultParseError,
@@ -249,3 +251,37 @@ def test_adapter_fails_if_project_changes_after_binding(tmp_path):
     )
     with pytest.raises(BindingDriftError, match="project content changed"):
         adapter.solve(request)
+
+
+def test_binding_fingerprint_is_portable_across_project_paths(tmp_path):
+    p1 = tmp_path / "a.prj"
+    p2 = tmp_path / "nested" / "b.prj"
+    p2.parent.mkdir()
+    p1.write_text(PRJ, encoding="utf-8")
+    p2.write_text(PRJ, encoding="utf-8")
+    inv1 = parse_prj_inventory(p1)
+    inv2 = parse_prj_inventory(p2)
+    mappings = {
+        "zones": {"zone::kitchen": {"contam_zone_number": 1}},
+        "flow_paths": {
+            "flow::window": {
+                "contam_path_number": 11,
+                "contam_flow_element_number": 1,
+            }
+        },
+    }
+    r1 = build_binding_registry(
+        case_id="case", project_path=p1, inventory=inv1, mappings=mappings
+    )
+    r2 = build_binding_registry(
+        case_id="case", project_path=p2, inventory=inv2, mappings=mappings
+    )
+    assert r1["project"]["path"] != r2["project"]["path"]
+    assert registry_fingerprint(r1) == registry_fingerprint(r2)
+
+
+def test_explicit_missing_contam_executable_reports_unavailable(tmp_path):
+    runner = ContamCliRunner(executable=str(tmp_path / "missing-contamx"))
+    caps = runner.capabilities()
+    assert caps["available"] is False
+    assert caps["executable"] is None
