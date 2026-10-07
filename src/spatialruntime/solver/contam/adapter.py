@@ -89,6 +89,7 @@ class ContamProjectSolverAdapter(SolverAdapter):
                 "binding_registry_fingerprint": registry_fingerprint(
                     self.binding_registry
                 ),
+                "binding_revision": int(self.binding_registry.get("revision", 0)),
                 "native_result_source": native.get("source_format"),
                 "unmapped_native": mapped["unmapped_native"],
             },
