@@ -34,7 +34,30 @@ def sha256_file(path: str | Path) -> str:
 
 
 def _find_sections(lines: list[str]) -> dict[str, int]:
-    \"\"\"Locate explicit structural section labels conservatively.\n\n    Accept both standalone comment headers like '! Section 14: Zones' and\n    count-prefixed headers like '3 ! zones:'. The returned index is normalized\n    so readers beginning at section_index + 1 encounter the count record first.\n    \"\"\"\n    found: dict[str, int] = {}\n    for i, line in enumerate(lines):\n        stripped = line.strip()\n        marker_text = None\n        normalized_index = i\n        if stripped.startswith(\"!\"):\n            marker_text = stripped\n        else:\n            match = re.match(r\"^\\s*\\d+(?:\\s+\\d+)?\\s*!\\s*(.+)$\", line)\n            if match:\n                marker_text = match.group(1)\n                normalized_index = i - 1\n        if marker_text is None:\n            continue\n        for name, pattern in SECTION_PATTERNS.items():\n            if pattern.search(marker_text):\n                found.setdefault(name, normalized_index)\n    return found\n
+    """Locate explicit structural section labels conservatively.
+
+    Accept both standalone comment headers like '! Section 14: Zones' and
+    count-prefixed headers like '3 ! zones:'. The returned index is normalized
+    so readers beginning at section_index + 1 encounter the count record first.
+    """
+    found: dict[str, int] = {}
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        marker_text = None
+        normalized_index = i
+        if stripped.startswith("!"):
+            marker_text = stripped
+        else:
+            match = re.match(r"^\s*\d+(?:\s+\d+)?\s*!\s*(.+)$", line)
+            if match:
+                marker_text = match.group(1)
+                normalized_index = i - 1
+        if marker_text is None:
+            continue
+        for name, pattern in SECTION_PATTERNS.items():
+            if pattern.search(marker_text):
+                found.setdefault(name, normalized_index)
+    return found
 
 def _data_lines(lines: list[str], start: int):
     for i in range(start, len(lines)):
