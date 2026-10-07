@@ -17,9 +17,9 @@ class UnsupportedProjectFormat(InventoryError):
 
 
 SECTION_PATTERNS = {
-    "flow_elements": re.compile(r"airflow\s+elements", re.I),
+    "flow_elements": re.compile(r"(?:airflow|flow)\s+elements", re.I),
     "zones": re.compile(r"\bzones?\b", re.I),
-    "flow_paths": re.compile(r"airflow\s+paths", re.I),
+    "flow_paths": re.compile(r"(?:airflow|flow)\s+paths", re.I),
     "controls": re.compile(r"control\s+(nodes?|elements?|section)", re.I),
     "mechanical": re.compile(r"(simple\s+air\s+handling|\bAHS\b|mechanical)", re.I),
 }
@@ -34,15 +34,30 @@ def sha256_file(path: str | Path) -> str:
 
 
 def _find_sections(lines: list[str]) -> dict[str, int]:
+    """Locate explicit structural section labels conservatively.
+
+    Accept both standalone comment headers like '! Section 14: Zones' and
+    count-prefixed headers like '3 ! zones:'. The returned index is normalized
+    so readers beginning at section_index + 1 encounter the count record first.
+    """
     found: dict[str, int] = {}
     for i, line in enumerate(lines):
-        if not line.lstrip().startswith("!"):
+        stripped = line.strip()
+        marker_text = None
+        normalized_index = i
+        if stripped.startswith("!"):
+            marker_text = stripped
+        else:
+            match = re.match(r"^\s*\d+(?:\s+\d+)?\s*!\s*(.+)$", line)
+            if match:
+                marker_text = match.group(1)
+                normalized_index = i - 1
+        if marker_text is None:
             continue
         for name, pattern in SECTION_PATTERNS.items():
-            if pattern.search(line):
-                found.setdefault(name, i)
+            if pattern.search(marker_text):
+                found.setdefault(name, normalized_index)
     return found
-
 
 def _data_lines(lines: list[str], start: int):
     for i in range(start, len(lines)):

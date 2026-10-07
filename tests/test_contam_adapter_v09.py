@@ -285,3 +285,41 @@ def test_explicit_missing_contam_executable_reports_unavailable(tmp_path):
     caps = runner.capabilities()
     assert caps["available"] is False
     assert caps["executable"] is None
+
+
+def test_inventory_accepts_count_prefixed_contam_sections(tmp_path):
+    project = tmp_path / "count-prefixed.prj"
+    project.write_text(
+        """ContamW 3.4.0.4 0
+count-prefixed.prj
+-999
+2 ! flow elements:
+1 23 plr_orfc element_D1
+AirTrajectory generated simple orifice
+0.01 0.14 0.65 1.68 1.2 0.60 30 0 0
+2 23 plr_orfc element_W1
+AirTrajectory generated simple orifice
+0.02 0.20 0.65 1.00 1.0 0.65 30 0 0
+-999
+0 ! control nodes:
+-999
+2 ! zones:
+! Z# f s# c# k# l# relHt Vol T0 P0 name
+1 3 0 0 0 1 0 35 295.15 0 living
+2 3 0 0 0 1 0 30 295.15 0 bedroom
+-999
+2 ! flow paths:
+! P# f n# m# e#
+1 0 1 2 1
+2 1 1 -1 2
+-999
+""",
+        encoding="utf-8",
+    )
+    inventory = parse_prj_inventory(project)
+
+    assert [z["number"] for z in inventory["zones"]] == [1, 2]
+    assert [p["number"] for p in inventory["flow_paths"]] == [1, 2]
+    assert [e["number"] for e in inventory["flow_elements"]] == [1, 2]
+    assert inventory["flow_paths"][1]["flow_element_number"] == 2
+    assert inventory["flow_elements"][0]["dtype"] == "plr_orfc"
