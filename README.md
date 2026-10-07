@@ -201,6 +201,63 @@ registry = advance_binding_registry_after_mutation(
 
 This still does **not** claim that ContamX itself has executed in CI. It establishes an auditable PRJ mutation and lineage layer that a real ContamX execution adapter can consume.
 
+## ContamX execution provider
+
+SpatialRuntime now includes an application-side execution provider that connects the reviewed PRJ/binding layer to an explicitly configured ContamX executable.
+
+The execution order is:
+
+```text
+reviewed PRJ revision
+        ↓
+ContamX --TestInput
+        ↓ pass
+snapshot configured result artifacts
+        ↓
+ContamX <project.prj>
+        ↓
+fresh VAL / TSV / API artifacts
+        ↓
+conflict-safe native result merge
+        ↓
+stable ID mapping
+        ↓
+solver_feedback_v0.6
+        ↓
+RuntimeSession
+```
+
+The provider deliberately does not guess result filenames. Applications configure exact paths (with optional `{stem}` / `{name}` placeholders), for example:
+
+```python
+runner = ContamCliRunner(executable="/opt/contam/contam-x")
+artifacts = ExplicitResultArtifacts(
+    api_json="{stem}.result.json",
+)
+
+provider = ContamCliResultProvider(
+    runner=runner,
+    artifacts=artifacts,
+    test_input_first=True,
+)
+```
+
+Freshness is checked around the solve. A pre-existing artifact that is neither replaced nor changed is rejected instead of being reused as if it belonged to the new run.
+
+Execution evidence retained in solver feedback includes:
+
+- source step / revision
+- binding revision
+- TestInput return code
+- solve return code
+- ContamX version string
+- explicit artifact paths
+- execution evidence hash
+
+The NIST CONTAM 3.4 documentation specifies the command-line form as `contam-x [input-file] [options]`, with `--TestInput` for input validation. SpatialRuntime follows that ordering and still invokes subprocesses with `shell=False`.
+
+Real ContamX execution is only available when a compatible executable is installed or `CONTAMX_BIN` is set. Repository CI uses a fake executable to validate the process protocol and does **not** claim to execute NIST ContamX itself.
+
 ## Execution manifest
 
 Every scenario-run episode now carries a `runtime_execution_manifest_v0.7` that fingerprints the configuration used to produce the traces:
