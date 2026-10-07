@@ -151,5 +151,16 @@ def reverse_lookup(registry: Mapping[str, Any]) -> dict[str, dict[str, str]]:
 
 
 def registry_fingerprint(registry: Mapping[str, Any]) -> str:
-    body = {k: v for k, v in registry.items() if k != "lineage"}
+    project = registry.get("project") or {}
+    body = {
+        "schema": registry.get("schema"),
+        "case_id": registry.get("case_id"),
+        "revision": registry.get("revision"),
+        "project": {
+            "sha256": project.get("sha256"),
+            "structural_inventory_sha256": project.get("structural_inventory_sha256"),
+        },
+        "zones": registry.get("zones") or {},
+        "flow_paths": registry.get("flow_paths") or {},
+    }
     return sha256(_canonical(body).encode()).hexdigest()
