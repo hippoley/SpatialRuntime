@@ -40,6 +40,13 @@ __all__ = [
     "apply_mutation_plan",
     "build_mutation_plan",
     "validate_mutation_plan",
+    "ContamCliResultProvider",
+    "ContamExecutionError",
+    "ContamExecutionUnavailable",
+    "ContamInputRejected",
+    "ContamResultArtifactError",
+    "ContamSolveFailed",
+    "ExplicitResultArtifacts",
 ]
 
 from spatialruntime.solver.contam.mutation import (
@@ -49,4 +56,14 @@ from spatialruntime.solver.contam.mutation import (
     apply_mutation_plan,
     build_mutation_plan,
     validate_mutation_plan,
+)
+
+from spatialruntime.solver.contam.execution import (
+    ContamCliResultProvider,
+    ContamExecutionError,
+    ContamExecutionUnavailable,
+    ContamInputRejected,
+    ContamResultArtifactError,
+    ContamSolveFailed,
+    ExplicitResultArtifacts,
 )
