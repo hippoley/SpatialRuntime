@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from hashlib import sha256
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, Mapping
 
-from spatialruntime.solver.contam.inventory import sha256_file
+from spatialruntime.solver.contam.inventory import parse_prj_inventory, sha256_file
 
 SCHEMA = "contam_binding_registry_v0.9"
 
@@ -164,3 +165,67 @@ def registry_fingerprint(registry: Mapping[str, Any]) -> str:
         "flow_paths": registry.get("flow_paths") or {},
     }
     return sha256(_canonical(body).encode()).hexdigest()
+
+
+def advance_binding_registry_after_mutation(
+    registry: Mapping[str, Any],
+    *,
+    before_project_path: str | Path,
+    before_inventory: Mapping[str, Any],
+    after_project_path: str | Path,
+    mutation_report: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Advance a reviewed binding registry after a proven non-structural PRJ mutation."""
+    assert_binding_fresh(registry, before_project_path, before_inventory)
+    if mutation_report.get("schema") != "contam_mutation_report_v0.10":
+        raise BindingValidationError("expected contam_mutation_report_v0.10")
+    if not mutation_report.get("applied") or mutation_report.get("dry_run"):
+        raise BindingValidationError("mutation report does not prove an applied mutation")
+    if int(mutation_report.get("change_count", 0)) <= 0:
+        raise BindingValidationError("mutation report has no committed changes")
+    if int(mutation_report.get("binding_revision_before", -1)) != int(registry.get("revision", 0)):
+        raise BindingDriftError("mutation report binding revision does not match registry")
+    if mutation_report.get("before_project_sha256") != registry.get("project", {}).get("sha256"):
+        raise BindingDriftError("mutation report before-project hash does not match registry")
+    if mutation_report.get("before_structural_inventory_sha256") != structural_digest(before_inventory):
+        raise BindingDriftError("mutation report before structural fingerprint mismatch")
+
+    after_path = Path(after_project_path)
+    if not after_path.is_file():
+        raise FileNotFoundError(after_path)
+    after_sha = sha256_file(after_path)
+    if mutation_report.get("after_project_sha256") != after_sha:
+        raise BindingDriftError("mutation report after-project hash does not match output file")
+    after_inventory = parse_prj_inventory(after_path)
+    after_struct = structural_digest(after_inventory)
+
+    before_struct = structural_digest(before_inventory)
+    if after_struct != before_struct:
+        raise BindingDriftError(
+            "approved mutation changed native structural identity/connectivity; "
+            "binding review required"
+        )
+    if mutation_report.get("after_structural_inventory_sha256") != after_struct:
+        raise BindingDriftError("mutation report after structural fingerprint mismatch")
+
+    out = deepcopy(dict(registry))
+    lineage = list(out.get("lineage") or [])
+    lineage.append({
+        "revision": int(registry.get("revision", 0)),
+        "project_sha256": registry["project"]["sha256"],
+        "mutation_schema": mutation_report.get("schema"),
+        "mutation_plan_hash": mutation_report.get("plan_hash"),
+        "change_count": int(mutation_report.get("change_count", 0)),
+        "source_step": mutation_report.get("source_step"),
+        "source_revision": mutation_report.get("source_revision"),
+    })
+    out["lineage"] = lineage
+    out["revision"] = int(registry.get("revision", 0)) + 1
+    out["project"] = {
+        **dict(out.get("project") or {}),
+        "path": str(after_path),
+        "sha256": after_sha,
+        "structural_inventory_sha256": after_struct,
+    }
+    validate_binding_registry(out, after_inventory)
+    return out

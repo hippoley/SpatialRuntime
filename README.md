@@ -123,6 +123,84 @@ Key fail-closed rules:
 
 `ContamCliRunner` can detect or explicitly resolve a ContamX executable and run an already-materialized PRJ with `shell=False`. CI does not currently contain ContamX, so the repository does **not** claim a real ContamX solve yet.
 
+## Conservative CONTAM mutation
+
+SpatialRuntime can now produce a new reviewed PRJ revision by changing only parameters on explicitly understood `plr_orfc` airflow elements.
+
+```text
+reviewed PRJ r0
+    +
+stable flow-path binding
+    +
+mutation operation
+        ↓
+mutation plan
+        ↓
+temporary candidate PRJ
+        ↓
+re-parse native inventory
+        ↓
+structural fingerprint unchanged?
+        ↓ yes
+atomic write PRJ r1
+        ↓
+mutation report
+        ↓
+binding registry revision +1
+```
+
+The v0.10 mutation layer allows only:
+
+- `area_m2`
+- `coef`
+- `expt`
+
+It intentionally does **not** mutate CONTAM native IDs, zone/path connectivity, element type, diameter, control topology, or arbitrary record fields.
+
+Mutation is fail-closed:
+
+- the source PRJ must still match the reviewed binding registry
+- the mutation plan is hash-bound to the source project and structural inventory
+- a plan becomes invalid if the source PRJ changes before apply
+- the candidate PRJ is re-parsed before it is committed
+- structural inventory must remain identical
+- in-place mutation is forbidden; each revision is written to a new PRJ so the previous evidence remains available
+- binding revision advances only from an applied mutation report that proves the before/after hashes
+
+A typical application flow is:
+
+```python
+plan = build_mutation_plan(
+    case_id="home-01",
+    source_step=3,
+    source_revision=3,
+    project_path="case-r0.prj",
+    binding_registry=registry,
+    inventory=inventory,
+    operations=[{
+        "kind": "set_flow_path_parameters",
+        "flow_path_id": "window::kitchen",
+        "parameters": {"area_m2": 0.35},
+    }],
+)
+
+report = apply_mutation_plan(
+    project_path="case-r0.prj",
+    output_path="case-r1.prj",
+    plan=plan,
+)
+
+registry = advance_binding_registry_after_mutation(
+    registry,
+    before_project_path="case-r0.prj",
+    before_inventory=inventory,
+    after_project_path="case-r1.prj",
+    mutation_report=report,
+)
+```
+
+This still does **not** claim that ContamX itself has executed in CI. It establishes an auditable PRJ mutation and lineage layer that a real ContamX execution adapter can consume.
+
 ## Execution manifest
 
 Every scenario-run episode now carries a `runtime_execution_manifest_v0.7` that fingerprints the configuration used to produce the traces:
