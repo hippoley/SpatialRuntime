@@ -197,6 +197,10 @@ def apply_mutation_plan(
     dst = Path(output_path)
     if not src.is_file():
         raise FileNotFoundError(src)
+    if not dry_run and src.resolve() == dst.resolve():
+        raise MutationValidationError(
+            "in-place CONTAM mutation is forbidden; write a new PRJ revision to preserve lineage"
+        )
 
     before_sha = sha256_file(src)
     if before_sha != plan.get("expected_project_sha256"):
