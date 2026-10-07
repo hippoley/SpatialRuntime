@@ -34,15 +34,7 @@ def sha256_file(path: str | Path) -> str:
 
 
 def _find_sections(lines: list[str]) -> dict[str, int]:
-    found: dict[str, int] = {}
-    for i, line in enumerate(lines):
-        if not line.lstrip().startswith("!"):
-            continue
-        for name, pattern in SECTION_PATTERNS.items():
-            if pattern.search(line):
-                found.setdefault(name, i)
-    return found
-
+    \"\"\"Locate explicit structural section labels conservatively.\n\n    Accept both standalone comment headers like '! Section 14: Zones' and\n    count-prefixed headers like '3 ! zones:'. The returned index is normalized\n    so readers beginning at section_index + 1 encounter the count record first.\n    \"\"\"\n    found: dict[str, int] = {}\n    for i, line in enumerate(lines):\n        stripped = line.strip()\n        marker_text = None\n        normalized_index = i\n        if stripped.startswith(\"!\"):\n            marker_text = stripped\n        else:\n            match = re.match(r\"^\\s*\\d+(?:\\s+\\d+)?\\s*!\\s*(.+)$\", line)\n            if match:\n                marker_text = match.group(1)\n                normalized_index = i - 1\n        if marker_text is None:\n            continue\n        for name, pattern in SECTION_PATTERNS.items():\n            if pattern.search(marker_text):\n                found.setdefault(name, normalized_index)\n    return found\n
 
 def _data_lines(lines: list[str], start: int):
     for i in range(start, len(lines)):
