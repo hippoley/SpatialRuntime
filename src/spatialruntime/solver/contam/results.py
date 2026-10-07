@@ -232,3 +232,78 @@ def map_native_results_to_stable(
         "flow_paths": stable_paths,
         "unmapped_native": unmapped,
     }
+
+
+def merge_result_sources(
+    *,
+    val: Mapping[str, Any] | None = None,
+    path_export: Mapping[str, Any] | None = None,
+    api: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    zone_by_num: dict[int, dict[str, Any]] = {}
+    path_by_num: dict[int, dict[str, Any]] = {}
+    conflicts: list[dict[str, Any]] = []
+
+    def merge_item(
+        dst: dict[int, dict[str, Any]],
+        src: Mapping[str, Any],
+        identity_key: str,
+        kind: str,
+    ) -> None:
+        ident = int(src[identity_key])
+        target = dst.setdefault(ident, {identity_key: ident})
+        for key, value in src.items():
+            if key == identity_key or value is None:
+                continue
+            if key in target and target[key] is not None and target[key] != value:
+                conflicts.append({
+                    "kind": kind,
+                    "native_number": ident,
+                    "field": key,
+                    "existing": target[key],
+                    "incoming": value,
+                })
+            else:
+                target[key] = value
+
+    if val:
+        for zone in val.get("zones", []):
+            merge_item(zone_by_num, zone, "native_zone_number", "zone")
+    if path_export:
+        for path in path_export.get("paths", []):
+            merge_item(path_by_num, path, "native_path_number", "path")
+    if api:
+        for zone in api.get("zones", []):
+            merge_item(zone_by_num, zone, "native_zone_number", "zone")
+        for path in api.get("paths", []):
+            merge_item(path_by_num, path, "native_path_number", "path")
+
+    if conflicts:
+        raise ResultProtocolError(f"conflicting result sources: {conflicts}")
+    return {
+        "schema": SCHEMA,
+        "source_format": "merged",
+        "zones": list(zone_by_num.values()),
+        "paths": list(path_by_num.values()),
+    }
+
+
+def parse_result_file(path: str | Path, *, kind: str) -> dict[str, Any]:
+    p = Path(path)
+    if not p.is_file():
+        raise FileNotFoundError(p)
+    if kind == "val":
+        return parse_val_airflow_summary(p.read_text(errors="replace"))
+    if kind == "path_tsv":
+        return parse_path_export_tsv(p.read_text(errors="replace"))
+    if kind == "api_json":
+        payload = json.loads(p.read_text())
+        if not isinstance(payload, Mapping):
+            raise ResultProtocolError("API JSON result root must be object")
+        return normalize_api_result(payload)
+    if kind == "sim_binary":
+        raise ResultParseError(
+            "raw .SIM is binary; use NIST SimRead/Results Export or a ContamX API wrapper "
+            "instead of guessing its binary layout"
+        )
+    raise ValueError(f"unknown result kind {kind!r}")
