@@ -33,6 +33,8 @@ class ContamCliRunner:
     def resolve_executable(value: str) -> str | None:
         candidate = Path(value)
         if candidate.is_file():
+            if os.name != "nt" and not os.access(candidate, os.X_OK):
+                return None
             return str(candidate)
         return shutil.which(value)
 
