@@ -91,6 +91,7 @@ class ContamProjectSolverAdapter(SolverAdapter):
                 ),
                 "binding_revision": int(self.binding_registry.get("revision", 0)),
                 "native_result_source": native.get("source_format"),
+                "native_execution": native.get("execution"),
                 "unmapped_native": mapped["unmapped_native"],
             },
         }
