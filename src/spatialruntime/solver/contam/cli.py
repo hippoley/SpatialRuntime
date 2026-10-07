@@ -24,10 +24,17 @@ class ContamCliRunner:
     """Explicit ContamX CLI runner for already-materialized PRJ files."""
 
     def __init__(self, executable: str | None = None, *, timeout_s: float = 120.0):
-        self.executable = executable or self.detect_executable()
+        self.executable = self.resolve_executable(executable) if executable else self.detect_executable()
         self.timeout_s = float(timeout_s)
         if self.timeout_s <= 0:
             raise ValueError("timeout_s must be > 0")
+
+    @staticmethod
+    def resolve_executable(value: str) -> str | None:
+        candidate = Path(value)
+        if candidate.is_file():
+            return str(candidate)
+        return shutil.which(value)
 
     @staticmethod
     def detect_executable() -> str | None:
