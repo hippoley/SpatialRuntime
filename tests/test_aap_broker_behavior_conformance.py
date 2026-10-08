@@ -45,7 +45,16 @@ json.dump({
     "error": kind if kind != "success" else None,
     "result": req["scenario"].get("operation_result")
   },
-  "audit": {"present": True, "signed": True, "contains_credential_material": False},
+  "audit": {
+    "present": True,
+    "contains_credential_material": False,
+    "integrity_evidence": {
+      "kind": "signature",
+      "verified": True,
+      "key_id": "synthetic-harness-key",
+      "record_digest": "sha256:" + "c" * 64
+    }
+  },
   "broker_observation": {
     "decision": "deny" if kind != "success" else "allow",
     "operation_executed": kind == "success"
@@ -74,4 +83,43 @@ def test_unsigned_audit_is_rejected():
         for row in report["rows"]
         for err in row["errors"]
     }
-    assert "AUDIT_NOT_VERIFIED_SIGNED" in codes
+    assert "AUDIT_NOT_SIGNED" in codes
+    assert "AUDIT_SIGNATURE_NOT_VERIFIED" in codes
+
+
+
+def test_bare_signed_boolean_is_not_sufficient(tmp_path: Path):
+    adapter = tmp_path / "self_asserted_signed.py"
+    adapter.write_text(
+        """
+import json, sys
+req=json.load(sys.stdin)
+kind=req["scenario"]["kind"]
+json.dump({
+  "case_id": req["case_id"],
+  "agent_visible": {
+    "status": "ok" if kind == "success" else "denied",
+    "error": None if kind == "success" else "grant_denied",
+    "result": req["scenario"].get("operation_result")
+  },
+  "audit": {
+    "present": True,
+    "signed": True,
+    "contains_credential_material": False
+  },
+  "broker_observation": {
+    "decision": "allow" if kind == "success" else "deny",
+    "operation_executed": kind == "success"
+  }
+}, sys.stdout)
+""".strip(),
+        encoding="utf-8",
+    )
+    report = MOD.run(f"{sys.executable} {adapter}")
+    assert report["result"] == "FAIL"
+    codes = {
+        err["code"]
+        for row in report["rows"]
+        for err in row["errors"]
+    }
+    assert "AUDIT_INTEGRITY_EVIDENCE_MISSING" in codes
