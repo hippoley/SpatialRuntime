@@ -33,3 +33,10 @@ Consumers should pin an immutable commit SHA.
 The Action delegates to the existing verifier implementations rather than duplicating their rules.
 
 A successful process exit does not always mean `PASS`: profiles may intentionally return `UNRESOLVED` when evidence is incomplete. Use structured outputs when available and choose policy in the caller.
+
+
+## Machine-readable catalog
+
+`manifest.v0.1.json` lists the currently exposed Action modes, profile versions, verifier entry points, structured outputs, and result semantics.
+
+This catalog is descriptive: it does not override the profile files or verifier behavior. Consumers should still pin an immutable SpatialRuntime commit SHA.
