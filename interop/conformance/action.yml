@@ -29,6 +29,15 @@ outputs:
   error_count:
     description: "Number of conformance contradictions/errors"
     value: ${{ steps.verify.outputs.error_count }}
+  passed_count:
+    description: "Passed vector count for effect-evidence-bundle mode"
+    value: ${{ steps.verify.outputs.passed_count }}
+  failed_count:
+    description: "Failed vector count for effect-evidence-bundle mode"
+    value: ${{ steps.verify.outputs.failed_count }}
+  total_count:
+    description: "Total vector count for effect-evidence-bundle mode"
+    value: ${{ steps.verify.outputs.total_count }}
 runs:
   using: "composite"
   steps:
@@ -79,9 +88,11 @@ runs:
           effect-evidence-bundle)
             if [[ -n "$CONFORMANCE_ADAPTER_COMMAND" ]]; then
               python "$ROOT/agent-effect-authority/run_conformance.py" \
-                --adapter-command "$CONFORMANCE_ADAPTER_COMMAND"
+                --adapter-command "$CONFORMANCE_ADAPTER_COMMAND" \
+                --github-output "$GITHUB_OUTPUT"
             else
-              python "$ROOT/agent-effect-authority/run_conformance.py"
+              python "$ROOT/agent-effect-authority/run_conformance.py" \
+                --github-output "$GITHUB_OUTPUT"
             fi
             ;;
           effect-evidence-v0.2)
