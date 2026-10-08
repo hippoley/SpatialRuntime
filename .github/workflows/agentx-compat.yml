@@ -1,0 +1,30 @@
+name: AgentX executed compatibility
+
+on:
+  pull_request:
+    paths:
+      - "interop/agent-effect-authority/probes/agentx_proof_sufficiency_probe.mjs"
+      - ".github/workflows/agentx-compat.yml"
+  workflow_dispatch:
+
+jobs:
+  agentx-proof-sufficiency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pinned AgentX
+        run: npm install --no-save @studivox/agentx@0.1.1
+
+      - name: Execute compatibility probe
+        run: |
+          node interop/agent-effect-authority/probes/agentx_proof_sufficiency_probe.mjs | tee /tmp/agentx-compat.json
+
+      - name: Upload compatibility evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentx-effect-evidence-compat
+          path: /tmp/agentx-compat.json
