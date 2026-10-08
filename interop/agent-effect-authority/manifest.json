@@ -1,0 +1,53 @@
+{
+  "spec": "agent-effect-authority.v0.1",
+  "status": "experimental",
+  "scope": "model-independent authority and evidence boundary for consequential agent effects",
+  "claims_boundary": "Conformance does not claim model accuracy, policy quality, physical correctness, or external audit.",
+  "requirements": [
+    {
+      "id": "AEA-001",
+      "title": "Proposal is not authority",
+      "must": "Model, planner, or agent output is treated as a proposal and cannot by itself authorize a consequential state or external effect."
+    },
+    {
+      "id": "AEA-002",
+      "title": "Logical effect identity is runtime-owned",
+      "must": "Canonical logical effect identity is allocated or validated by trusted runtime code and cannot be forged by model output."
+    },
+    {
+      "id": "AEA-003",
+      "title": "Effect class is known before execution",
+      "must": "The runtime distinguishes read-only from mutating or otherwise consequential effects before dispatch so policy, approval, and retry rules can be applied prospectively."
+    },
+    {
+      "id": "AEA-004",
+      "title": "Authorization is explicit and separate",
+      "must": "Intent, authorization, dispatch, acknowledgement, and observed outcome remain distinct lifecycle states; pending approval must not be represented as authorization or execution."
+    },
+    {
+      "id": "AEA-005",
+      "title": "Transport evidence is not effect evidence",
+      "must": "Successful dispatch or transport acknowledgement must not by itself prove that the intended external or physical effect occurred."
+    },
+    {
+      "id": "AEA-006",
+      "title": "Unresolved outcome is first-class",
+      "must": "When authoritative effect evidence is absent, stale, contradictory, or unavailable, the runtime preserves an unresolved state instead of inferring success or failure from transport behavior."
+    },
+    {
+      "id": "AEA-007",
+      "title": "Retry identity prevents duplicate intent",
+      "must": "Retries preserve one logical effect identity while attempts remain uniquely identifiable; retry handling must not silently create a second intentional mutation."
+    },
+    {
+      "id": "AEA-008",
+      "title": "Compensation is a distinct linked effect",
+      "must": "Compensation is represented as a separate effect related to the original; compensation requested, dispatched, acknowledged, and verified are not collapsed into one state."
+    },
+    {
+      "id": "AEA-009",
+      "title": "Fresh authoritative state closes the loop",
+      "must": "A subsequent decision that depends on an external effect uses fresh authoritative state when required, rather than treating predicted, cached, or merely acknowledged state as physical truth."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "spec": "agent-effect-authority.v0.1",
+  "implementation": {
+    "name": "example/runtime",
+    "version": "0.1.0"
+  },
+  "requirements": [
+    {"id":"AEA-001","status":"PASS","evidence":[{"type":"test","ref":"tests/test_authority.py::test_proposal_cannot_commit"}]},
+    {"id":"AEA-002","status":"PASS","evidence":[{"type":"test","ref":"tests/test_identity.py::test_effect_id_is_runtime_owned"}]},
+    {"id":"AEA-003","status":"PASS","evidence":[{"type":"test","ref":"tests/test_effect_class.py::test_mutability_known_pre_dispatch"}]},
+    {"id":"AEA-004","status":"PASS","evidence":[{"type":"test","ref":"tests/test_authorization.py::test_pending_is_not_authorized"}]},
+    {"id":"AEA-005","status":"PASS","evidence":[{"type":"test","ref":"tests/test_reconcile.py::test_ack_is_not_effect_proof"}]},
+    {"id":"AEA-006","status":"PASS","evidence":[{"type":"test","ref":"tests/test_reconcile.py::test_missing_readback_stays_unresolved"}]},
+    {"id":"AEA-007","status":"PASS","evidence":[{"type":"test","ref":"tests/test_retry.py::test_logical_effect_survives_attempt_retry"}]},
+    {"id":"AEA-008","status":"PASS","evidence":[{"type":"test","ref":"tests/test_compensation.py::test_compensation_is_distinct_linked_effect"}]},
+    {"id":"AEA-009","status":"PASS","evidence":[{"type":"test","ref":"tests/test_freshness.py::test_next_decision_uses_fresh_authoritative_state"}]}
+  ]
+}
