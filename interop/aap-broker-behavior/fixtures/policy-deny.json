@@ -3,9 +3,9 @@
   "scenario": {
     "kind": "policy_deny",
     "grant_reference": "grant://orders-db",
-    "credential_sentinel": "SECRET_TOKEN_DENY_6b1c",
-    "backend_sentinel": "https://orders.internal.invalid",
-    "provider_sentinel": "exchange-provider-internal"
+    "canary_credential": "SECRET_TOKEN_DENY_6b1c",
+    "canary_backend": "https://orders.internal.invalid",
+    "canary_provider": "exchange-provider-internal"
   },
   "expected": "DENY"
 }
