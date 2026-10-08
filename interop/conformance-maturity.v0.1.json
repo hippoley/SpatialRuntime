@@ -1,0 +1,75 @@
+{
+  "schema": "spatialruntime.conformance-maturity.v0.1",
+  "generated_for": "2026-10-08 audit",
+  "dimensions": {
+    "semantic_maturity": ["experimental", "candidate", "stable", "deprecated"],
+    "evidence_maturity": [
+      "self-tested",
+      "external-source-reviewed",
+      "externally-executed",
+      "externally-reproduced",
+      "externally-consumed"
+    ]
+  },
+  "rules": [
+    "Profile version numbers do not imply semantic maturity.",
+    "Self-tested does not imply external execution.",
+    "External-source-reviewed does not imply the source project reviewed the mapping.",
+    "Queued workflows do not count as externally-executed.",
+    "Our own repositories do not count as externally-consumed.",
+    "Externally-reproduced requires an unrelated reproducer and durable public evidence.",
+    "Externally-consumed requires an unrelated project to make the profile/verifier part of its own CI, release, evidence, or review process."
+  ],
+  "surfaces": [
+    {
+      "id": "effect-evidence",
+      "semantic_maturity": "candidate",
+      "evidence_maturity": "external-source-reviewed",
+      "notes": [
+        "hostile vectors and external adapter are on main",
+        "external runtime probes exist but queued runs are not execution evidence"
+      ]
+    },
+    {
+      "id": "tool-decision-lifecycle",
+      "semantic_maturity": "candidate",
+      "evidence_maturity": "external-source-reviewed",
+      "notes": ["repository CI exercises positive and unresolved cases"]
+    },
+    {
+      "id": "decision-execution-binding",
+      "semantic_maturity": "experimental",
+      "evidence_maturity": "external-source-reviewed",
+      "notes": ["profile is on main; external consumer not yet recorded"]
+    },
+    {
+      "id": "neutral-conformance-entrypoint",
+      "semantic_maturity": "experimental",
+      "evidence_maturity": "self-tested",
+      "notes": ["implementation is PR #41 until merged"]
+    },
+    {
+      "id": "assay-privileged-mcp-action-candidate",
+      "semantic_maturity": "experimental",
+      "evidence_maturity": "external-source-reviewed",
+      "notes": [
+        "candidate implementation is PR #43",
+        "method is from_spec_then_conformance, not blind",
+        "official scorer workflow is queued and does not yet qualify as externally-executed"
+      ]
+    },
+    {
+      "id": "aap-broker-behavior",
+      "semantic_maturity": "experimental",
+      "evidence_maturity": "external-source-reviewed",
+      "notes": [
+        "implementation is PR #44",
+        "independent harness is not official AAP/IETF conformance"
+      ]
+    }
+  ],
+  "adoption_gate": {
+    "issue": 14,
+    "required_evidence_maturity": "externally-consumed"
+  }
+}
