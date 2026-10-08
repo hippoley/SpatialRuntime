@@ -62,8 +62,16 @@ The normative requirement IDs live in [manifest.json](manifest.json):
 - `AEA-005` transport evidence is not effect evidence
 - `AEA-006` unresolved outcome is first-class
 - `AEA-007` retry identity prevents duplicate intent
-- `AEA-008` compensation is a distinct linked effect
+- `AEA-008` compensation, when supported, is a distinct linked effect
 - `AEA-009` fresh authoritative state closes the loop
+
+## Capability applicability
+
+AEA is a boundary contract, not a feature checklist.
+
+In particular, **compensation is optional**. A runtime may safely implement reconciliation, manual recovery, or a fail-closed unresolved state without implementing compensation or saga orchestration. If compensation exists, AEA-008 requires it to remain a distinct, linked effect whose requested / dispatched / acknowledged / verified states are not conflated. A runtime that does not support compensation must not present reconciliation or retry as if rollback occurred.
+
+This clarification came from testing the contract against an independent public runtime design that implements durable UNKNOWN reconciliation while deliberately keeping automatic compensation out of scope.
 
 ## Portable conformance claim
 
