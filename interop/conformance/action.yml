@@ -22,7 +22,7 @@ inputs:
     default: ""
 outputs:
   conformance_result:
-    description: "PASS, UNRESOLVED, or FAIL for conformance modes that expose structured results"
+    description: "PASS, UNRESOLVED, or FAIL"
     value: ${{ steps.verify.outputs.conformance_result }}
   lifecycle_result:
     description: "Backward-compatible lifecycle result for tool-decision-lifecycle mode"
@@ -66,18 +66,27 @@ runs:
             exit 2
           fi
         }
+        run_pass_fail() {
+          if "$@"; then
+            echo "conformance_result=PASS" >> "$GITHUB_OUTPUT"
+          else
+            rc=$?
+            echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+            return "$rc"
+          fi
+        }
         case "$CONFORMANCE_MODE" in
           claim)
             require_file
-            python "$ROOT/agent-effect-authority/verify_claim.py"               "$CONFORMANCE_FILE"               --manifest "$ROOT/agent-effect-authority/manifest.json"
+            run_pass_fail python "$ROOT/agent-effect-authority/verify_claim.py"               "$CONFORMANCE_FILE"               --manifest "$ROOT/agent-effect-authority/manifest.json"
             ;;
           mapping)
             require_file
-            python "$ROOT/agent-effect-authority/verify_semantic_mapping.py" "$CONFORMANCE_FILE"
+            run_pass_fail python "$ROOT/agent-effect-authority/verify_semantic_mapping.py" "$CONFORMANCE_FILE"
             ;;
           mapping-v0.2)
             require_file
-            python "$ROOT/agent-effect-authority/verify_semantic_mapping_v02.py" "$CONFORMANCE_FILE"
+            run_pass_fail python "$ROOT/agent-effect-authority/verify_semantic_mapping_v02.py" "$CONFORMANCE_FILE"
             ;;
           tool-decision-lifecycle)
             require_file
@@ -103,7 +112,31 @@ runs:
               echo "policy input is required for effect-evidence-v0.2" >&2
               exit 2
             fi
-            python "$ROOT/agent-effect-authority/verify_effect_observation_v02.py"               "$CONFORMANCE_FILE" "$CONFORMANCE_POLICY"
+            if result="$(python "$ROOT/agent-effect-authority/verify_effect_observation_v02.py"               "$CONFORMANCE_FILE" "$CONFORMANCE_POLICY")"; then
+              echo "$result"
+            else
+              rc=$?
+              echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+              exit "$rc"
+            fi
+            status="$(printf '%s' "$result" | python -c 'import json,sys; print(json.load(sys.stdin).get("status",""))')"
+            case "$status" in
+              CONFIRMED)
+                echo "conformance_result=PASS" >> "$GITHUB_OUTPUT"
+                ;;
+              UNRESOLVED)
+                echo "conformance_result=UNRESOLVED" >> "$GITHUB_OUTPUT"
+                ;;
+              CONTRADICTED)
+                echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+                exit 1
+                ;;
+              *)
+                echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+                echo "unsupported effect-evidence status: $status" >&2
+                exit 2
+                ;;
+            esac
             ;;
           *)
             echo "unsupported mode: $CONFORMANCE_MODE" >&2
