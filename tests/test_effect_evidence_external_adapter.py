@@ -22,3 +22,14 @@ def test_new_proof_sufficiency_cases_are_present():
     cases = {row["case_id"]: row for row in summary["results"]}
     assert cases["structured-response-without-postcondition-proof"]["pass"] is True
     assert cases["missing-field-without-completeness-guarantee"]["pass"] is True
+
+
+def test_bundle_github_outputs(tmp_path: Path):
+    summary = module.run(adapter_command=f"{sys.executable} {REFERENCE}")
+    output = tmp_path / "github-output"
+    module._write_github_outputs(summary, output)
+    lines = output.read_text(encoding="utf-8").splitlines()
+    assert "conformance_result=PASS" in lines
+    assert "failed_count=0" in lines
+    assert f"passed_count={summary['passed']}" in lines
+    assert f"total_count={summary['total']}" in lines
