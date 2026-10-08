@@ -89,6 +89,7 @@ def run(adapter_command=None):
     passed = sum(1 for row in results if row["pass"])
     return {
         "conformance_bundle": "effect-evidence-v0.1",
+        "adapter_protocol": "effect-evidence-adapter.v0.1",
         "adapter_mode": bool(adapter_command),
         "passed": passed,
         "failed": len(results) - passed,
@@ -96,7 +97,7 @@ def run(adapter_command=None):
         "results": results,
     }
 
-def _write_github_outputs(summary, path):
+def _write_github_outputs(summary, path, report_path=None):
     result = "PASS" if summary["failed"] == 0 else "FAIL"
     lines = [
         f"conformance_result={result}",
@@ -104,6 +105,8 @@ def _write_github_outputs(summary, path):
         f"failed_count={summary['failed']}",
         f"total_count={summary['total']}",
     ]
+    if report_path:
+        lines.append(f"report_path={report_path}")
     Path(path).open("a", encoding="utf-8").write("\n".join(lines) + "\n")
 
 
@@ -120,12 +123,23 @@ def main():
         "--github-output",
         help="Optional GitHub Actions output file for structured conformance summary.",
     )
+    parser.add_argument(
+        "--report",
+        help="Optional path for a durable machine-readable JSON run report.",
+    )
     args = parser.parse_args()
 
     summary = run(adapter_command=args.adapter_command)
-    print(json.dumps(summary, indent=2, sort_keys=True))
+    rendered = json.dumps(summary, indent=2, sort_keys=True)
+    print(rendered)
+    report_path = None
+    if args.report:
+        report = Path(args.report)
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(rendered + "\n", encoding="utf-8")
+        report_path = str(report)
     if args.github_output:
-        _write_github_outputs(summary, args.github_output)
+        _write_github_outputs(summary, args.github_output, report_path)
     raise SystemExit(0 if summary["failed"] == 0 else 1)
 
 if __name__ == "__main__":
