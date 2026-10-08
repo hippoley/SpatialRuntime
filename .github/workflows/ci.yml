@@ -19,3 +19,19 @@ jobs:
         run: python -m pip install -U pip && python -m pip install -e '.[dev]'
       - name: Test
         run: pytest
+      - name: Verify AEA claim via local action
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: claim
+          file: interop/agent-effect-authority/claim.example.json
+      - name: Verify Narada mapping via local action
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: mapping
+          file: interop/agent-effect-authority/mappings/narada.v0.1.json
+      - name: Verify authoritative evidence v0.2 via local action
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: effect-evidence-v0.2
+          file: interop/agent-effect-authority/examples/effect-observation.v0.2.json
+          policy: interop/agent-effect-authority/examples/trusted-evidence-policy.v0.2.json
