@@ -1,0 +1,26 @@
+{
+  "bundle": "effect-evidence-v0.1",
+  "purpose": "Standalone executable conformance bundle for authoritative effect evidence and authentic-evidence conflicts.",
+  "entrypoint": "interop/agent-effect-authority/run_conformance.py",
+  "suites": [
+    {
+      "id": "iev-adversarial-v0.1",
+      "vectors": "interop/agent-effect-authority/iev-adversarial-vectors.v0.1.json",
+      "verifier": "interop/agent-effect-authority/verify_effect_observation.py"
+    },
+    {
+      "id": "authentic-evidence-conflict-v0.1",
+      "vectors": "interop/agent-effect-authority/authentic-evidence-conflict-v0.1.json",
+      "verifier": "interop/agent-effect-authority/verify_effect_evidence_set.py"
+    }
+  ],
+  "consumer_contract": {
+    "success": "process exits 0 and failed=0",
+    "failure": "process exits non-zero and at least one case has pass=false"
+  },
+  "nonclaims": [
+    "Not an official IETF conformance suite.",
+    "Not an OpenTelemetry conformance suite.",
+    "No upstream adoption is implied."
+  ]
+}
