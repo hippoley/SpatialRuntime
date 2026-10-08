@@ -3,9 +3,9 @@
   "scenario": {
     "kind": "unknown_grant",
     "grant_reference": "grant://does-not-exist",
-    "credential_sentinel": "SECRET_TOKEN_UNKNOWN_7f6a",
-    "backend_sentinel": "https://backend-unknown.invalid/private",
-    "provider_sentinel": "provider-unknown-internal"
+    "canary_credential": "SECRET_TOKEN_UNKNOWN_7f6a",
+    "canary_backend": "https://backend-unknown.invalid/private",
+    "canary_provider": "provider-unknown-internal"
   },
   "expected": "DENY"
 }
