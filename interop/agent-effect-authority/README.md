@@ -86,7 +86,7 @@ python interop/agent-effect-authority/verify_claim.py \
   interop/agent-effect-authority/claim.example.json
 ```
 
-The verifier checks completeness and version alignment. It does **not** pretend to audit whether a downstream's evidence is true.
+The verifier checks completeness, version alignment, and requirement applicability. Required requirements must be `PASS` with evidence. A conditional requirement may be `NOT_APPLICABLE` only with an explicit rationale and no PASS evidence. The verifier does **not** pretend to audit whether a downstream's evidence is true.
 
 ## Reference evidence already exercised publicly
 
