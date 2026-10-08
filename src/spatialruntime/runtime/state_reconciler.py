@@ -67,8 +67,14 @@ def reconcile(*, case_id: str, step: int, revision: int,
         executed = dict(runtime.get("executed_state", {})) if isinstance(runtime, dict) else {}
         observed = feedback_devices.get(entity_id)
         resolved = dict(executed)
-        source = "runtime.executed_state"
-        confidence = 0.75 if executed else 0.0
+        runtime_source = (
+            str(runtime.get("state_source", "runtime.executed_state"))
+            if isinstance(runtime, dict)
+            else "runtime.executed_state"
+        )
+        unconfirmed_target = runtime_source == "committed_target_unconfirmed"
+        source = runtime_source
+        confidence = 0.0 if unconfirmed_target else (0.75 if executed else 0.0)
         if observed is not None:
             if not isinstance(observed, dict):
                 raise ObservationProtocolError(f"device feedback {entity_id} must be object")
@@ -89,6 +95,16 @@ def reconcile(*, case_id: str, step: int, revision: int,
                 confidence = min(1.0, quality)
             else:
                 confidence = max(confidence, quality * 0.5)
+
+        if unconfirmed_target and source != "device_feedback":
+            disagreements.append({
+                "kind": "unconfirmed_committed_target",
+                "entity_id": entity_id,
+                "runtime_target_state": executed,
+                "state_source": runtime_source,
+                "severity": "hard",
+            })
+
         devices[entity_id] = {
             "state": resolved, "source": source, "confidence": round(confidence, 6),
             "runtime_executed_state": executed,
