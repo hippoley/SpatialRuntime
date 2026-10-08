@@ -1,0 +1,72 @@
+name: Semantic mapping correction
+description: Challenge or correct an AEA/AEE cross-runtime semantic mapping
+title: "[mapping] "
+labels:
+  - "semantic-mapping"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to challenge a mapping. Adoption or endorsement is not required.
+        A correction is valuable even when the source project intentionally has a different scope.
+
+  - type: input
+    id: mapping
+    attributes:
+      label: Mapping artifact
+      description: Path or URL of the mapping being challenged.
+      placeholder: interop/agent-effect-authority/mappings/example.v0.2.json
+    validations:
+      required: true
+
+  - type: input
+    id: target
+    attributes:
+      label: Target requirement
+      description: AEA/AEE target whose relation is wrong or incomplete.
+      placeholder: AEA-006
+    validations:
+      required: true
+
+  - type: dropdown
+    id: proposed_relation
+    attributes:
+      label: Proposed relation
+      description: What relation would be more accurate?
+      options:
+        - equivalent
+        - source_stronger
+        - source_weaker
+        - overlaps
+        - orthogonal
+        - unknown
+        - remove this mapping
+    validations:
+      required: true
+
+  - type: textarea
+    id: source_evidence
+    attributes:
+      label: Source evidence
+      description: Prefer an immutable commit URL plus the exact excerpt that supports the correction.
+      placeholder: |
+        https://github.com/owner/repo/blob/<sha>/path/to/file
+        Exact excerpt...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reasoning
+    attributes:
+      label: Why the current mapping is wrong or incomplete
+      description: Explain the semantic mismatch, missing caveat, or scope boundary.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: nonclaim
+    attributes:
+      label: Non-claim
+      options:
+        - label: This correction does not imply that the source project adopts or endorses AEA/AEE.
+          required: true
