@@ -1,0 +1,31 @@
+{
+  "profile": "otel-tool-decision-lifecycle.v0.1",
+  "status": "experimental",
+  "purpose": "Check correlation between proposed OpenTelemetry GenAI tool-call decision events and execute_tool spans without inferring external-effect confirmation.",
+  "decision_event": "gen_ai.tool.call.decision",
+  "correlation_key": "gen_ai.tool.call.id",
+  "decision_outcomes": ["allow", "deny", "require_approval"],
+  "execution_operation": "execute_tool",
+  "invariants": [
+    {
+      "id": "TDL-001",
+      "rule": "Missing tool-call correlation identity is UNRESOLVED_CORRELATION, never inferred from local row ids or timestamps."
+    },
+    {
+      "id": "TDL-002",
+      "rule": "A deny decision and an observed execute_tool span sharing the same tool-call id is a contradiction."
+    },
+    {
+      "id": "TDL-003",
+      "rule": "A require_approval -> allow lifecycle sharing one tool-call id may correlate to one observed execute_tool span; more than one observed execution is a duplicate-execution contradiction."
+    },
+    {
+      "id": "TDL-004",
+      "rule": "The absence of an execute_tool span is only absence of observed execution, not proof that no external effect occurred."
+    },
+    {
+      "id": "TDL-005",
+      "rule": "Correlation completeness does not establish authorization correctness, durable effect, or authoritative external-effect confirmation."
+    }
+  ]
+}
