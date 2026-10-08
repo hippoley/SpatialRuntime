@@ -30,7 +30,13 @@ jobs:
         with:
           mode: effect-evidence-bundle
           adapter_command: python scripts/effect_verifier_adapter.py
+          report_path: artifacts/effect-evidence-conformance.json
       - name: Require all hostile vectors to pass
         run: |
           test "${{ steps.bundle.outputs.conformance_result }}" = "PASS"
           test "${{ steps.bundle.outputs.failed_count }}" = "0"
+      - name: Preserve machine-readable evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: effect-evidence-conformance
+          path: ${{ steps.bundle.outputs.report_path }}
