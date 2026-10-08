@@ -1,0 +1,60 @@
+{
+  "matrix_version": "0.1",
+  "spec": "agent-effect-authority.v0.1",
+  "purpose": "Cross-domain pressure cases showing that effect authority and effect evidence boundaries recur outside one runtime or one model family.",
+  "domains": [
+    {
+      "id": "physical-control",
+      "reference": "https://github.com/hippoley/AirTrajectory/blob/main/test-vectors/physical-effect-reconciliation-v0.1.json",
+      "pressure_cases": [
+        {
+          "case": "lost acknowledgement after mutating dispatch",
+          "requirements": ["AEA-002","AEA-005","AEA-006","AEA-007","AEA-009"],
+          "invariant": "transport uncertainty cannot be promoted into physical outcome truth"
+        },
+        {
+          "case": "safe closeout after post-action sensor failure",
+          "requirements": ["AEA-003","AEA-004","AEA-008","AEA-009"],
+          "invariant": "compensation is a distinct linked effect and must be independently verified"
+        }
+      ]
+    },
+    {
+      "id": "durable-agent-observability",
+      "reference": "https://github.com/open-telemetry/semantic-conventions-genai/issues/462",
+      "pressure_cases": [
+        {
+          "case": "mutable external effect with retry and compensation across runtime boundaries",
+          "requirements": ["AEA-002","AEA-003","AEA-005","AEA-006","AEA-007","AEA-008"],
+          "invariant": "effect intent, attempt identity, transport evidence, outcome, and compensation remain distinguishable"
+        },
+        {
+          "case": "approval-required consequential action",
+          "requirements": ["AEA-001","AEA-003","AEA-004"],
+          "invariant": "proposal and pending approval must not imply authorization or execution"
+        }
+      ]
+    },
+    {
+      "id": "release-governance",
+      "reference": "https://github.com/reserve-protocol/register/issues/1134",
+      "pressure_cases": [
+        {
+          "case": "remote write or payment submitted but downstream outcome not yet authoritative",
+          "requirements": ["AEA-004","AEA-005","AEA-006","AEA-009"],
+          "invariant": "emitted request is an execution fact, not a confirmed external-effect verdict"
+        },
+        {
+          "case": "rollback or compensation requested after emitted side effect",
+          "requirements": ["AEA-006","AEA-008","AEA-009"],
+          "invariant": "rollback requested is not rollback verified and unresolved effects stay visible"
+        }
+      ]
+    }
+  ],
+  "coverage_rule": "every AEA requirement must be exercised by at least one independently motivated domain pressure case",
+  "nonclaims": [
+    "This matrix does not claim adoption by OpenTelemetry or Reserve Protocol.",
+    "This matrix does not define telemetry field names or a release-receipt schema."
+  ]
+}
