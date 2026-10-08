@@ -96,6 +96,17 @@ def run(adapter_command=None):
         "results": results,
     }
 
+def _write_github_outputs(summary, path):
+    result = "PASS" if summary["failed"] == 0 else "FAIL"
+    lines = [
+        f"conformance_result={result}",
+        f"passed_count={summary['passed']}",
+        f"failed_count={summary['failed']}",
+        f"total_count={summary['total']}",
+    ]
+    Path(path).open("a", encoding="utf-8").write("\n".join(lines) + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -105,10 +116,16 @@ def main():
             "stdin per vector and expects one JSON verdict on stdout."
         ),
     )
+    parser.add_argument(
+        "--github-output",
+        help="Optional GitHub Actions output file for structured conformance summary.",
+    )
     args = parser.parse_args()
 
     summary = run(adapter_command=args.adapter_command)
     print(json.dumps(summary, indent=2, sort_keys=True))
+    if args.github_output:
+        _write_github_outputs(summary, args.github_output)
     raise SystemExit(0 if summary["failed"] == 0 else 1)
 
 if __name__ == "__main__":
