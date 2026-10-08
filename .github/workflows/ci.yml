@@ -88,6 +88,8 @@ jobs:
           test "${{ steps.binding_unresolved.outputs.error_count }}" = "0"
           test "${{ steps.lifecycle_positive.outputs.conformance_result }}" = "PASS"
           test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
+      - name: Validate neutral conformance catalog JSON
+        run: python -m json.tool interop/conformance/manifest.v0.1.json >/dev/null
       - name: Verify neutral conformance Action entry point
         id: neutral_binding
         uses: ./interop/conformance
