@@ -1,0 +1,31 @@
+{
+  "profile": "conformance-evidence-provenance.v0.1",
+  "purpose": "Prevent source inspection, executed compatibility, and independent reproduction from being reported as equivalent evidence.",
+  "levels": [
+    {
+      "id": "source-review",
+      "requires": ["implementation_ref", "source_ref"],
+      "forbids_claims": ["executed", "independently-reproduced"]
+    },
+    {
+      "id": "executed",
+      "requires": ["implementation_ref", "implementation_version_or_commit", "probe_id", "run_artifact_ref"],
+      "forbids_claims": ["independently-reproduced"]
+    },
+    {
+      "id": "externally-reproduced",
+      "requires": ["implementation_ref", "implementation_version_or_commit", "probe_id", "run_artifact_ref", "reproducer_identity", "reproducer_artifact_ref"]
+    }
+  ],
+  "ordering": [
+    "source-review",
+    "executed",
+    "externally-reproduced"
+  ],
+  "w3c_alignment_note": "This is a SpatialRuntime evidence-provenance extension motivated by the W3C Agent Conformance and Benchmarking CG reproducibility goal. It is not a W3C reporting-format field and does not imply W3C adoption.",
+  "nonclaims": [
+    "A stronger evidence level does not itself mean a conformance verdict is pass.",
+    "A source-review profile is not an executed compatibility score.",
+    "Executed evidence is not independently reproduced unless an unrelated reproducer and artifact are recorded."
+  ]
+}
