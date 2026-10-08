@@ -17,8 +17,13 @@ json.dump(
         ),
         "audit": {
             "present": True,
-            "signed": False,
             "contains_credential_material": False,
+            "integrity_evidence": {
+                "kind": "none",
+                "verified": False,
+                "key_id": None,
+                "record_digest": None,
+            },
         },
         "broker_observation": {
             "decision": "allow" if success else "deny",
