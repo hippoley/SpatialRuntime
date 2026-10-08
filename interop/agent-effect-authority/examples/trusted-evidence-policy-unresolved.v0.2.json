@@ -1,0 +1,19 @@
+{
+  "verified_evidence": [
+    {
+      "logical_effect_id": "effect-demo-unresolved",
+      "attempt_id": "attempt-demo-unresolved",
+      "evidence_id": "evidence-demo-unresolved",
+      "evidence_digest": "sha256:demo-unresolved",
+      "effect_domain": "durable-record",
+      "source_id": "primary-store-readback",
+      "observation_kind": "durable_state",
+      "verdict": "CONFIRMED",
+      "verifier_id": "demo-attestor",
+      "trust": "verified",
+      "invalidation": "valid",
+      "observed_after_attempt": true,
+      "fresh": false
+    }
+  ]
+}
