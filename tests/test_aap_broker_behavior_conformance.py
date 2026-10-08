@@ -61,3 +61,17 @@ json.dump({
         and any(err["code"] == "DENIAL_SURFACE_DISTINGUISHABLE" for err in row["errors"])
         for row in report["rows"]
     )
+
+
+UNSIGNED = DIR / "examples" / "unsigned_audit_adapter.py"
+
+
+def test_unsigned_audit_is_rejected():
+    report = MOD.run(f"{sys.executable} {UNSIGNED}")
+    assert report["result"] == "FAIL"
+    codes = {
+        err["code"]
+        for row in report["rows"]
+        for err in row["errors"]
+    }
+    assert "AUDIT_NOT_VERIFIED_SIGNED" in codes
