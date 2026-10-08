@@ -143,6 +143,31 @@ AEA treats these as related but distinct layers: retry identity, transport/task 
 
 These references are pressure evidence only; they do not imply MCP or A2A adoption of AEA.
 
+## Cross-runtime semantic mappings
+
+AEA's durable value is not claiming that every authority/evidence idea originated here. Independent runtimes use different vocabularies and often implement stronger guarantees.
+
+The semantic-mapping envelope is a deliberately non-conformance comparison format:
+
+```text
+external invariant
+    ↓ evidence-backed mapping
+equivalent / stronger / weaker / overlaps / orthogonal / unknown
+    ↓
+AEA / AEE target
+```
+
+Each mapping is pinned to an external repository revision, carries concrete evidence references and caveats, and must explicitly declare that the source project has **not** adopted or endorsed AEA.
+
+Validate a mapping envelope with:
+
+```bash
+python interop/agent-effect-authority/verify_semantic_mapping.py \
+  interop/agent-effect-authority/mappings/narada.v0.1.json
+```
+
+The first pressure mapping targets `narada-core/narada`, whose independently developed Intelligence-Authority Separation and evidence-confirmation contract are stronger than AEA/AEE in several areas and only partially overlap in others. That is intentional: the mapping layer exists to expose semantic differences, not manufacture compatibility.
+
 ## Relationship to observability standards
 
 AEA is not an observability standard. It is an execution/conformance boundary that can supply reference scenarios to observability work.
