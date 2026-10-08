@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "interop" / "agent-effect-authority"
 VERIFY = BASE / "verify_semantic_mapping.py"
 NARADA = BASE / "mappings" / "narada.v0.1.json"
+LANGGRAPH = BASE / "mappings" / "langgraph.v0.1.json"
 
 
 def run(path: Path):
@@ -48,3 +49,14 @@ def test_mapping_rejects_duplicate_target(tmp_path: Path):
     result = run(path)
     assert result.returncode != 0
     assert "duplicate target" in result.stderr
+
+
+def test_langgraph_mapping_envelope_passes():
+    result = run(LANGGRAPH)
+    assert result.returncode == 0, result.stderr
+    report = json.loads(result.stdout)
+    assert report["mapping_envelope"] == "PASS"
+    assert report["source"]["repository"] == "langchain-ai/langgraph"
+    assert report["source_project_adoption"] is False
+    assert report["relations"]["source_weaker"] >= 1
+    assert report["relations"]["orthogonal"] >= 1
