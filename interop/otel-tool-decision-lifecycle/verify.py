@@ -162,6 +162,7 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
 
 def write_github_outputs(report: dict[str, Any], path: Path) -> None:
     lines = [
+        f"conformance_result={report['result']}",
         f"lifecycle_result={report['result']}",
         f"unresolved_count={len(report['unresolved'])}",
         f"error_count={len(report['errors'])}",
