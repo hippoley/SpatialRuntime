@@ -15,19 +15,25 @@
       "mode": "claim",
       "profile": "agent-effect-authority.v0.1",
       "entrypoint": "interop/agent-effect-authority/verify_claim.py",
-      "structured_action_result": false
+      "structured_action_result": false,
+      "profile_source": "interop/agent-effect-authority/manifest.json",
+      "profile_key": "spec"
     },
     {
       "mode": "mapping",
       "profile": "effect-authority.semantic-mapping.v0.1",
       "entrypoint": "interop/agent-effect-authority/verify_semantic_mapping.py",
-      "structured_action_result": false
+      "structured_action_result": false,
+      "profile_source": "interop/agent-effect-authority/mappings/narada.v0.1.json",
+      "profile_key": "mapping_spec"
     },
     {
       "mode": "mapping-v0.2",
       "profile": "effect-authority.semantic-mapping.v0.2",
       "entrypoint": "interop/agent-effect-authority/verify_semantic_mapping_v02.py",
-      "structured_action_result": false
+      "structured_action_result": false,
+      "profile_source": "interop/agent-effect-authority/mappings/narada.v0.2.json",
+      "profile_key": "mapping_spec"
     },
     {
       "mode": "tool-decision-lifecycle",
@@ -39,7 +45,9 @@
         "lifecycle_result",
         "unresolved_count",
         "error_count"
-      ]
+      ],
+      "profile_source": "interop/otel-tool-decision-lifecycle/profile.v0.1.json",
+      "profile_key": "profile"
     },
     {
       "mode": "decision-execution-binding",
@@ -50,14 +58,18 @@
         "conformance_result",
         "unresolved_count",
         "error_count"
-      ]
+      ],
+      "profile_source": "interop/decision-execution-binding/profile.v0.1.json",
+      "profile_key": "profile"
     },
     {
       "mode": "effect-evidence-v0.2",
       "profile": "authoritative-effect-evidence.v0.2",
       "entrypoint": "interop/agent-effect-authority/verify_effect_observation_v02.py",
       "requires_policy": true,
-      "structured_action_result": false
+      "structured_action_result": false,
+      "profile_source": "interop/agent-effect-authority/evidence-profile.v0.2.json",
+      "profile_key": "profile"
     }
   ]
 }
