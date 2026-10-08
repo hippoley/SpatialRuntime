@@ -45,3 +45,37 @@ def test_github_output_file(tmp_path: Path):
         "unresolved_count=1",
         "error_count=0",
     ]
+
+
+def test_syntropy_style_span_attribute_is_rejected():
+    report = MOD.verify(load("syntropy-style-misplaced-span-attribute.otlp.json"))
+    assert report["result"] == "FAIL"
+    assert report["misplaced_decision_signals"] == 1
+    assert any(e["code"] == "MISPLACED_DECISION_SIGNAL" for e in report["errors"])
+
+
+def test_no_decision_evidence_is_unresolved_not_pass():
+    report = MOD.verify(load("no-decision-evidence.otlp.json"))
+    assert report["result"] == "UNRESOLVED"
+    assert any(u["code"] == "NO_DECISION_EVENT_EVIDENCE" for u in report["unresolved"])
+
+
+def test_allow_without_execution_is_unresolved():
+    report = MOD.verify(load("allow-without-execution.otlp.json"))
+    assert report["result"] == "UNRESOLVED"
+    assert report["lifecycles"][0]["status"] == "ALLOW_WITHOUT_OBSERVED_EXECUTION"
+
+
+def test_require_approval_without_terminal_decision_is_unresolved():
+    report = MOD.verify(load("require-approval-pending.otlp.json"))
+    assert report["result"] == "UNRESOLVED"
+    assert report["lifecycles"][0]["status"] == "APPROVAL_LIFECYCLE_UNRESOLVED"
+
+
+def test_uncorrelated_execution_prevents_false_deny_pass():
+    report = MOD.verify(load("deny-with-uncorrelated-execution.otlp.json"))
+    assert report["result"] == "UNRESOLVED"
+    assert any(
+        u["code"] == "UNRESOLVED_EXECUTION_CORRELATION"
+        for u in report["unresolved"]
+    )
