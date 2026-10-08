@@ -1,0 +1,37 @@
+{
+  "profile": "decision-execution-binding.v0.1",
+  "status": "experimental",
+  "purpose": "Verify binding cardinality and scope evidence between authorization/approval decisions and tool executions without conflating decision identity, tool-call identity, or external-effect truth.",
+  "binding_modes": ["per_call", "standing"],
+  "scope_binding_results": ["match", "mismatch", "not_checked"],
+  "invariants": [
+    {
+      "id": "DEB-001",
+      "rule": "decision_id and execution/tool_call identity are distinct namespaces; neither may be inferred from the other."
+    },
+    {
+      "id": "DEB-002",
+      "rule": "A per_call decision may bind at most one execution."
+    },
+    {
+      "id": "DEB-003",
+      "rule": "A standing decision may bind multiple executions, but each execution must independently carry a scope-binding result."
+    },
+    {
+      "id": "DEB-004",
+      "rule": "An execution bound to a deny decision is a contradiction."
+    },
+    {
+      "id": "DEB-005",
+      "rule": "scope_binding=not_checked is UNRESOLVED, never upgraded to match."
+    },
+    {
+      "id": "DEB-006",
+      "rule": "scope_binding=mismatch is a contradiction."
+    },
+    {
+      "id": "DEB-007",
+      "rule": "A PASS validates only decision-to-execution binding evidence; it does not prove the external side effect."
+    }
+  ]
+}
