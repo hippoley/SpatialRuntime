@@ -2,7 +2,7 @@ name: "Agent Effect Authority conformance"
 description: "Verify AEA claims, cross-runtime semantic mappings, or authoritative-effect evidence profiles."
 inputs:
   mode:
-    description: "Verification mode: claim, mapping, or effect-evidence-v0.2"
+    description: "Verification mode: claim, mapping, mapping-v0.2, or effect-evidence-v0.2"
     required: true
   file:
     description: "Path to the claim, mapping, or effect observation JSON in the caller workspace"
@@ -28,6 +28,9 @@ runs:
             ;;
           mapping)
             python "$GITHUB_ACTION_PATH/verify_semantic_mapping.py" "$AEA_FILE"
+            ;;
+          mapping-v0.2)
+            python "$GITHUB_ACTION_PATH/verify_semantic_mapping_v02.py" "$AEA_FILE"
             ;;
           effect-evidence-v0.2)
             if [[ -z "$AEA_POLICY" ]]; then
