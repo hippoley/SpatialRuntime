@@ -1,0 +1,36 @@
+name: agent-conformance
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  decision-execution-binding:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: conformance
+        uses: hippoley/SpatialRuntime/interop/conformance@<PINNED_SPATIALRUNTIME_SHA>
+        with:
+          mode: decision-execution-binding
+          file: evidence/decision-execution-binding.json
+      - name: Require resolved conformance
+        run: |
+          test "${{ steps.conformance.outputs.conformance_result }}" = "PASS"
+
+  external-effect-verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: bundle
+        uses: hippoley/SpatialRuntime/interop/conformance@<PINNED_SPATIALRUNTIME_SHA>
+        with:
+          mode: effect-evidence-bundle
+          adapter_command: python scripts/effect_verifier_adapter.py
+      - name: Require all hostile vectors to pass
+        run: |
+          test "${{ steps.bundle.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.bundle.outputs.failed_count }}" = "0"
