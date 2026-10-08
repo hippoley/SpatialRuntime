@@ -1,0 +1,28 @@
+{
+  "protocol": "effect-evidence-adapter.v0.1",
+  "purpose": "Allow third-party verifiers to run SpatialRuntime's effect-evidence conformance vectors without importing SpatialRuntime code.",
+  "input": {
+    "transport": "one JSON object on stdin per test case",
+    "required_fields": [
+      "protocol",
+      "suite",
+      "authority_policy",
+      "case_id"
+    ],
+    "payload_shape": "single-evidence cases contain observation; conflict cases contain observations"
+  },
+  "output": {
+    "transport": "one JSON object on stdout",
+    "required_semantics": "return verdict fields such as status/reason; extra fields are allowed",
+    "comparison": "the harness requires every expected field/value to be present in the adapter output"
+  },
+  "failure": {
+    "nonzero_exit": "ADAPTER_ERROR/NONZERO_EXIT",
+    "invalid_json": "ADAPTER_ERROR/INVALID_JSON"
+  },
+  "example_command": "python my_effect_verifier_adapter.py",
+  "nonclaims": [
+    "The adapter protocol does not standardize a production effect-evidence API.",
+    "The adapter protocol exists only to make conformance vectors portable across implementations."
+  ]
+}
