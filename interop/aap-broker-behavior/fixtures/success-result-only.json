@@ -1,0 +1,12 @@
+{
+  "id": "success-result-only",
+  "scenario": {
+    "kind": "success",
+    "grant_reference": "grant://orders-db",
+    "canary_credential": "CANARY_CREDENTIAL_SUCCESS",
+    "canary_backend": "https://backend-success.invalid",
+    "canary_provider": "provider-success-canary",
+    "operation_result": "RESULT_OK"
+  },
+  "expected": "ALLOW"
+}
