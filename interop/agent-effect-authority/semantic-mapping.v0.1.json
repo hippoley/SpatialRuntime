@@ -1,0 +1,25 @@
+{
+  "mapping_spec": "effect-authority.semantic-mapping.v0.1",
+  "purpose": "Portable, evidence-backed comparison between an external runtime/protocol semantic and AEA/AEE targets without claiming adoption or conformance.",
+  "relations": [
+    "equivalent",
+    "source_stronger",
+    "source_weaker",
+    "overlaps",
+    "orthogonal",
+    "unknown"
+  ],
+  "required_source_fields": [
+    "repository",
+    "revision",
+    "snapshot_date"
+  ],
+  "required_mapping_fields": [
+    "target",
+    "relation",
+    "summary",
+    "evidence",
+    "caveat"
+  ],
+  "nonclaim": "A semantic mapping is analyst-authored comparison evidence. It does not establish endorsement, compatibility, adoption, or conformance by the source project."
+}
