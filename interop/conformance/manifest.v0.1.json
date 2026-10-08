@@ -82,8 +82,10 @@
         "conformance_result",
         "passed_count",
         "failed_count",
-        "total_count"
-      ]
+        "total_count",
+        "report_path"
+      ],
+      "supports_durable_report": true
     },
     {
       "mode": "effect-evidence-v0.2",
