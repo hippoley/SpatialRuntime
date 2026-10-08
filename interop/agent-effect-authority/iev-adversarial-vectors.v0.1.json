@@ -1,6 +1,6 @@
 {
   "vector_set": "iev-effect-evidence-adversarial-v0.1",
-  "purpose": "Independent executable pressure cases for effect-evidence authority boundaries described in draft-das-interim-effectuation-validation-00.",
+  "purpose": "Independent executable pressure cases for effect-evidence authority and proof-sufficiency boundaries.",
   "upstream": {
     "document": "draft-das-interim-effectuation-validation-00",
     "status": "individual Internet-Draft; work in progress; no IETF endorsement implied",
@@ -51,11 +51,22 @@
       "id":"pre-attempt-observation-cannot-resolve",
       "observation":{"logical_effect_id":"effect-record-2","effect_domain":"durable-record","observed_after_attempt":false,"fresh":true,"source_id":"primary-store-readback","observation_kind":"durable_state","verdict":"CONFIRMED"},
       "expected":{"status":"UNRESOLVED","reason":"NOT_POST_ATTEMPT"}
+    },
+    {
+      "id":"structured-response-without-postcondition-proof",
+      "observation":{"logical_effect_id":"effect-record-3","effect_domain":"durable-record","observed_after_attempt":true,"fresh":true,"source_id":"primary-store-readback","observation_kind":"structured_response","verdict":"CONFIRMED"},
+      "expected":{"status":"UNRESOLVED","reason":"SOURCE_NOT_AUTHORIZED"}
+    },
+    {
+      "id":"missing-field-without-completeness-guarantee",
+      "observation":{"logical_effect_id":"effect-record-4","effect_domain":"durable-record","observed_after_attempt":true,"fresh":true,"source_id":"primary-store-readback","observation_kind":"field_absence","verdict":"CONTRADICTED"},
+      "expected":{"status":"UNRESOLVED","reason":"SOURCE_NOT_AUTHORIZED"}
     }
   ],
   "nonclaims": [
     "These vectors do not claim to be official IETF conformance tests.",
     "These vectors do not claim novelty over the Internet-Draft.",
+    "The structured-response and field-absence cases were added after reviewing a real external verifier implementation; they are implementation-neutral proof-sufficiency cases.",
     "These vectors are an independent executable review artifact."
   ]
 }
