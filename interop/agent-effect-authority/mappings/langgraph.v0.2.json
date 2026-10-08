@@ -9,14 +9,16 @@
     {
       "target": "AEA-005",
       "relation": "source_weaker",
-      "summary": "LangGraph crash recovery can duplicate an external side effect even though graph durability machinery is active.",
-      "evidence": [{
-        "immutable_url": "https://github.com/langchain-ai/langgraph/blob/40a2e6d845054cc0cc17a6a169ca6e7394e5231c/libs/langgraph/langgraph/types.py",
-        "excerpt": "No exception is raised -- the failure is silent duplication of a node's side effects after crash recovery.",
-        "excerpt_sha256": "076b17214b1df292adc4da36c8d5592e9e93db6c17c3a5df899429e3de309e41",
-        "claim": "Crash recovery state does not by itself prove the external side effect was executed exactly once."
-      }],
-      "caveat": "This compares guarantees, not product scope; external effect confirmation may intentionally be application-owned."
+      "summary": "LangGraph's public Durability contract defines graph-state persistence timing rather than authoritative external-effect confirmation.",
+      "evidence": [
+        {
+          "immutable_url": "https://github.com/langchain-ai/langgraph/blob/40a2e6d845054cc0cc17a6a169ca6e7394e5231c/libs/langgraph/langgraph/types.py",
+          "excerpt": "Durability = Literal[\"sync\", \"async\", \"exit\"]\n\"\"\"Durability mode for the graph execution.\n\n- `'sync'`: Changes are persisted synchronously before the next step starts.",
+          "excerpt_sha256": "a6f7794d1f4391d5b978878589898a312d8df253ffe56ebe68a6623c59f9baae",
+          "claim": "The public Durability type specifies persistence timing for graph changes; it does not itself define an authoritative external-effect evidence model."
+        }
+      ],
+      "caveat": "Absence of effect-confirmation semantics from this durability type is a scope comparison, not a claim that LangGraph applications cannot implement such confirmation elsewhere."
     }
   ],
   "declaration": {
