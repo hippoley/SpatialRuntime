@@ -43,3 +43,22 @@ This catalog is descriptive: it does not override the profile files or verifier 
 
 
 `verify_catalog.py` checks that every catalog mode points to an existing verifier, that its declared profile/version matches the source artifact exactly, and that structured modes expose `conformance_result`. Repository CI runs this check to prevent catalog drift.
+
+
+## External verifier mode
+
+The neutral Action can also test a third-party effect-evidence verifier without importing SpatialRuntime code.
+
+The adapter contract is `effect-evidence-adapter.v0.1`: one JSON envelope on stdin, one JSON verdict on stdout.
+
+```yaml
+- name: Run hostile effect-evidence vectors against our verifier
+  uses: hippoley/SpatialRuntime/interop/conformance@<pinned-sha>
+  with:
+    mode: effect-evidence-bundle
+    adapter_command: python scripts/my_effect_verifier_adapter.py
+```
+
+If `adapter_command` is omitted, the bundle runs against SpatialRuntime's built-in evaluator.
+
+This is a conformance harness boundary, not a standardized production API.
