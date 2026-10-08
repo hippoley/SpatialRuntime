@@ -1,0 +1,25 @@
+{
+  "protocol": "aap-broker-behavior-adapter.v0.1",
+  "request": {
+    "case_id": "string",
+    "scenario": "object"
+  },
+  "response": {
+    "case_id": "string",
+    "agent_visible": "object",
+    "audit": {
+      "present": "boolean",
+      "signed": "boolean",
+      "contains_credential_material": "boolean"
+    },
+    "broker_observation": {
+      "decision": "allow|deny",
+      "operation_executed": "boolean"
+    }
+  },
+  "notes": [
+    "Adapter translates implementation-specific broker behavior into the observation envelope.",
+    "The harness, not the adapter, decides PASS/FAIL.",
+    "signed=true means the adapter independently verified the implementation audit signature."
+  ]
+}
