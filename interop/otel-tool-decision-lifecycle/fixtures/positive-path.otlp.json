@@ -1,0 +1,39 @@
+{
+  "resourceLogs": [{
+    "scopeLogs": [{
+      "logRecords": [
+        {
+          "timeUnixNano": "100",
+          "eventName": "gen_ai.tool.call.decision",
+          "attributes": [
+            {"key": "gen_ai.tool.call.decision.outcome", "value": {"stringValue": "require_approval"}},
+            {"key": "gen_ai.tool.call.id", "value": {"stringValue": "call-42"}},
+            {"key": "gen_ai.tool.name", "value": {"stringValue": "Bash"}}
+          ]
+        },
+        {
+          "timeUnixNano": "200",
+          "eventName": "gen_ai.tool.call.decision",
+          "attributes": [
+            {"key": "gen_ai.tool.call.decision.outcome", "value": {"stringValue": "allow"}},
+            {"key": "gen_ai.tool.call.id", "value": {"stringValue": "call-42"}},
+            {"key": "gen_ai.tool.name", "value": {"stringValue": "Bash"}}
+          ]
+        }
+      ]
+    }]
+  }],
+  "resourceSpans": [{
+    "scopeSpans": [{
+      "spans": [{
+        "traceId": "trace-1",
+        "spanId": "span-1",
+        "attributes": [
+          {"key": "gen_ai.operation.name", "value": {"stringValue": "execute_tool"}},
+          {"key": "gen_ai.tool.call.id", "value": {"stringValue": "call-42"}},
+          {"key": "gen_ai.tool.name", "value": {"stringValue": "Bash"}}
+        ]
+      }]
+    }]
+  }]
+}

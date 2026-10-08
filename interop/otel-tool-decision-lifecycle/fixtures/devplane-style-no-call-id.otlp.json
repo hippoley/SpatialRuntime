@@ -1,0 +1,15 @@
+{
+  "resourceLogs": [{
+    "scopeLogs": [{
+      "logRecords": [{
+        "timeUnixNano": "100",
+        "eventName": "gen_ai.tool.call.decision",
+        "attributes": [
+          {"key": "gen_ai.tool.call.decision.outcome", "value": {"stringValue": "deny"}},
+          {"key": "gen_ai.tool.name", "value": {"stringValue": "Bash"}},
+          {"key": "devplane.gen_ai.tool.call.decision.authority", "value": {"stringValue": "rule"}}
+        ]
+      }]
+    }]
+  }]
+}

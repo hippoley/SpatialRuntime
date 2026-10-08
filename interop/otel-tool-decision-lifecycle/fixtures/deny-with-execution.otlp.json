@@ -1,0 +1,23 @@
+{
+  "resourceLogs": [{
+    "scopeLogs": [{
+      "logRecords": [{
+        "eventName": "gen_ai.tool.call.decision",
+        "attributes": [
+          {"key": "gen_ai.tool.call.decision.outcome", "value": {"stringValue": "deny"}},
+          {"key": "gen_ai.tool.call.id", "value": {"stringValue": "call-denied"}}
+        ]
+      }]
+    }]
+  }],
+  "resourceSpans": [{
+    "scopeSpans": [{
+      "spans": [{
+        "attributes": [
+          {"key": "gen_ai.operation.name", "value": {"stringValue": "execute_tool"}},
+          {"key": "gen_ai.tool.call.id", "value": {"stringValue": "call-denied"}}
+        ]
+      }]
+    }]
+  }]
+}
