@@ -1,0 +1,32 @@
+name: OpenAdapt executed compatibility
+
+on:
+  pull_request:
+    paths:
+      - "interop/agent-effect-authority/probes/openadapt_taxonomy_probe.py"
+      - ".github/workflows/openadapt-compat.yml"
+  workflow_dispatch:
+
+jobs:
+  openadapt-taxonomy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned OpenAdapt Flow
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "git+https://github.com/OpenAdaptAI/openadapt-flow.git@6e4e4ed0fe4addedd7c38ced44176b42bc40165a"
+
+      - name: Execute compatibility probe
+        run: |
+          python interop/agent-effect-authority/probes/openadapt_taxonomy_probe.py | tee /tmp/openadapt-compat.json
+
+      - name: Upload compatibility evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: openadapt-effect-evidence-compat
+          path: /tmp/openadapt-compat.json
