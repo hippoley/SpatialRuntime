@@ -1,0 +1,74 @@
+name: "SpatialRuntime interop conformance"
+description: "Run model-independent conformance checks for agent decision, execution, effect, and cross-runtime evidence."
+inputs:
+  mode:
+    description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, or effect-evidence-v0.2"
+    required: true
+  file:
+    description: "Path to the claim, mapping, OTLP evidence, or observation JSON in the caller workspace"
+    required: true
+  policy:
+    description: "Path to the trusted evidence registry/policy JSON for effect-evidence-v0.2"
+    required: false
+    default: ""
+outputs:
+  conformance_result:
+    description: "PASS, UNRESOLVED, or FAIL for conformance modes that expose structured results"
+    value: ${{ steps.verify.outputs.conformance_result }}
+  lifecycle_result:
+    description: "Backward-compatible lifecycle result for tool-decision-lifecycle mode"
+    value: ${{ steps.verify.outputs.lifecycle_result }}
+  unresolved_count:
+    description: "Number of unresolved evidence conditions"
+    value: ${{ steps.verify.outputs.unresolved_count }}
+  error_count:
+    description: "Number of conformance contradictions/errors"
+    value: ${{ steps.verify.outputs.error_count }}
+runs:
+  using: "composite"
+  steps:
+    - name: Verify interop artifact
+      id: verify
+      shell: bash
+      env:
+        CONFORMANCE_MODE: ${{ inputs.mode }}
+        CONFORMANCE_FILE: ${{ inputs.file }}
+        CONFORMANCE_POLICY: ${{ inputs.policy }}
+      run: |
+        set -euo pipefail
+        ROOT="$GITHUB_ACTION_PATH/.."
+        case "$CONFORMANCE_MODE" in
+          claim)
+            python "$ROOT/agent-effect-authority/verify_claim.py" \
+              "$CONFORMANCE_FILE" \
+              --manifest "$ROOT/agent-effect-authority/manifest.json"
+            ;;
+          mapping)
+            python "$ROOT/agent-effect-authority/verify_semantic_mapping.py" "$CONFORMANCE_FILE"
+            ;;
+          mapping-v0.2)
+            python "$ROOT/agent-effect-authority/verify_semantic_mapping_v02.py" "$CONFORMANCE_FILE"
+            ;;
+          tool-decision-lifecycle)
+            python "$ROOT/otel-tool-decision-lifecycle/verify.py" \
+              "$CONFORMANCE_FILE" \
+              --github-output "$GITHUB_OUTPUT"
+            ;;
+          decision-execution-binding)
+            python "$ROOT/decision-execution-binding/verify.py" \
+              "$CONFORMANCE_FILE" \
+              --github-output "$GITHUB_OUTPUT"
+            ;;
+          effect-evidence-v0.2)
+            if [[ -z "$CONFORMANCE_POLICY" ]]; then
+              echo "policy input is required for effect-evidence-v0.2" >&2
+              exit 2
+            fi
+            python "$ROOT/agent-effect-authority/verify_effect_observation_v02.py" \
+              "$CONFORMANCE_FILE" "$CONFORMANCE_POLICY"
+            ;;
+          *)
+            echo "unsupported mode: $CONFORMANCE_MODE" >&2
+            exit 2
+            ;;
+        esac
