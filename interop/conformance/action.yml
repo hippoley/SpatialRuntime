@@ -5,8 +5,9 @@ inputs:
     description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, effect-evidence-bundle, or effect-evidence-v0.2"
     required: true
   file:
-    description: "Path to the claim, mapping, OTLP evidence, or observation JSON in the caller workspace"
-    required: true
+    description: "Path to the claim, mapping, OTLP evidence, or observation JSON in the caller workspace; not used by effect-evidence-bundle"
+    required: false
+    default: ""
   policy:
     description: "Path to the trusted evidence registry/policy JSON for effect-evidence-v0.2"
     required: false
@@ -42,24 +43,35 @@ runs:
       run: |
         set -euo pipefail
         ROOT="$GITHUB_ACTION_PATH/.."
+        require_file() {
+          if [[ -z "$CONFORMANCE_FILE" ]]; then
+            echo "file input is required for mode: $CONFORMANCE_MODE" >&2
+            exit 2
+          fi
+        }
         case "$CONFORMANCE_MODE" in
           claim)
+            require_file
             python "$ROOT/agent-effect-authority/verify_claim.py" \
               "$CONFORMANCE_FILE" \
               --manifest "$ROOT/agent-effect-authority/manifest.json"
             ;;
           mapping)
+            require_file
             python "$ROOT/agent-effect-authority/verify_semantic_mapping.py" "$CONFORMANCE_FILE"
             ;;
           mapping-v0.2)
+            require_file
             python "$ROOT/agent-effect-authority/verify_semantic_mapping_v02.py" "$CONFORMANCE_FILE"
             ;;
           tool-decision-lifecycle)
+            require_file
             python "$ROOT/otel-tool-decision-lifecycle/verify.py" \
               "$CONFORMANCE_FILE" \
               --github-output "$GITHUB_OUTPUT"
             ;;
           decision-execution-binding)
+            require_file
             python "$ROOT/decision-execution-binding/verify.py" \
               "$CONFORMANCE_FILE" \
               --github-output "$GITHUB_OUTPUT"
@@ -73,6 +85,7 @@ runs:
             fi
             ;;
           effect-evidence-v0.2)
+            require_file
             if [[ -z "$CONFORMANCE_POLICY" ]]; then
               echo "policy input is required for effect-evidence-v0.2" >&2
               exit 2
