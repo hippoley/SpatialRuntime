@@ -1,0 +1,107 @@
+{
+  "vector_set": "authentic-effect-evidence-conflict-v0.1",
+  "purpose": "Independent executable pressure cases for conflicting but individually authoritative effect evidence.",
+  "authority_policy": {
+    "allowed_sources": [
+      {
+        "effect_domain": "physical-window",
+        "source_id": "device-encoder-a",
+        "observation_kinds": ["measured_state"]
+      },
+      {
+        "effect_domain": "physical-window",
+        "source_id": "device-encoder-b",
+        "observation_kinds": ["measured_state"]
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "two-authoritative-sources-agree-confirmed",
+      "observations": [
+        {
+          "logical_effect_id": "effect-1",
+          "effect_domain": "physical-window",
+          "observed_after_attempt": true,
+          "fresh": true,
+          "source_id": "device-encoder-a",
+          "observation_kind": "measured_state",
+          "verdict": "CONFIRMED"
+        },
+        {
+          "logical_effect_id": "effect-1",
+          "effect_domain": "physical-window",
+          "observed_after_attempt": true,
+          "fresh": true,
+          "source_id": "device-encoder-b",
+          "observation_kind": "measured_state",
+          "verdict": "CONFIRMED"
+        }
+      ],
+      "expected": {
+        "status": "CONFIRMED",
+        "reason": "CONSISTENT_AUTHORITATIVE_EVIDENCE"
+      }
+    },
+    {
+      "id": "two-authoritative-sources-conflict",
+      "observations": [
+        {
+          "logical_effect_id": "effect-2",
+          "effect_domain": "physical-window",
+          "observed_after_attempt": true,
+          "fresh": true,
+          "source_id": "device-encoder-a",
+          "observation_kind": "measured_state",
+          "verdict": "CONFIRMED"
+        },
+        {
+          "logical_effect_id": "effect-2",
+          "effect_domain": "physical-window",
+          "observed_after_attempt": true,
+          "fresh": true,
+          "source_id": "device-encoder-b",
+          "observation_kind": "measured_state",
+          "verdict": "CONTRADICTED"
+        }
+      ],
+      "expected": {
+        "status": "CONFLICT",
+        "reason": "AUTHENTIC_EVIDENCE_CONFLICT",
+        "ordinary_continuation": false
+      }
+    },
+    {
+      "id": "different-effect-ids-cannot-be-combined",
+      "observations": [
+        {
+          "logical_effect_id": "effect-3a",
+          "effect_domain": "physical-window",
+          "observed_after_attempt": true,
+          "fresh": true,
+          "source_id": "device-encoder-a",
+          "observation_kind": "measured_state",
+          "verdict": "CONFIRMED"
+        },
+        {
+          "logical_effect_id": "effect-3b",
+          "effect_domain": "physical-window",
+          "observed_after_attempt": true,
+          "fresh": true,
+          "source_id": "device-encoder-b",
+          "observation_kind": "measured_state",
+          "verdict": "CONTRADICTED"
+        }
+      ],
+      "expected": {
+        "status": "INDETERMINATE",
+        "reason": "EFFECT_ID_SET_MISMATCH"
+      }
+    }
+  ],
+  "nonclaims": [
+    "This artifact is not an official IETF conformance suite.",
+    "This artifact does not define conflict resolution policy beyond fail-closed classification.",
+    "This artifact is an independent executable review aid."
+  ]
+}
