@@ -1,0 +1,54 @@
+name: Assay profile candidate conformance
+
+on:
+  pull_request:
+    paths:
+      - "interop/assay-privileged-mcp-action-v0/**"
+      - ".github/workflows/assay-pmav0-candidate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: read
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install candidate dependency
+        run: python -m pip install rfc8785
+
+      - name: Download and verify candidate pack
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=privileged-mcp-action-v0-candidate.4
+          source_digest="$(gh api "repos/Rul1an/assay/commits/$tag" --jq .sha)"
+          gh release download "$tag"             --repo Rul1an/assay             --pattern privileged-mcp-action-v0-clean-room.tar.gz             --pattern SHA256SUMS             --pattern attestation-bundle.json
+          sha256sum -c SHA256SUMS
+          gh attestation verify privileged-mcp-action-v0-clean-room.tar.gz             --repo Rul1an/assay             --bundle attestation-bundle.json             --signer-workflow Rul1an/assay/.github/workflows/privileged-mcp-action-pack-release.yml             --source-digest "$source_digest"             --source-ref refs/heads/main
+
+      - name: Run official conformance scorer
+        uses: Rul1an/assay/.github/actions/privileged-mcp-action-conformance@16ea2b84e472412e3e5c4d9dcabff61b7fac72f8
+        with:
+          pack: privileged-mcp-action-v0-clean-room.tar.gz
+          entrypoint: "python interop/assay-privileged-mcp-action-v0/verifier.py"
+          implementation-name: "SpatialRuntime Python candidate"
+          implementation-source: ${{ github.server_url }}/${{ github.repository }}
+          implementation-commit: ${{ github.sha }}
+          reproduction-mode: from_spec_then_conformance
+          report: assay-pmav0-conformance.json
+
+      - name: Upload scorer report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assay-pmav0-conformance
+          path: assay-pmav0-conformance.json
