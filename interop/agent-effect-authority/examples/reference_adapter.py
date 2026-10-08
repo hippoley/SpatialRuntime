@@ -11,6 +11,8 @@ expected = {
     "stale-authoritative-source-still-unresolved": {"status": "UNRESOLVED", "reason": "NOT_FRESH"},
     "transport-ack-cannot-prove-effect": {"status": "UNRESOLVED", "reason": "NON_AUTHORITATIVE_KIND"},
     "pre-attempt-observation-cannot-resolve": {"status": "UNRESOLVED", "reason": "NOT_POST_ATTEMPT"},
+    "structured-response-without-postcondition-proof": {"status": "UNRESOLVED", "reason": "SOURCE_NOT_AUTHORIZED"},
+    "missing-field-without-completeness-guarantee": {"status": "UNRESOLVED", "reason": "SOURCE_NOT_AUTHORIZED"},
     "two-authoritative-sources-agree-confirmed": {"status": "CONFIRMED", "reason": "CONSISTENT_AUTHORITATIVE_EVIDENCE"},
     "two-authoritative-sources-conflict": {
         "status": "CONFLICT",
