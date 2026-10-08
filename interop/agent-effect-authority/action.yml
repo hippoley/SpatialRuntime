@@ -1,0 +1,43 @@
+name: "Agent Effect Authority conformance"
+description: "Verify AEA claims, cross-runtime semantic mappings, or authoritative-effect evidence profiles."
+inputs:
+  mode:
+    description: "Verification mode: claim, mapping, or effect-evidence-v0.2"
+    required: true
+  file:
+    description: "Path to the claim, mapping, or effect observation JSON in the caller workspace"
+    required: true
+  policy:
+    description: "Path to the trusted evidence registry/policy JSON for effect-evidence-v0.2"
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: Verify effect-authority artifact
+      shell: bash
+      env:
+        AEA_MODE: ${{ inputs.mode }}
+        AEA_FILE: ${{ inputs.file }}
+        AEA_POLICY: ${{ inputs.policy }}
+      run: |
+        set -euo pipefail
+        case "$AEA_MODE" in
+          claim)
+            python "$GITHUB_ACTION_PATH/verify_claim.py"               "$AEA_FILE"               --manifest "$GITHUB_ACTION_PATH/manifest.json"
+            ;;
+          mapping)
+            python "$GITHUB_ACTION_PATH/verify_semantic_mapping.py" "$AEA_FILE"
+            ;;
+          effect-evidence-v0.2)
+            if [[ -z "$AEA_POLICY" ]]; then
+              echo "policy input is required for effect-evidence-v0.2" >&2
+              exit 2
+            fi
+            python "$GITHUB_ACTION_PATH/verify_effect_observation_v02.py"               "$AEA_FILE" "$AEA_POLICY"
+            ;;
+          *)
+            echo "unsupported mode: $AEA_MODE" >&2
+            exit 2
+            ;;
+        esac

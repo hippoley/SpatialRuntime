@@ -1,0 +1,10 @@
+{
+  "logical_effect_id": "effect-demo-1",
+  "attempt_id": "attempt-demo-1",
+  "evidence_id": "evidence-demo-1",
+  "evidence_digest": "sha256:demo123",
+  "effect_domain": "durable-record",
+  "source_id": "primary-store-readback",
+  "observation_kind": "durable_state",
+  "verdict": "CONFIRMED"
+}

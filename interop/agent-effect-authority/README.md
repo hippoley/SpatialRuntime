@@ -73,6 +73,43 @@ In particular, **compensation is optional**. A runtime may safely implement reco
 
 This clarification came from testing the contract against an independent public runtime design that implements durable UNKNOWN reconciliation while deliberately keeping automatic compensation out of scope.
 
+## Reusable GitHub Action
+
+Downstream repositories can consume the verifier without copying scripts or writing custom `curl` steps.
+
+Pin a SpatialRuntime revision and call the action from this directory:
+
+```yaml
+- name: Verify AEA claim
+  uses: hippoley/SpatialRuntime/interop/agent-effect-authority@<pinned-sha>
+  with:
+    mode: claim
+    file: interop/agent-effect-authority.claim.json
+```
+
+Cross-runtime semantic mapping:
+
+```yaml
+- name: Verify effect-authority mapping
+  uses: hippoley/SpatialRuntime/interop/agent-effect-authority@<pinned-sha>
+  with:
+    mode: mapping
+    file: interop/effect-authority.mapping.json
+```
+
+Authoritative-effect evidence v0.2:
+
+```yaml
+- name: Verify effect evidence
+  uses: hippoley/SpatialRuntime/interop/agent-effect-authority@<pinned-sha>
+  with:
+    mode: effect-evidence-v0.2
+    file: evidence/observation.json
+    policy: evidence/trusted-registry.json
+```
+
+Consumers should pin a commit SHA (or another immutable release ref) rather than `main` so the verification contract cannot change underneath a historical CI result.
+
 ## Portable conformance claim
 
 A downstream runtime does not need SpatialRuntime code. It can publish a small JSON claim mapping every AEA requirement to implementation-owned evidence.
