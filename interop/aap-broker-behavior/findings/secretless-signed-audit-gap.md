@@ -91,7 +91,8 @@ That assumption does not match AIM's current published security status.
 Pinned AIM evidence:
 
 - repository: `opena2a-org/agent-identity-management`
-- revision inspected: `6fc4318fffe25a49968bea51c0ea813e2ba8e850`
+- current revision re-checked: `3a66faab4b9953521f840a84caa8fb0bd048176a`
+- earlier revision initially inspected: `6fc4318fffe25a49968bea51c0ea813e2ba8e850`
 - document: `SECURITY.md`
 
 AIM's FedRAMP AC-2 / AU-9 mapping states that:
@@ -101,7 +102,7 @@ AIM's FedRAMP AC-2 / AU-9 mapping states that:
 - it is **not cryptographically signed**;
 - a tamper-evident signing scheme is not currently implemented.
 
-A newer AIM commit was also observed after that pinned revision, but the relevant published security statement is the evidence pinned here.
+The same AU-9 statement remains present at the current revision above: the audit table is not append-only and is not cryptographically signed.
 
 This changes the shape of the gap.
 
