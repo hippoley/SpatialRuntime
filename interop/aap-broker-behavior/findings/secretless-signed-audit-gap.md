@@ -80,3 +80,52 @@ This finding does not claim the AAP specification is wrong.
 It does not claim append-only audit is useless.
 
 It only records that the pinned reference implementation does not currently demonstrate the Level-1 **signed audit** property it is described as providing.
+
+
+## AIM cross-check
+
+AAP §6.7 says implementations SHOULD reuse the existing signed-audit path of OpenA2A AIM rather than build a new one.
+
+That assumption does not match AIM's current published security status.
+
+Pinned AIM evidence:
+
+- repository: `opena2a-org/agent-identity-management`
+- revision inspected: `6fc4318fffe25a49968bea51c0ea813e2ba8e850`
+- document: `SECURITY.md`
+
+AIM's FedRAMP AC-2 / AU-9 mapping states that:
+
+- the `audit_logs` table records actions and is access-controlled;
+- it is **not append-only at the database layer**;
+- it is **not cryptographically signed**;
+- a tamper-evident signing scheme is not currently implemented.
+
+A newer AIM commit was also observed after that pinned revision, but the relevant published security statement is the evidence pinned here.
+
+This changes the shape of the gap.
+
+It is not merely:
+
+```text
+Secretless forgot to wire an existing AIM signed-audit primitive
+```
+
+The current family-level state is closer to:
+
+```text
+AAP normative text requires signed audit
+        ↓
+AAP text points at an existing AIM signed-audit path
+        ↓
+AIM security documentation says that capability is not implemented
+        ↓
+Secretless writes append-only JSONL and its conformance test does not verify signing
+```
+
+Possible upstream resolutions therefore include either:
+
+1. implement and reuse a cryptographically verifiable audit path; or
+2. correct the Broker Profile language / Level-1 claim so it does not refer to a capability that does not currently exist.
+
+This finding deliberately does not choose between those policy/design options. The executable harness only preserves the evidence requirement: if Level 1 continues to require signed audit, an adapter must independently verify that property before reporting `signed=true`.
