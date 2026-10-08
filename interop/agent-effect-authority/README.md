@@ -98,6 +98,30 @@ A related boundary is receiver-side deduplication: admission of an idempotency k
 
 This section is intentionally non-normative until more independent implementations support or challenge the rule.
 
+## Authoritative effect evidence profiles
+
+The first profile, `authoritative-effect-evidence.v0.1`, established the basic rule that transport acknowledgements, model estimates, stale state, and self-declared unknown sources cannot resolve an external effect.
+
+Pressure-testing that design against Narada's independently developed evidence-confirmation contract exposed a deeper provenance problem: a claim can still spoof the name of an otherwise-authorized source unless the evidence itself is bound to an external trust record.
+
+For new integrations, `authoritative-effect-evidence.v0.2` therefore requires the effect claim to resolve through a trusted evidence registry that binds:
+
+- logical effect id;
+- execution attempt id;
+- evidence id + digest;
+- effect domain and source;
+- observation kind and verdict;
+- verifier identity;
+- trust level;
+- invalidation state;
+- post-attempt timing and freshness.
+
+A claim that merely says `source_id=device-encoder` is not enough. If the trusted registry does not corroborate the exact effect/attempt/evidence tuple, the effect remains `UNRESOLVED`.
+
+v0.1 remains in the repository as a historical baseline; v0.2 is an additive version rather than a silent semantic rewrite.
+
+Narada is cited here as independent design pressure, not as an adopter or implementation of AEA.
+
 ## Reference evidence already exercised publicly
 
 AEA is extracted from working boundaries rather than invented only as prose:
