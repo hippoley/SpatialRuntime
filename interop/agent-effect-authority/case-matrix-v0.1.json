@@ -105,11 +105,63 @@
           "invariant": "deduplication at admission is not authoritative completion evidence; recovery still needs durable completion or authoritative reconciliation"
         }
       ]
+    },
+    {
+      "id": "tool-protocol-safe-retry",
+      "reference": "https://github.com/modelcontextprotocol/modelcontextprotocol/issues/3394",
+      "pressure_cases": [
+        {
+          "case": "mutating tool commits external effect and response is lost before caller observes completion",
+          "requirements": [
+            "AEA-002",
+            "AEA-005",
+            "AEA-006",
+            "AEA-007"
+          ],
+          "invariant": "a fresh transport/request identifier does not create a new logical effect; lost response leaves outcome ambiguous and blind retry may duplicate the external effect"
+        },
+        {
+          "case": "idempotency key reserved but external effect/result persistence boundary is split",
+          "requirements": [
+            "AEA-005",
+            "AEA-006",
+            "AEA-007",
+            "AEA-009"
+          ],
+          "invariant": "key reservation or admission is not authoritative completion evidence; unresolved outcome requires durable result lookup or downstream reconciliation"
+        }
+      ]
+    },
+    {
+      "id": "agent-protocol-safe-retry",
+      "reference": "https://github.com/a2aproject/A2A/issues/1987",
+      "pressure_cases": [
+        {
+          "case": "initial message accepted but response with server task identity is lost",
+          "requirements": [
+            "AEA-002",
+            "AEA-004",
+            "AEA-006",
+            "AEA-007"
+          ],
+          "invariant": "client-supplied retry identity must remain bound to one authenticated logical operation across retries without creating a second task/effect intent"
+        },
+        {
+          "case": "server-side deduplication succeeds but downstream effect completion remains ambiguous",
+          "requirements": [
+            "AEA-005",
+            "AEA-006",
+            "AEA-007",
+            "AEA-009"
+          ],
+          "invariant": "protocol-level deduplication must not be presented as universal exactly-once external effect completion"
+        }
+      ]
     }
   ],
   "coverage_rule": "every AEA requirement must be exercised by at least one independently motivated domain pressure case",
   "nonclaims": [
-    "This matrix does not claim adoption by OpenTelemetry, LangGraph, or Reserve Protocol.",
+    "This matrix does not claim adoption by OpenTelemetry, LangGraph, MCP, A2A, or Reserve Protocol.",
     "This matrix does not define telemetry field names or a release-receipt schema."
   ]
 }
