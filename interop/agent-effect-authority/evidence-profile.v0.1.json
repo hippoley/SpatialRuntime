@@ -1,0 +1,39 @@
+{
+  "profile": "authoritative-effect-evidence.v0.1",
+  "purpose": "Minimal cross-domain criteria for allowing an observation to resolve an external effect.",
+  "required_for_resolution": [
+    "logical_effect_id",
+    "observed_after_attempt",
+    "fresh",
+    "authoritative_source",
+    "observation_kind",
+    "verdict"
+  ],
+  "verdicts": ["CONFIRMED","CONTRADICTED","UNRESOLVED"],
+  "rules": [
+    {
+      "id": "AEE-001",
+      "rule": "An observation cannot resolve an effect unless it is bound to the same logical_effect_id."
+    },
+    {
+      "id": "AEE-002",
+      "rule": "An observation cannot resolve an effect unless it was obtained after the relevant attempt."
+    },
+    {
+      "id": "AEE-003",
+      "rule": "Stale or cached evidence cannot move UNRESOLVED to CONFIRMED or CONTRADICTED."
+    },
+    {
+      "id": "AEE-004",
+      "rule": "The source must be authoritative for the claimed effect domain."
+    },
+    {
+      "id": "AEE-005",
+      "rule": "Model estimates, transport acknowledgements, and unprovenanced values are not authoritative effect observations by themselves."
+    },
+    {
+      "id": "AEE-006",
+      "rule": "If any required authority condition is missing, verdict remains UNRESOLVED."
+    }
+  ]
+}
