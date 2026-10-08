@@ -88,6 +88,16 @@ python interop/agent-effect-authority/verify_claim.py \
 
 The verifier checks completeness, version alignment, and requirement applicability. Required requirements must be `PASS` with evidence. A conditional requirement may be `NOT_APPLICABLE` only with an explicit rationale and no PASS evidence. The verifier does **not** pretend to audit whether a downstream's evidence is true.
 
+## Emerging design pressure: identity before nondeterminism
+
+A current durable-runtime pressure case is crash/replay around a nondeterministic action-formation step. If a logical effect identity is created only after replaying a model or other nondeterministic component, the regenerated effect-bearing arguments may differ and the runtime can lose the ability to recognize the replay as the same real-world intent.
+
+AEA v0.1 already requires runtime-owned logical effect identity and retry identity preservation, but it does **not yet** normatively require a particular persistence point. The LangGraph #8039 recovery discussion is recorded in the case matrix as evidence pressure for a possible future rule: bind and durably retain logical effect identity before the first replayable nondeterministic boundary that can alter consequential action semantics.
+
+A related boundary is receiver-side deduplication: admission of an idempotency key is not the same as authoritative evidence that the effect completed. A receiver that crashes after admission but before completion can otherwise turn duplicate prevention into effect loss.
+
+This section is intentionally non-normative until more independent implementations support or challenge the rule.
+
 ## Reference evidence already exercised publicly
 
 AEA is extracted from working boundaries rather than invented only as prose:
