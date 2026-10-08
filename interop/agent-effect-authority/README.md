@@ -108,6 +108,17 @@ AEA is extracted from working boundaries rather than invented only as prose:
 
 The intent is not to force those implementations on downstreams. They are the source of the failure cases that shaped the contract.
 
+## Cross-protocol convergence
+
+The same authority/evidence boundary is now visible in independent protocol work:
+
+- **MCP #3394** reproduces a mutating `tools/call` whose external effect commits before the response is lost; an application retry with a fresh JSON-RPC request id can execute the effect again. Independent follow-up reproductions also show that reserving a key alone can prevent a duplicate while still leaving the final outcome unknown.
+- **A2A #1987** is the v1.1 idempotency/safe-retry epic. Its protocol-level deduplication work closes an important task-creation hole, while still leaving a separate question: whether a downstream external effect actually completed.
+
+AEA treats these as related but distinct layers: retry identity, transport/task deduplication, and authoritative external-effect evidence should not be collapsed into one guarantee.
+
+These references are pressure evidence only; they do not imply MCP or A2A adoption of AEA.
+
 ## Relationship to observability standards
 
 AEA is not an observability standard. It is an execution/conformance boundary that can supply reference scenarios to observability work.
