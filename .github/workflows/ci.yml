@@ -119,3 +119,31 @@ jobs:
           mode: effect-evidence-v0.2
           file: interop/agent-effect-authority/examples/effect-observation.v0.2.json
           policy: interop/agent-effect-authority/examples/trusted-evidence-policy.v0.2.json
+      - name: Verify authoritative evidence v0.2 via neutral action
+        id: evidence_confirmed
+        uses: ./interop/conformance
+        with:
+          mode: effect-evidence-v0.2
+          file: interop/agent-effect-authority/examples/effect-observation.v0.2.json
+          policy: interop/agent-effect-authority/examples/trusted-evidence-policy.v0.2.json
+      - name: Verify stale evidence remains unresolved via neutral action
+        id: evidence_unresolved
+        uses: ./interop/conformance
+        with:
+          mode: effect-evidence-v0.2
+          file: interop/agent-effect-authority/examples/effect-observation-unresolved.v0.2.json
+          policy: interop/agent-effect-authority/examples/trusted-evidence-policy-unresolved.v0.2.json
+      - name: Verify contradicted evidence fails neutral action
+        id: evidence_contradicted
+        continue-on-error: true
+        uses: ./interop/conformance
+        with:
+          mode: effect-evidence-v0.2
+          file: interop/agent-effect-authority/examples/effect-observation-contradicted.v0.2.json
+          policy: interop/agent-effect-authority/examples/trusted-evidence-policy-contradicted.v0.2.json
+      - name: Assert authoritative evidence result semantics
+        run: |
+          test "${{ steps.evidence_confirmed.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.evidence_unresolved.outputs.conformance_result }}" = "UNRESOLVED"
+          test "${{ steps.evidence_contradicted.outcome }}" = "failure"
+          test "${{ steps.evidence_contradicted.outputs.conformance_result }}" = "FAIL"
