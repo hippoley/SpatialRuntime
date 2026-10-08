@@ -45,7 +45,11 @@ def main() -> None:
     manifest_reqs = manifest.get("requirements")
     if not isinstance(manifest_reqs, list) or not manifest_reqs:
         raise ValueError("manifest.requirements: expected non-empty list")
-    required = {text(r.get("id"), "manifest.requirements[].id") for r in manifest_reqs}
+    manifest_by_id = {
+        text(r.get("id"), "manifest.requirements[].id"): r
+        for r in manifest_reqs
+    }
+    required = set(manifest_by_id)
 
     claims = claim.get("requirements")
     if not isinstance(claims, list):
@@ -67,10 +71,32 @@ def main() -> None:
     if missing:
         raise ValueError(f"missing requirements: {sorted(missing)}")
 
+    not_applicable = []
     for req_id in sorted(required):
         item = by_id[req_id]
-        if item.get("status") != "PASS":
-            raise ValueError(f"{req_id}: status must be PASS")
+        status = item.get("status")
+        applicability = manifest_by_id[req_id].get("applicability", "required")
+
+        if status == "NOT_APPLICABLE":
+            if applicability != "conditional":
+                raise ValueError(
+                    f"{req_id}: NOT_APPLICABLE is allowed only for conditional requirements"
+                )
+            rationale = text(item.get("rationale"), f"{req_id}.rationale")
+            not_applicable.append({"id": req_id, "rationale": rationale})
+            evidence = item.get("evidence", [])
+            if evidence not in (None, []):
+                raise ValueError(
+                    f"{req_id}: NOT_APPLICABLE claims must not attach PASS evidence"
+                )
+            continue
+
+        if status != "PASS":
+            raise ValueError(
+                f"{req_id}: status must be PASS"
+                + (" or NOT_APPLICABLE" if applicability == "conditional" else "")
+            )
+
         evidence = item.get("evidence")
         if not isinstance(evidence, list) or not evidence:
             raise ValueError(f"{req_id}: evidence must be non-empty")
@@ -84,6 +110,7 @@ def main() -> None:
         "spec": spec,
         "implementation": {"name": name, "version": version},
         "requirements": len(required),
+        "not_applicable": not_applicable,
         "claim_envelope": "PASS",
         "evidence_truth_verified": False
     }, indent=2))
