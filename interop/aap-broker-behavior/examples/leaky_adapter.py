@@ -17,8 +17,13 @@ response = {
     },
     "audit": {
         "present": True,
-        "signed": True,
         "contains_credential_material": False,
+        "integrity_evidence": {
+            "kind": "signature",
+            "verified": True,
+            "key_id": "synthetic-harness-key",
+            "record_digest": "sha256:" + "b" * 64,
+        },
     },
     "broker_observation": {
         "decision": "allow" if scenario["kind"] == "success" else "deny",
