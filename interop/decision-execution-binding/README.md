@@ -68,3 +68,20 @@ This profile handles the layer above it: a decision can have its own identity an
 ```
 
 A PASS here still does **not** prove that an external real-world effect occurred. It only validates the supplied decision/execution binding evidence.
+
+
+## Pinned evidence anchors
+
+The profile is an independent conformance artifact; the projects below have **not** adopted or endorsed it. They are frozen pressure sources explaining why decision and execution identity cannot safely be collapsed:
+
+- `cosai-oasis/ws2-defenders@b8dbec1c35262194ae78f1dbc973ba6d513524cb`
+  - `telemetry/aitf/spec/semantic-conventions/attributes-registry.md`
+  - `telemetry/build-telemetry/data/fields.yaml`
+- `hupe1980/devplane@055b414af45b373339164dc349901757e44b3147`
+  - `src/core/genai.rs`
+  - `site/content/docs/decisions.md`
+- `ajkumar-13/Tracelyt@b99ebbe165c51682c3ef08b201c811526d5ded08`
+  - `src/harness_engine/adapters/claude_code/otel_logs.py`
+  - `docs/specs/SPEC-01-telemetry-and-execution-graph.md`
+
+This evidence establishes independent pressure on the identity/cardinality model. It does not establish source-project conformance, dependency, or endorsement.
