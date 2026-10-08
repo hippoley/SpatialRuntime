@@ -1,0 +1,65 @@
+{
+  "profile_set": "effect-evidence-implementation-profiles.v0.1",
+  "purpose": "Machine-readable source-audit profiles for independent runtimes mapped onto SpatialRuntime's neutral effect-evidence concepts.",
+  "implementations": [
+    {
+      "id": "studivox-agentx-0.1.1",
+      "repository": "studivox/agentx",
+      "version": "0.1.1",
+      "source_path": "src/verification/verifier-engine.ts",
+      "source_sha": "9da8cb8b1b203df331edf07c8f563a29b8491ccc",
+      "audit_kind": "source-review",
+      "native_states": {
+        "PROVEN_COMMITTED": "confirmed",
+        "PROVEN_ABSENT": "contradicted-or-absent",
+        "INCONCLUSIVE": "unresolved",
+        "UNKNOWN_STATE": "unresolved"
+      },
+      "supported_boundaries": [
+        "postcondition verification after ambiguous execution",
+        "fail-closed unknown outcome",
+        "compensation as separate runtime behavior"
+      ],
+      "observed_gaps_against_bundle": [
+        "no explicit freshness requirement in verifier result",
+        "no predicate/domain-specific source authority in verifier contract",
+        "no multi-observer conflict aggregation",
+        "structured JSON may prove committed without an explicit postcondition predicate when matchKeyPath is omitted",
+        "missing matchKeyPath value may prove absent without an explicit completeness guarantee"
+      ],
+      "nonclaims": [
+        "This profile does not claim AgentX violates its own documented contract.",
+        "This profile is a source-audit mapping, not an executed compatibility score."
+      ]
+    },
+    {
+      "id": "openadapt-flow-current",
+      "repository": "OpenAdaptAI/openadapt-flow",
+      "source_path": "openadapt_flow/runtime/effects/adapter.py",
+      "source_sha": "212824dd05eba7821cce822d92713b69456617b0",
+      "audit_kind": "source-review",
+      "native_states": {
+        "CONFIRMED": "confirmed",
+        "REFUTED": "contradicted-or-absent",
+        "UNAVAILABLE": "unresolved",
+        "STALE": "unresolved",
+        "CONFLICTING": "conflict",
+        "INDETERMINATE": "unresolved",
+        "RECONCILIATION_REQUIRED": "unresolved-or-conflict"
+      },
+      "supported_boundaries": [
+        "fresh post-state readback",
+        "independent system-of-record evidence tiers",
+        "stale evidence fails closed",
+        "conflicting evidence requires reconciliation",
+        "empty evidence is not proof of absence",
+        "production VERIFIED requires independent effect confirmation"
+      ],
+      "observed_gaps_against_bundle": [],
+      "nonclaims": [
+        "This profile does not imply OpenAdapt adopts SpatialRuntime.",
+        "This profile is a source-audit mapping, not an executed compatibility score."
+      ]
+    }
+  ]
+}
