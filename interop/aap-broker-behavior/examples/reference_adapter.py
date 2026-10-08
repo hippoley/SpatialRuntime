@@ -17,8 +17,13 @@ if scenario["kind"] == "success":
         "agent_visible": {"status": "ok", "result": scenario["operation_result"]},
         "audit": {
             "present": True,
-            "signed": True,
             "contains_credential_material": False,
+            "integrity_evidence": {
+                "kind": "signature",
+                "verified": True,
+                "key_id": "synthetic-harness-key",
+                "record_digest": "sha256:" + "a" * 64,
+            },
         },
         "broker_observation": {"decision": "allow", "operation_executed": True},
     }
