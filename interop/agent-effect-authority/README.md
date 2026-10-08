@@ -205,6 +205,31 @@ python interop/agent-effect-authority/verify_semantic_mapping.py \
 
 The first pressure mapping targets `narada-core/narada`, whose independently developed Intelligence-Authority Separation and evidence-confirmation contract are stronger than AEA/AEE in several areas and only partially overlap in others. That is intentional: the mapping layer exists to expose semantic differences, not manufacture compatibility.
 
+### Auditable semantic mapping v0.2
+
+`effect-authority.semantic-mapping.v0.2` strengthens the mapping envelope without rewriting v0.1.
+
+Each evidence item must carry:
+
+- an immutable source URL containing the pinned source revision;
+- the exact source excerpt used for the comparison;
+- `sha256(excerpt)`;
+- the analyst claim derived from that excerpt.
+
+The v0.2 verifier recomputes the excerpt digest. This does **not** prove the analyst's interpretation is correct, but it prevents the evidence text used by a historical mapping from silently changing.
+
+Use:
+
+```yaml
+- name: Verify auditable semantic mapping
+  uses: hippoley/SpatialRuntime/interop/agent-effect-authority@<pinned-sha>
+  with:
+    mode: mapping-v0.2
+    file: interop/effect-authority.mapping.v0.2.json
+```
+
+Mutable issues or discussions must not be presented as commit-pinned source evidence. They may inform analysis, but a v0.2 evidence item must point at the immutable artifact from which its frozen excerpt was actually taken.
+
 ## Relationship to observability standards
 
 AEA is not an observability standard. It is an execution/conformance boundary that can supply reference scenarios to observability work.

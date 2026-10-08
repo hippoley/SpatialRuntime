@@ -1,0 +1,29 @@
+{
+  "mapping_spec": "effect-authority.semantic-mapping.v0.2",
+  "source": {
+    "repository": "langchain-ai/langgraph",
+    "revision": "40a2e6d845054cc0cc17a6a169ca6e7394e5231c",
+    "snapshot_date": "2026-10-08"
+  },
+  "mappings": [
+    {
+      "target": "AEA-005",
+      "relation": "source_weaker",
+      "summary": "LangGraph's public Durability contract defines graph-state persistence timing rather than authoritative external-effect confirmation.",
+      "evidence": [
+        {
+          "immutable_url": "https://github.com/langchain-ai/langgraph/blob/40a2e6d845054cc0cc17a6a169ca6e7394e5231c/libs/langgraph/langgraph/types.py",
+          "excerpt": "Durability = Literal[\"sync\", \"async\", \"exit\"]\n\"\"\"Durability mode for the graph execution.\n\n- `'sync'`: Changes are persisted synchronously before the next step starts.",
+          "excerpt_sha256": "a6f7794d1f4391d5b978878589898a312d8df253ffe56ebe68a6623c59f9baae",
+          "claim": "The public Durability type specifies persistence timing for graph changes; it does not itself define an authoritative external-effect evidence model."
+        }
+      ],
+      "caveat": "Absence of effect-confirmation semantics from this durability type is a scope comparison, not a claim that LangGraph applications cannot implement such confirmation elsewhere."
+    }
+  ],
+  "declaration": {
+    "source_project_adoption": false,
+    "source_project_endorsement": false,
+    "limitations": "Analyst-authored comparison against a pinned LangGraph code revision and the public #8039 failure report. It does not assert all LangGraph integrations lack stronger application-level guarantees."
+  }
+}

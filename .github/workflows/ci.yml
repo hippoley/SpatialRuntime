@@ -29,6 +29,16 @@ jobs:
         with:
           mode: mapping
           file: interop/agent-effect-authority/mappings/narada.v0.1.json
+      - name: Verify Narada mapping v0.2 via local action
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: mapping-v0.2
+          file: interop/agent-effect-authority/mappings/narada.v0.2.json
+      - name: Verify LangGraph mapping v0.2 via local action
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: mapping-v0.2
+          file: interop/agent-effect-authority/mappings/langgraph.v0.2.json
       - name: Verify authoritative evidence v0.2 via local action
         uses: ./interop/agent-effect-authority
         with:
