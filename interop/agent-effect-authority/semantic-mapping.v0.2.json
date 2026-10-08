@@ -1,0 +1,7 @@
+{
+  "mapping_spec": "effect-authority.semantic-mapping.v0.2",
+  "purpose": "Evidence-backed cross-runtime semantic comparison with immutable source refs and frozen evidence excerpts.",
+  "relations": ["equivalent","source_stronger","source_weaker","overlaps","orthogonal","unknown"],
+  "evidence_requirements": ["immutable_url","excerpt","excerpt_sha256","claim"],
+  "nonclaim": "A mapping is analyst-authored comparison evidence. It does not establish endorsement, adoption, compatibility, or conformance by the source project."
+}
