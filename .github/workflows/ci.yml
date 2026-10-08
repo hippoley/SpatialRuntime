@@ -39,6 +39,16 @@ jobs:
         with:
           mode: mapping-v0.2
           file: interop/agent-effect-authority/mappings/langgraph.v0.2.json
+      - name: Verify correlated tool-decision lifecycle via local action
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: tool-decision-lifecycle
+          file: interop/otel-tool-decision-lifecycle/fixtures/positive-path.otlp.json
+      - name: Verify unresolved correlation stays non-fatal via local action
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: tool-decision-lifecycle
+          file: interop/otel-tool-decision-lifecycle/fixtures/devplane-style-no-call-id.otlp.json
       - name: Verify authoritative evidence v0.2 via local action
         uses: ./interop/agent-effect-authority
         with:
