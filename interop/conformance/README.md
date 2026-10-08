@@ -40,3 +40,6 @@ A successful process exit does not always mean `PASS`: profiles may intentionall
 `manifest.v0.1.json` lists the currently exposed Action modes, profile versions, verifier entry points, structured outputs, and result semantics.
 
 This catalog is descriptive: it does not override the profile files or verifier behavior. Consumers should still pin an immutable SpatialRuntime commit SHA.
+
+
+`verify_catalog.py` checks that every catalog mode points to an existing verifier, that its declared profile/version matches the source artifact exactly, and that structured modes expose `conformance_result`. Repository CI runs this check to prevent catalog drift.
