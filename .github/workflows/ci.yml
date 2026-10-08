@@ -88,6 +88,17 @@ jobs:
           test "${{ steps.binding_unresolved.outputs.error_count }}" = "0"
           test "${{ steps.lifecycle_positive.outputs.conformance_result }}" = "PASS"
           test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
+      - name: Verify neutral conformance Action entry point
+        id: neutral_binding
+        uses: ./interop/conformance
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/standing-pass.json
+      - name: Assert neutral conformance Action outputs
+        run: |
+          test "${{ steps.neutral_binding.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.neutral_binding.outputs.unresolved_count }}" = "0"
+          test "${{ steps.neutral_binding.outputs.error_count }}" = "0"
       - name: Verify authoritative evidence v0.2 via local action
         uses: ./interop/agent-effect-authority
         with:
