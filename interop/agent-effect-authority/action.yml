@@ -11,10 +11,21 @@ inputs:
     description: "Path to the trusted evidence registry/policy JSON for effect-evidence-v0.2"
     required: false
     default: ""
+outputs:
+  lifecycle_result:
+    description: "PASS, UNRESOLVED, or FAIL for tool-decision-lifecycle mode"
+    value: ${{ steps.verify.outputs.lifecycle_result }}
+  unresolved_count:
+    description: "Number of tool-decision records lacking safe correlation identity"
+    value: ${{ steps.verify.outputs.unresolved_count }}
+  error_count:
+    description: "Number of lifecycle contradictions/errors"
+    value: ${{ steps.verify.outputs.error_count }}
 runs:
   using: "composite"
   steps:
     - name: Verify effect-authority artifact
+      id: verify
       shell: bash
       env:
         AEA_MODE: ${{ inputs.mode }}
@@ -33,7 +44,7 @@ runs:
             python "$GITHUB_ACTION_PATH/verify_semantic_mapping_v02.py" "$AEA_FILE"
             ;;
           tool-decision-lifecycle)
-            python "$GITHUB_ACTION_PATH/../otel-tool-decision-lifecycle/verify.py" "$AEA_FILE"
+            python "$GITHUB_ACTION_PATH/../otel-tool-decision-lifecycle/verify.py" "$AEA_FILE" --github-output "$GITHUB_OUTPUT"
             ;;
           effect-evidence-v0.2)
             if [[ -z "$AEA_POLICY" ]]; then

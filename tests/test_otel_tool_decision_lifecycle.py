@@ -33,3 +33,14 @@ def test_deny_plus_execution_is_contradiction():
     report = MOD.verify(load("deny-with-execution.otlp.json"))
     assert report["result"] == "FAIL"
     assert report["errors"][0]["code"] == "DENY_WITH_OBSERVED_EXECUTION"
+
+
+def test_github_output_file(tmp_path: Path):
+    report = MOD.verify(load("devplane-style-no-call-id.otlp.json"))
+    output = tmp_path / "github-output"
+    MOD.write_github_outputs(report, output)
+    assert output.read_text(encoding="utf-8").splitlines() == [
+        "lifecycle_result=UNRESOLVED",
+        "unresolved_count=1",
+        "error_count=0",
+    ]

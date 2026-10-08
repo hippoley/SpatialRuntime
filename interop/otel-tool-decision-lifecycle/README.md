@@ -32,3 +32,33 @@ python interop/otel-tool-decision-lifecycle/verify.py \
 ```
 
 The Devplane-style fixture intentionally returns `UNRESOLVED`, because its decision record has no model-owned `gen_ai.tool.call.id`. That is a valid and safer result than inventing correlation from timestamps, tool names, or local row ids.
+
+
+## GitHub Action policy branching
+
+The reusable action exposes structured outputs for this mode, so a caller does not need to parse stdout:
+
+```yaml
+- name: Check tool-decision lifecycle
+  id: lifecycle
+  uses: hippoley/SpatialRuntime/interop/agent-effect-authority@<pinned-sha>
+  with:
+    mode: tool-decision-lifecycle
+    file: telemetry/otlp.json
+
+- name: Require complete correlation for this lane
+  if: steps.lifecycle.outputs.lifecycle_result != 'PASS'
+  run: |
+    echo "correlation status: ${{ steps.lifecycle.outputs.lifecycle_result }}"
+    echo "unresolved: ${{ steps.lifecycle.outputs.unresolved_count }}"
+    echo "errors: ${{ steps.lifecycle.outputs.error_count }}"
+    exit 1
+```
+
+Available outputs:
+
+- `lifecycle_result`: `PASS`, `UNRESOLVED`, or `FAIL`;
+- `unresolved_count`: decision records that cannot be safely joined to a model-owned call identity;
+- `error_count`: observed contradictions or invalid decision values.
+
+The default verifier still exits non-zero only for `FAIL`. This is intentional: a producer that cannot observe a correlation id is not lying or broken. Downstream policy decides whether `UNRESOLVED` is acceptable for that lane.
