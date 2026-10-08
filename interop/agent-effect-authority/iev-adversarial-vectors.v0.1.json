@@ -1,0 +1,61 @@
+{
+  "vector_set": "iev-effect-evidence-adversarial-v0.1",
+  "purpose": "Independent executable pressure cases for effect-evidence authority boundaries described in draft-das-interim-effectuation-validation-00.",
+  "upstream": {
+    "document": "draft-das-interim-effectuation-validation-00",
+    "status": "individual Internet-Draft; work in progress; no IETF endorsement implied",
+    "relevant_sections": [
+      "6.4 Effect Observer",
+      "13 Effect Evidence and Observation",
+      "14 Interim Effectuation Validator",
+      "19 Indeterminate Outcomes, Reconciliation, and Crash Recovery",
+      "21 Conflicting Authentic Evidence",
+      "31 Interoperability and Deployment Considerations",
+      "A.10.6 Predicate-specific source authority"
+    ]
+  },
+  "authority_policy": {
+    "allowed_sources": [
+      {"effect_domain":"physical-window","source_id":"device-encoder","observation_kinds":["measured_state"]},
+      {"effect_domain":"durable-record","source_id":"primary-store-readback","observation_kinds":["durable_state"]},
+      {"effect_domain":"payment","source_id":"settlement-ledger","observation_kinds":["settlement_state"]}
+    ]
+  },
+  "cases": [
+    {
+      "id":"physical-authoritative-positive",
+      "observation":{"logical_effect_id":"effect-physical-1","effect_domain":"physical-window","observed_after_attempt":true,"fresh":true,"source_id":"device-encoder","observation_kind":"measured_state","verdict":"CONFIRMED"},
+      "expected":{"status":"CONFIRMED","reason":"AUTHORITATIVE_OBSERVATION"}
+    },
+    {
+      "id":"self-declared-authority-rejected",
+      "observation":{"logical_effect_id":"effect-physical-2","effect_domain":"physical-window","observed_after_attempt":true,"fresh":true,"source_id":"agent-self-report","observation_kind":"measured_state","verdict":"CONFIRMED"},
+      "expected":{"status":"UNRESOLVED","reason":"SOURCE_NOT_AUTHORIZED"}
+    },
+    {
+      "id":"wrong-predicate-source-rejected",
+      "observation":{"logical_effect_id":"effect-payment-1","effect_domain":"payment","observed_after_attempt":true,"fresh":true,"source_id":"device-encoder","observation_kind":"measured_state","verdict":"CONFIRMED"},
+      "expected":{"status":"UNRESOLVED","reason":"SOURCE_NOT_AUTHORIZED"}
+    },
+    {
+      "id":"stale-authoritative-source-still-unresolved",
+      "observation":{"logical_effect_id":"effect-record-1","effect_domain":"durable-record","observed_after_attempt":true,"fresh":false,"source_id":"primary-store-readback","observation_kind":"durable_state","verdict":"CONFIRMED"},
+      "expected":{"status":"UNRESOLVED","reason":"NOT_FRESH"}
+    },
+    {
+      "id":"transport-ack-cannot-prove-effect",
+      "observation":{"logical_effect_id":"effect-payment-2","effect_domain":"payment","observed_after_attempt":true,"fresh":true,"source_id":"settlement-ledger","observation_kind":"transport_ack","verdict":"CONFIRMED"},
+      "expected":{"status":"UNRESOLVED","reason":"NON_AUTHORITATIVE_KIND"}
+    },
+    {
+      "id":"pre-attempt-observation-cannot-resolve",
+      "observation":{"logical_effect_id":"effect-record-2","effect_domain":"durable-record","observed_after_attempt":false,"fresh":true,"source_id":"primary-store-readback","observation_kind":"durable_state","verdict":"CONFIRMED"},
+      "expected":{"status":"UNRESOLVED","reason":"NOT_POST_ATTEMPT"}
+    }
+  ],
+  "nonclaims": [
+    "These vectors do not claim to be official IETF conformance tests.",
+    "These vectors do not claim novelty over the Internet-Draft.",
+    "These vectors are an independent executable review artifact."
+  ]
+}
