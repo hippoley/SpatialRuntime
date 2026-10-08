@@ -160,13 +160,26 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def write_github_outputs(report: dict[str, Any], path: Path) -> None:
+    lines = [
+        f"lifecycle_result={report['result']}",
+        f"unresolved_count={len(report['unresolved'])}",
+        f"error_count={len(report['errors'])}",
+    ]
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write("\n".join(lines) + "\n")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("otlp_json", type=Path)
+    parser.add_argument("--github-output", type=Path)
     args = parser.parse_args()
     doc = json.loads(args.otlp_json.read_text(encoding="utf-8"))
     report = verify(doc)
     print(json.dumps(report, indent=2))
+    if args.github_output is not None:
+        write_github_outputs(report, args.github_output)
     raise SystemExit(1 if report["result"] == "FAIL" else 0)
 
 
