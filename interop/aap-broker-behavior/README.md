@@ -62,3 +62,34 @@ decision → enforcement → execution evidence
 ```
 
 That boundary remains useful even if AAP evolves, because the adapter-based harness can be mapped to another authorization protocol without requiring the implementation to import SpatialRuntime.
+
+
+## Audit integrity evidence boundary
+
+The harness does not standardize AAP's audit-signature wire format.
+
+A broker adapter is responsible for **independently verifying** its implementation-specific audit integrity mechanism and returning structured evidence:
+
+```json
+{
+  "integrity_evidence": {
+    "kind": "signature",
+    "verified": true,
+    "key_id": "implementation-specific-key-id",
+    "record_digest": "sha256:<digest of the verified record>"
+  }
+}
+```
+
+A bare `"signed": true` assertion is rejected.
+
+For this profile's literal Level-1 **signed audit** requirement:
+
+- `kind=signature` is required;
+- `verified=true` is required;
+- a non-empty key id is required;
+- the verification must be bound to a concrete record digest.
+
+A hash chain may establish tamper evidence, but this experimental profile does not silently reinterpret “signed audit” as “hash-chained audit”.
+
+The deterministic reference adapter uses synthetic integrity evidence only to self-test the harness wiring. It is not evidence about a real broker.
