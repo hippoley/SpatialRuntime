@@ -63,6 +63,16 @@
       "profile_key": "profile"
     },
     {
+      "mode": "effect-evidence-bundle",
+      "profile": "effect-evidence-v0.1",
+      "entrypoint": "interop/agent-effect-authority/run_conformance.py",
+      "profile_source": "interop/agent-effect-authority/conformance-bundle.v0.1.json",
+      "profile_key": "bundle",
+      "external_adapter_protocol": "effect-evidence-adapter.v0.1",
+      "external_adapter_source": "interop/agent-effect-authority/adapter-protocol.v0.1.json",
+      "structured_action_result": false
+    },
+    {
       "mode": "effect-evidence-v0.2",
       "profile": "authoritative-effect-evidence.v0.2",
       "entrypoint": "interop/agent-effect-authority/verify_effect_observation_v02.py",
