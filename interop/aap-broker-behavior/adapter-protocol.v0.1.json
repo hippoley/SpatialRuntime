@@ -9,8 +9,13 @@
     "agent_visible": "object",
     "audit": {
       "present": "boolean",
-      "signed": "boolean",
-      "contains_credential_material": "boolean"
+      "contains_credential_material": "boolean",
+      "integrity_evidence": {
+        "kind": "signature|mac|hash_chain|none",
+        "verified": "boolean",
+        "key_id": "string|null",
+        "record_digest": "sha256:<64 lowercase hex>|null"
+      }
     },
     "broker_observation": {
       "decision": "allow|deny",
@@ -20,6 +25,8 @@
   "notes": [
     "Adapter translates implementation-specific broker behavior into the observation envelope.",
     "The harness, not the adapter, decides PASS/FAIL.",
-    "signed=true means the adapter independently verified the implementation audit signature."
+    "For AAP Level-1 signed-audit evidence, kind=signature and verified=true are required.",
+    "key_id and record_digest bind the verification claim to a concrete key and record; a bare signed=true assertion is intentionally insufficient.",
+    "A hash chain may establish tamper evidence but does not satisfy this profile's literal signed-audit requirement."
   ]
 }
