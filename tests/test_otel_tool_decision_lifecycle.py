@@ -40,6 +40,7 @@ def test_github_output_file(tmp_path: Path):
     output = tmp_path / "github-output"
     MOD.write_github_outputs(report, output)
     assert output.read_text(encoding="utf-8").splitlines() == [
+        "conformance_result=UNRESOLVED",
         "lifecycle_result=UNRESOLVED",
         "unresolved_count=1",
         "error_count=0",
