@@ -1,0 +1,51 @@
+{
+  "mapping_spec": "effect-authority.semantic-mapping.v0.2",
+  "source": {
+    "repository": "narada-core/narada",
+    "revision": "9c52827bebf5cb32f479db06d6753a9edd419c8d",
+    "snapshot_date": "2026-10-08"
+  },
+  "mappings": [
+    {
+      "target": "AEA-005",
+      "relation": "equivalent",
+      "summary": "Narada separates provider/transport outcomes from authoritative effect confirmation.",
+      "evidence": [{
+        "immutable_url": "https://github.com/narada-core/narada/blob/9c52827bebf5cb32f479db06d6753a9edd419c8d/docs/concepts/evidence-confirmation-contract.md",
+        "excerpt": "`EffectConfirmation` is separate from provider and transport outcomes. A\nprovider success, a closed transport, silence, or a fresh projection may be a\nuseful signal, but none is an effect observation. A consequential effect is\nconfirmed only when an admissible, correlated observation, artifact, replay, or\nreconciliation packet has sufficient trust (`attested` or `verified`) and a\nmatching effect identity.",
+        "excerpt_sha256": "15c3a7e70b761254e9947d45c9e7a3e495c9b8f0b1350d3fa6319ef7304c6f08",
+        "claim": "Provider/transport success is explicitly non-confirming without trusted correlated effect evidence."
+      }],
+      "caveat": "Vocabulary differs; the non-conflation invariant is directly comparable."
+    },
+    {
+      "target": "AEA-006",
+      "relation": "source_stronger",
+      "summary": "Narada preserves multiple unresolved evidence states and requires reconciliation.",
+      "evidence": [{
+        "immutable_url": "https://github.com/narada-core/narada/blob/9c52827bebf5cb32f479db06d6753a9edd419c8d/docs/concepts/evidence-confirmation-contract.md",
+        "excerpt": "If the observation is absent, stale, invalidated, interrupted, reconnecting, or\ndegraded, the result remains `unknown` and requires reconciliation. The contract\ndoes not turn uncertainty into failure or success.",
+        "excerpt_sha256": "8b500ad152a356ea71e24662b5c5d3435466266f7e10a95c94b2bf8c217966ed",
+        "claim": "Unknown is preserved explicitly rather than promoted to success/failure."
+      }],
+      "caveat": "Narada's unresolved vocabulary is more granular than AEA-006."
+    },
+    {
+      "target": "AEE2-003",
+      "relation": "source_stronger",
+      "summary": "Narada evidence packets carry verifier identity, trust, and invalidation.",
+      "evidence": [{
+        "immutable_url": "https://github.com/narada-core/narada/blob/9c52827bebf5cb32f479db06d6753a9edd419c8d/packages/evidence-confirmation-contract/src/evidence-confirmation.ts",
+        "excerpt": "export interface EvidencePacket {\n  schema: typeof EVIDENCE_PACKET_SCHEMA;\n  packet_id: string;\n  claim: EvidenceClaim;\n  evidence_type: EvidenceType;\n  producer_ref: string;\n  verifier_ref: string;\n  trust: EvidenceTrust;\n  invalidation: EvidenceInvalidation;",
+        "excerpt_sha256": "1d94af1551f489058f5ac702801fcd1f414aa126bb5ae670c642be99b626ed55",
+        "claim": "Verifier identity and trust/invalidation are first-class packet fields."
+      }],
+      "caveat": "Narada models a richer evidence packet than the minimum AEE2-003 rule."
+    }
+  ],
+  "declaration": {
+    "source_project_adoption": false,
+    "source_project_endorsement": false,
+    "limitations": "Analyst-authored comparison against immutable Narada source snapshots. Excerpt integrity is verified locally; semantic interpretation still requires human review."
+  }
+}
