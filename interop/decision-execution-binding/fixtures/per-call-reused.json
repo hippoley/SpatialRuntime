@@ -1,0 +1,10 @@
+{
+  "profile": "decision-execution-binding.v0.1",
+  "decisions": [
+    {"decision_id": "decision-1", "binding_mode": "per_call", "outcome": "allow"}
+  ],
+  "executions": [
+    {"execution_id": "exec-1", "tool_call_id": "call-1", "decision_id": "decision-1", "scope_binding": "match"},
+    {"execution_id": "exec-2", "tool_call_id": "call-2", "decision_id": "decision-1", "scope_binding": "match"}
+  ]
+}

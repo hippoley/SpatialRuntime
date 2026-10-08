@@ -362,6 +362,31 @@ The included solver and gateway are deterministic contract fixtures. The example
 - `spatialruntime.scenarios` - replayable reference scenarios
 - `spatialruntime.world` - scene-source-neutral world snapshot contract
 
+## Interop conformance surfaces
+
+SpatialRuntime also publishes small, model-independent conformance probes for agent/tool execution boundaries. They are intentionally separate from the spatial runtime API and can be consumed directly from CI.
+
+Current surfaces:
+
+- `interop/agent-effect-authority/` — effect-authority claim, evidence, and cross-runtime semantic mapping checks.
+- `interop/otel-tool-decision-lifecycle/` — per-call `gen_ai.tool.call.decision` → `execute_tool` correlation, preserving `UNRESOLVED` when a safe call identity is unavailable.
+- `interop/decision-execution-binding/` — separates authorization/approval decision identity from execution identity, including standing 1:N decisions and scope-binding checks.
+
+Reusable GitHub Action:
+
+```yaml
+- id: conformance
+  uses: hippoley/SpatialRuntime/interop/agent-effect-authority@<pinned-sha>
+  with:
+    mode: decision-execution-binding
+    file: evidence/decision-execution-binding.json
+
+- if: steps.conformance.outputs.conformance_result != 'PASS'
+  run: exit 1
+```
+
+Consumers SHOULD pin an immutable commit SHA. `PASS` means only that the supplied evidence satisfies the selected conformance profile; it does not establish real-world effect completion. External projects cited in profile evidence are pressure sources, not adopters or endorsers of SpatialRuntime.
+
 ## Development
 
 ```bash

@@ -1,0 +1,73 @@
+{
+  "profile": "decision-execution-binding.v0.1",
+  "status": "experimental",
+  "purpose": "Verify binding cardinality and scope evidence between authorization/approval decisions and tool executions without conflating decision identity, tool-call identity, or external-effect truth.",
+  "binding_modes": [
+    "per_call",
+    "standing"
+  ],
+  "scope_binding_results": [
+    "match",
+    "mismatch",
+    "not_checked"
+  ],
+  "invariants": [
+    {
+      "id": "DEB-001",
+      "rule": "decision_id and execution/tool_call identity are distinct namespaces; neither may be inferred from the other."
+    },
+    {
+      "id": "DEB-002",
+      "rule": "A per_call decision may bind at most one execution."
+    },
+    {
+      "id": "DEB-003",
+      "rule": "A standing decision may bind multiple executions, but each execution must independently carry a scope-binding result."
+    },
+    {
+      "id": "DEB-004",
+      "rule": "An execution bound to a deny decision is a contradiction."
+    },
+    {
+      "id": "DEB-005",
+      "rule": "scope_binding=not_checked is UNRESOLVED, never upgraded to match."
+    },
+    {
+      "id": "DEB-006",
+      "rule": "scope_binding=mismatch is a contradiction."
+    },
+    {
+      "id": "DEB-007",
+      "rule": "A PASS validates only decision-to-execution binding evidence; it does not prove the external side effect."
+    }
+  ],
+  "pressure_sources": [
+    {
+      "repository": "cosai-oasis/ws2-defenders",
+      "revision": "b8dbec1c35262194ae78f1dbc973ba6d513524cb",
+      "paths": [
+        "telemetry/aitf/spec/semantic-conventions/attributes-registry.md",
+        "telemetry/build-telemetry/data/fields.yaml"
+      ],
+      "claim": "AITF separates authorization/approval decision identity from Tool Execution ID and records approval scope-binding as match, mismatch, or not_checked."
+    },
+    {
+      "repository": "hupe1980/devplane",
+      "revision": "055b414af45b373339164dc349901757e44b3147",
+      "paths": [
+        "src/core/genai.rs",
+        "site/content/docs/decisions.md"
+      ],
+      "claim": "Devplane marks allow_always/reject_always as standing decisions whose later covered calls may not emit another decision row."
+    },
+    {
+      "repository": "ajkumar-13/Tracelyt",
+      "revision": "b99ebbe165c51682c3ef08b201c811526d5ded08",
+      "paths": [
+        "src/harness_engine/adapters/claude_code/otel_logs.py",
+        "docs/specs/SPEC-01-telemetry-and-execution-graph.md"
+      ],
+      "claim": "Tracelyt preserves permanent/temporary decision source while correlating individual tool lifecycle events with tool_call_id."
+    }
+  ]
+}

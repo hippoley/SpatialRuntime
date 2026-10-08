@@ -59,6 +59,35 @@ jobs:
           test "${{ steps.lifecycle_unresolved.outputs.lifecycle_result }}" = "UNRESOLVED"
           test "${{ steps.lifecycle_unresolved.outputs.unresolved_count }}" = "1"
           test "${{ steps.lifecycle_unresolved.outputs.error_count }}" = "0"
+      - name: Verify per-call decision binding via local action
+        id: binding_per_call
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/per-call-pass.json
+      - name: Verify standing decision binding via local action
+        id: binding_standing
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/standing-pass.json
+      - name: Verify unchecked standing scope remains unresolved
+        id: binding_unresolved
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/standing-not-checked.json
+      - name: Assert decision-execution binding Action outputs
+        run: |
+          test "${{ steps.binding_per_call.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.binding_per_call.outputs.unresolved_count }}" = "0"
+          test "${{ steps.binding_per_call.outputs.error_count }}" = "0"
+          test "${{ steps.binding_standing.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.binding_unresolved.outputs.conformance_result }}" = "UNRESOLVED"
+          test "${{ steps.binding_unresolved.outputs.unresolved_count }}" = "1"
+          test "${{ steps.binding_unresolved.outputs.error_count }}" = "0"
+          test "${{ steps.lifecycle_positive.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
       - name: Verify authoritative evidence v0.2 via local action
         uses: ./interop/agent-effect-authority
         with:
