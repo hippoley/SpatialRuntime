@@ -1,10 +1,49 @@
 # SpatialRuntime
 
-**An evidence-preserving executable spatial runtime for AI agents, physics, safety, and real-world device control.**
+**Evidence-preserving runtime + conformance infrastructure for consequential agent execution.**
 
-SpatialRuntime turns a spatial world model into a runtime that can reason about relationships, apply safety constraints, dispatch device commands, reconcile telemetry, and explain why an action was allowed or blocked.
+SpatialRuntime currently has **two deliberately separated product lanes**:
 
-It is intentionally **scene-source agnostic**. A BIM model, CAD/floor-plan parser, manually authored topology, digital twin, SLAM stack, or future 3D reconstruction system can all feed the same runtime contracts.
+1. **Interop conformance (preferred external adoption path)** — small, model-independent checks for effect evidence, decision/execution binding, lifecycle correlation, and external standards pressure cases.
+2. **Executable spatial runtime (grounding/reference implementation)** — reviewed world state, solver adapters, safety, hardware dispatch/reconciliation, and replay for physical-system scenarios.
+
+The two lanes share one correctness rule:
+
+```text
+proposal / tool success / ACK
+        !=
+authoritative real-world outcome
+```
+
+Progress in one lane does **not** prove maturity in the other.
+
+### If you are here to integrate conformance
+
+The preferred third-party entry point is being standardized under `interop/conformance` (see PR #41 while it is not yet on `main`). Existing consumers can continue using `interop/agent-effect-authority`.
+
+Current stable-on-main building blocks include:
+
+- effect-evidence hostile vectors and external-verifier adapter protocol;
+- decision→execution binding checks;
+- tool-decision lifecycle correlation;
+- explicit PASS / UNRESOLVED / FAIL semantics.
+
+**Adoption claim ceiling:** repository self-tests, our own downstream repos, analyst-authored mappings, and queued external workflows do not count as unrelated adoption. Issue #14 remains the external-consumer gate.
+
+### If you are here for the spatial runtime
+
+The Python package remains a scene-source-neutral executable runtime that can reason about reviewed spatial relationships, apply safety constraints, dispatch device commands, reconcile telemetry, and replay evidence.
+
+It intentionally does not reconstruct 3D scenes, train perception models, define vendor protocols, or claim real ContamX/hardware execution where the repository only exercises fixtures.
+
+### Maturity / truth source
+
+See:
+
+- [Product boundary and user-story audit](docs/PRODUCT-BOUNDARY-AUDIT.md)
+- [Action guide](docs/ACTION-GUIDE.md)
+
+These documents distinguish **implemented**, **partially evidenced**, **open**, and **held** user stories so architecture work cannot silently turn into an adoption or real-world-evidence claim.
 
 ## What it owns
 
