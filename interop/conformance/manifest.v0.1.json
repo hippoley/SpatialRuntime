@@ -1,0 +1,63 @@
+{
+  "schema": "spatialruntime.interop.conformance.catalog.v0.1",
+  "status": "experimental",
+  "preferred_action": "interop/conformance",
+  "legacy_compatible_actions": [
+    "interop/agent-effect-authority"
+  ],
+  "result_semantics": {
+    "PASS": "Supplied evidence satisfies the selected profile.",
+    "UNRESOLVED": "Evidence is insufficient to reach a safe pass/fail conclusion.",
+    "FAIL": "Supplied evidence contradicts or violates the selected profile."
+  },
+  "profiles": [
+    {
+      "mode": "claim",
+      "profile": "agent-effect-authority.v0.1",
+      "entrypoint": "interop/agent-effect-authority/verify_claim.py",
+      "structured_action_result": false
+    },
+    {
+      "mode": "mapping",
+      "profile": "agent-effect-authority.mapping.v0.1",
+      "entrypoint": "interop/agent-effect-authority/verify_semantic_mapping.py",
+      "structured_action_result": false
+    },
+    {
+      "mode": "mapping-v0.2",
+      "profile": "agent-effect-authority.mapping.v0.2",
+      "entrypoint": "interop/agent-effect-authority/verify_semantic_mapping_v02.py",
+      "structured_action_result": false
+    },
+    {
+      "mode": "tool-decision-lifecycle",
+      "profile": "otel-tool-decision-lifecycle.v0.1",
+      "entrypoint": "interop/otel-tool-decision-lifecycle/verify.py",
+      "structured_action_result": true,
+      "outputs": [
+        "conformance_result",
+        "lifecycle_result",
+        "unresolved_count",
+        "error_count"
+      ]
+    },
+    {
+      "mode": "decision-execution-binding",
+      "profile": "decision-execution-binding.v0.1",
+      "entrypoint": "interop/decision-execution-binding/verify.py",
+      "structured_action_result": true,
+      "outputs": [
+        "conformance_result",
+        "unresolved_count",
+        "error_count"
+      ]
+    },
+    {
+      "mode": "effect-evidence-v0.2",
+      "profile": "effect-evidence.v0.2",
+      "entrypoint": "interop/agent-effect-authority/verify_effect_observation_v02.py",
+      "requires_policy": true,
+      "structured_action_result": false
+    }
+  ]
+}
