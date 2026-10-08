@@ -1,0 +1,53 @@
+{
+  "profile": "authoritative-effect-evidence.v0.2",
+  "supersedes": "authoritative-effect-evidence.v0.1",
+  "purpose": "Resolve an external effect only from evidence whose provenance and effect binding are verified by an external trust registry.",
+  "required_claim_fields": [
+    "logical_effect_id",
+    "attempt_id",
+    "evidence_id",
+    "evidence_digest",
+    "effect_domain",
+    "source_id",
+    "observation_kind",
+    "verdict"
+  ],
+  "trusted_evidence_registry_required": true,
+  "trusted_levels": ["attested", "verified"],
+  "valid_invalidation_state": "valid",
+  "verdicts": ["CONFIRMED", "CONTRADICTED", "UNRESOLVED"],
+  "rules": [
+    {
+      "id": "AEE2-001",
+      "rule": "A claim cannot resolve an effect unless trusted evidence is bound to the same logical_effect_id and attempt_id."
+    },
+    {
+      "id": "AEE2-002",
+      "rule": "Claimed source, domain, observation kind, verdict, evidence id, and evidence digest must exactly match a trusted evidence registry entry."
+    },
+    {
+      "id": "AEE2-003",
+      "rule": "The trusted registry entry must identify a verifier and carry trust level attested or verified."
+    },
+    {
+      "id": "AEE2-004",
+      "rule": "Invalidated, revoked, superseded, stale, or mismatched evidence cannot resolve an effect."
+    },
+    {
+      "id": "AEE2-005",
+      "rule": "Trusted evidence must be post-attempt and fresh for the effect decision being resolved."
+    },
+    {
+      "id": "AEE2-006",
+      "rule": "Model estimates, transport acknowledgements, cached state, and unprovenanced values cannot resolve an effect by themselves."
+    },
+    {
+      "id": "AEE2-007",
+      "rule": "If provenance, correlation, trust, validity, freshness, or timing cannot be established from the trusted registry, the effect remains UNRESOLVED."
+    }
+  ],
+  "nonclaims": [
+    "This profile does not define a cryptographic attestation format.",
+    "The trusted evidence registry is an external trust root and must itself be protected by the integrating system."
+  ]
+}
