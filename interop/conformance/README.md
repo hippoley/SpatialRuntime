@@ -62,3 +62,13 @@ The adapter contract is `effect-evidence-adapter.v0.1`: one JSON envelope on std
 If `adapter_command` is omitted, the bundle runs against SpatialRuntime's built-in evaluator.
 
 This is a conformance harness boundary, not a standardized production API.
+
+
+For `effect-evidence-bundle`, the Action exposes:
+
+- `conformance_result`: `PASS` or `FAIL`;
+- `passed_count`;
+- `failed_count`;
+- `total_count`.
+
+This lets a caller gate CI without parsing the JSON report printed to stdout.
