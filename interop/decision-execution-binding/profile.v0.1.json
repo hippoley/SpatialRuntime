@@ -68,6 +68,22 @@
         "docs/specs/SPEC-01-telemetry-and-execution-graph.md"
       ],
       "claim": "Tracelyt preserves permanent/temporary decision source while correlating individual tool lifecycle events with tool_call_id."
+    },
+    {
+      "repository": "agentclientprotocol/agent-client-protocol",
+      "revision": "1c2b84c785c923ed283a4e7ea3badb2422596418",
+      "paths": [
+        "docs/protocol/v2/tool-calls.mdx"
+      ],
+      "claim": "ACP v2 gives each invocation a toolCallId while permission choices distinguish allow_once from standing allow_always/reject_always; command permission subjects allow toolCallId to be unavailable before execution starts."
+    },
+    {
+      "repository": "vstorm-co/agenticos",
+      "revision": "816e738fe78fbc0441fd22cecb3825c1dbf78033",
+      "paths": [
+        "backend/app/agents/approval.py"
+      ],
+      "claim": "Agenticos models APPROVE_ALL as standing conversation consent while each gated call still records its own tool_call_id/audit row; one approval mode can therefore cover multiple execution identities."
     }
   ]
 }
