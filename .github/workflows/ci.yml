@@ -102,10 +102,17 @@ jobs:
           test "${{ steps.neutral_binding.outputs.unresolved_count }}" = "0"
           test "${{ steps.neutral_binding.outputs.error_count }}" = "0"
       - name: Verify external verifier bundle via neutral action
+        id: external_bundle
         uses: ./interop/conformance
         with:
           mode: effect-evidence-bundle
           adapter_command: python interop/agent-effect-authority/examples/reference_adapter.py
+      - name: Assert external verifier bundle outputs
+        run: |
+          test "${{ steps.external_bundle.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.external_bundle.outputs.failed_count }}" = "0"
+          test "${{ steps.external_bundle.outputs.passed_count }}" = "${{ steps.external_bundle.outputs.total_count }}"
+          test "${{ steps.external_bundle.outputs.total_count }}" -ge "11"
       - name: Verify authoritative evidence v0.2 via local action
         uses: ./interop/agent-effect-authority
         with:
