@@ -40,15 +40,25 @@ jobs:
           mode: mapping-v0.2
           file: interop/agent-effect-authority/mappings/langgraph.v0.2.json
       - name: Verify correlated tool-decision lifecycle via local action
+        id: lifecycle_positive
         uses: ./interop/agent-effect-authority
         with:
           mode: tool-decision-lifecycle
           file: interop/otel-tool-decision-lifecycle/fixtures/positive-path.otlp.json
       - name: Verify unresolved correlation stays non-fatal via local action
+        id: lifecycle_unresolved
         uses: ./interop/agent-effect-authority
         with:
           mode: tool-decision-lifecycle
           file: interop/otel-tool-decision-lifecycle/fixtures/devplane-style-no-call-id.otlp.json
+      - name: Assert lifecycle Action outputs
+        run: |
+          test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
+          test "${{ steps.lifecycle_positive.outputs.unresolved_count }}" = "0"
+          test "${{ steps.lifecycle_positive.outputs.error_count }}" = "0"
+          test "${{ steps.lifecycle_unresolved.outputs.lifecycle_result }}" = "UNRESOLVED"
+          test "${{ steps.lifecycle_unresolved.outputs.unresolved_count }}" = "1"
+          test "${{ steps.lifecycle_unresolved.outputs.error_count }}" = "0"
       - name: Verify authoritative evidence v0.2 via local action
         uses: ./interop/agent-effect-authority
         with:
