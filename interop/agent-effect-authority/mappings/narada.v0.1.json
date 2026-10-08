@@ -1,0 +1,118 @@
+{
+  "mapping_spec": "effect-authority.semantic-mapping.v0.1",
+  "source": {
+    "repository": "narada-core/narada",
+    "revision": "9c52827bebf5cb32f479db06d6753a9edd419c8d",
+    "snapshot_date": "2026-10-08"
+  },
+  "mappings": [
+    {
+      "target": "AEA-001",
+      "relation": "source_stronger",
+      "summary": "Narada explicitly separates intelligence output from truth, lifecycle, permission, effects, and confirmation, and routes evaluation through decision/intent boundaries before execution.",
+      "evidence": [
+        {"ref": "README.md", "claim": "Intelligence-Authority Separation; evaluation -> decision prevents model judgment becoming permission."},
+        {"ref": "packages/layers/control-plane/docs/00-kernel.md", "claim": "Foreman owns resolution and charter/runtime outputs do not directly own mutation authority."}
+      ],
+      "caveat": "AEA-001 states the minimum proposal/authority split; Narada specifies more pipeline-owned authorities than AEA requires."
+    },
+    {
+      "target": "AEA-004",
+      "relation": "source_stronger",
+      "summary": "Narada separates evaluation, decision, intent creation, execution handoff, and confirmation as different authority crossings.",
+      "evidence": [
+        {"ref": "README.md", "claim": "decision -> intent prevents approval becoming direct effect; intent -> execution prevents execution inventing reasons."},
+        {"ref": ".ai/decisions/20260423-519-selected-operation-boundary-contract.md", "claim": "Only IntentHandoff.admitIntentFromDecision may create intent rows inside the foreman decision transaction."}
+      ],
+      "caveat": "The concrete Narada authority taxonomy is richer and implementation-specific; this mapping compares the separation invariant only."
+    },
+    {
+      "target": "AEA-005",
+      "relation": "equivalent",
+      "summary": "Narada explicitly refuses to treat provider or transport success as external-effect confirmation.",
+      "evidence": [
+        {"ref": "docs/concepts/evidence-confirmation-contract.md", "claim": "Provider success, transport close, silence, or fresh projection are signals but none is an effect observation."},
+        {"ref": "docs/deployment/cloudflare-effect-execution-authority-contract.md", "claim": "API success does not prove durable, observable, or correct external effect."}
+      ],
+      "caveat": "Vocabulary differs, but the non-conflation guarantee is directly comparable."
+    },
+    {
+      "target": "AEA-006",
+      "relation": "source_stronger",
+      "summary": "Narada preserves several unresolved states and requires reconciliation instead of promoting ambiguity to success or failure.",
+      "evidence": [
+        {"ref": "docs/concepts/evidence-confirmation-contract.md", "claim": "Absent, stale, invalidated, interrupted, reconnecting, or degraded evidence remains unknown and requires reconciliation."}
+      ],
+      "caveat": "Narada has a finer unresolved-state vocabulary than AEA-006's single first-class unresolved requirement."
+    },
+    {
+      "target": "AEA-007",
+      "relation": "overlaps",
+      "summary": "Narada has durable intent/operation/plan/attempt identities and idempotency rules, but this snapshot is not being claimed to prove the exact AEA retry-identity invariant for every effect worker.",
+      "evidence": [
+        {"ref": "docs/concepts/cloudflare-nars-provider-capable-authority.md", "claim": "Intent, operation, plan, and attempt ids govern retries and replay; completed operations are not duplicated."},
+        {"ref": "SEMANTICS.md", "claim": "Effect boundary uses intent/idempotency artifacts and performance zone requires crash/retry handling."}
+      ],
+      "caveat": "The identity lattice is richer than AEA but the mapping does not audit all effect workers for equivalent retry behavior."
+    },
+    {
+      "target": "AEA-009",
+      "relation": "source_stronger",
+      "summary": "Narada confirmation requires correlated trusted evidence and separates confirmation/reconciliation from provider outcomes and projections.",
+      "evidence": [
+        {"ref": "docs/concepts/evidence-confirmation-contract.md", "claim": "Consequential effect confirms only from admissible correlated observation/artifact/replay/reconciliation evidence with sufficient trust and matching effect identity."}
+      ],
+      "caveat": "Narada's evidence packet contract carries more provenance dimensions than AEA-009 itself."
+    },
+    {
+      "target": "AEE2-001",
+      "relation": "overlaps",
+      "summary": "Narada binds confirmation evidence to effect identity and broad correlation context, while AEE v0.2 additionally makes attempt identity an explicit mandatory match.",
+      "evidence": [
+        {"ref": "packages/evidence-confirmation-contract/src/evidence-confirmation.ts", "claim": "EvidenceCorrelation includes effect_ref and confirmation audits packet correlation before resolving an effect."}
+      ],
+      "caveat": "The inspected EvidenceCorrelation type does not expose AEE v0.2's exact attempt_id field, so equivalence would be overclaiming."
+    },
+    {
+      "target": "AEE2-003",
+      "relation": "source_stronger",
+      "summary": "Narada requires verifier identity and has explicit evidence trust levels including attested and verified.",
+      "evidence": [
+        {"ref": "packages/evidence-confirmation-contract/src/evidence-confirmation.ts", "claim": "EvidencePacket contains verifier_ref and trust; EffectConfirmation requires sufficiently trusted corroborating evidence."}
+      ],
+      "caveat": "Narada defines more trust states and packet semantics than AEE2-003."
+    },
+    {
+      "target": "AEE2-004",
+      "relation": "source_stronger",
+      "summary": "Narada models explicit evidence invalidation states and rejects invalidated packets from confirmation.",
+      "evidence": [
+        {"ref": "packages/evidence-confirmation-contract/src/evidence-confirmation.ts", "claim": "Evidence invalidation values include valid, superseded, stale, revoked, mismatch; invalid packets do not confirm effects."}
+      ],
+      "caveat": "AEE2-004 intentionally compresses these invalidation states into a single fail-closed rule."
+    },
+    {
+      "target": "AEE2-006",
+      "relation": "equivalent",
+      "summary": "Both contracts explicitly classify provider/transport signals as insufficient for effect confirmation by themselves.",
+      "evidence": [
+        {"ref": "docs/concepts/evidence-confirmation-contract.md", "claim": "Provider and transport outcomes remain non-confirming unless independent observation corroborates the effect."}
+      ],
+      "caveat": "Narada expresses this through evidence packet types; AEE2-006 expresses it as a profile rule."
+    },
+    {
+      "target": "AEE2-007",
+      "relation": "source_stronger",
+      "summary": "Narada keeps confirmation unknown when evidence is missing, invalidated, insufficiently trusted, or correlation mismatches, and marks reconciliation required.",
+      "evidence": [
+        {"ref": "packages/evidence-confirmation-contract/src/evidence-confirmation.ts", "claim": "EffectConfirmation supports unknown verdict, reason codes for missing/invalid/correlation failures, and reconciliation_required."}
+      ],
+      "caveat": "Narada's reason-code model is richer; this mapping does not claim identical transition mechanics."
+    }
+  ],
+  "declaration": {
+    "source_project_adoption": false,
+    "source_project_endorsement": false,
+    "limitations": "This is an analyst-authored snapshot comparison against public Narada artifacts at one revision. It is not a Narada compatibility statement, conformance result, endorsement, or claim that all Narada runtime paths satisfy the mapped invariant."
+  }
+}

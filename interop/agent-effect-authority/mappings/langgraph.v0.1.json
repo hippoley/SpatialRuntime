@@ -1,0 +1,91 @@
+{
+  "mapping_spec": "effect-authority.semantic-mapping.v0.1",
+  "source": {
+    "repository": "langchain-ai/langgraph",
+    "revision": "40a2e6d845054cc0cc17a6a169ca6e7394e5231c",
+    "snapshot_date": "2026-10-08"
+  },
+  "mappings": [
+    {
+      "target": "AEA-002",
+      "relation": "overlaps",
+      "summary": "LangGraph owns graph/task/checkpoint execution identities, but the inspected public surface does not define a canonical logical identity for an external consequential effect across replay attempts.",
+      "evidence": [
+        {"ref": "libs/langgraph/langgraph/types.py", "claim": "Task and checkpoint payloads expose runtime-owned task/checkpoint identifiers."},
+        {"ref": "https://github.com/langchain-ai/langgraph/issues/8039", "claim": "Crash recovery discussion shows external side-effect identity can remain outside checkpoint identity."}
+      ],
+      "caveat": "Runtime task identity and logical external-effect identity solve different scopes."
+    },
+    {
+      "target": "AEA-005",
+      "relation": "source_weaker",
+      "summary": "LangGraph durability defines persistence timing for graph state, while the public Durability contract does not itself define authoritative external-effect evidence.",
+      "evidence": [
+        {"ref": "libs/langgraph/langgraph/types.py", "claim": "Durability is documented as sync/async/exit persistence timing."},
+        {"ref": "https://github.com/langchain-ai/langgraph/issues/8039", "claim": "The issue distinguishes checkpoint/write recovery from whether an external effect already happened."}
+      ],
+      "caveat": "This is not a LangGraph defect claim; external-effect confirmation may intentionally belong to application/tool integrations."
+    },
+    {
+      "target": "AEA-006",
+      "relation": "source_weaker",
+      "summary": "The inspected LangGraph public runtime statuses do not expose a first-class UNKNOWN external-effect outcome that blocks blind replay until reconciliation.",
+      "evidence": [
+        {"ref": "libs/sdk-py/langgraph_sdk/schema.py", "claim": "RunStatus covers pending/running/error/success/timeout/interrupted; it is run lifecycle, not an external-effect uncertainty state."},
+        {"ref": "https://github.com/langchain-ai/langgraph/issues/8039", "claim": "Crash-after-effect scenarios can leave the application unable to infer whether the external effect committed."}
+      ],
+      "caveat": "A graph run being interrupted or errored is not equivalent to an external effect being unresolved."
+    },
+    {
+      "target": "AEA-007",
+      "relation": "overlaps",
+      "summary": "LangGraph has retry, replay, task identity, and checkpoint durability mechanisms, but they do not by themselves preserve one application-level logical external effect across all replay attempts.",
+      "evidence": [
+        {"ref": "libs/langgraph/langgraph/types.py", "claim": "RetryPolicy and Durability are first-class runtime concepts."},
+        {"ref": "https://github.com/langchain-ai/langgraph/issues/8039", "claim": "The recovery discussion includes duplicate/re-executed side-effect pressure after crash."}
+      ],
+      "caveat": "AEA-007 is specifically about effect-intent multiplicity; LangGraph retry semantics are broader graph execution mechanics."
+    },
+    {
+      "target": "AEA-009",
+      "relation": "source_weaker",
+      "summary": "LangGraph does not prescribe a cross-domain authoritative readback source that must close an ambiguous external effect before the next dependent decision.",
+      "evidence": [
+        {"ref": "https://github.com/langchain-ai/langgraph/issues/8039", "claim": "Discussion identifies the external-effect gap after durable recovery but leaves downstream reconciliation to application/runtime integration."}
+      ],
+      "caveat": "This may be intentionally out of scope for a general graph runtime."
+    },
+    {
+      "target": "AEE2-001",
+      "relation": "orthogonal",
+      "summary": "LangGraph checkpoint/task correlation does not attempt to define AEE v0.2's trusted evidence binding between logical effect id, attempt id, and evidence identity.",
+      "evidence": [
+        {"ref": "libs/langgraph/langgraph/types.py", "claim": "Checkpoint/task payloads describe graph runtime state rather than a trusted external-effect evidence registry."}
+      ],
+      "caveat": "Orthogonal means different responsibility, not missing functionality."
+    },
+    {
+      "target": "AEE2-003",
+      "relation": "orthogonal",
+      "summary": "The inspected LangGraph durability surface does not define verifier identity or attested/verified trust levels for external-effect evidence.",
+      "evidence": [
+        {"ref": "libs/langgraph/langgraph/types.py", "claim": "Durability and checkpoint payload types do not define external evidence verifier/trust semantics."}
+      ],
+      "caveat": "Such provenance may belong to an application-specific integration layer."
+    },
+    {
+      "target": "AEE2-007",
+      "relation": "source_weaker",
+      "summary": "LangGraph can preserve graph execution state across recovery, but the inspected public contract does not fail closed on missing external-effect provenance because that provenance is not part of its model.",
+      "evidence": [
+        {"ref": "https://github.com/langchain-ai/langgraph/issues/8039", "claim": "The failure case demonstrates a recovery gap between graph durability and knowledge of an external effect."}
+      ],
+      "caveat": "This mapping compares guarantees, not product scope; LangGraph may reasonably delegate effect reconciliation to users."
+    }
+  ],
+  "declaration": {
+    "source_project_adoption": false,
+    "source_project_endorsement": false,
+    "limitations": "This is an analyst-authored comparison against LangGraph public code and issue discussion at one revision. It is not a LangGraph compatibility result and does not assert that application-level integrations cannot implement stronger effect guarantees."
+  }
+}
