@@ -33,8 +33,13 @@ else:
         "agent_visible": {"status": "denied", "error": "grant_denied"},
         "audit": {
             "present": True,
-            "signed": True,
             "contains_credential_material": False,
+            "integrity_evidence": {
+                "kind": "signature",
+                "verified": True,
+                "key_id": "synthetic-harness-key",
+                "record_digest": "sha256:" + "a" * 64,
+            },
         },
         "broker_observation": {"decision": "deny", "operation_executed": False},
     }
