@@ -37,9 +37,12 @@ def _attrs(items: Any) -> dict[str, Any]:
     return out
 
 
-def _walk_otlp(doc: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def _walk_otlp(
+    doc: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     decisions: list[dict[str, Any]] = []
     executions: list[dict[str, Any]] = []
+    misplaced: list[dict[str, Any]] = []
 
     for resource in doc.get("resourceLogs", []) or []:
         for scope in resource.get("scopeLogs", []) or []:
@@ -60,6 +63,16 @@ def _walk_otlp(doc: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str
         for scope in resource.get("scopeSpans", []) or []:
             for span in scope.get("spans", []) or []:
                 attrs = _attrs(span.get("attributes"))
+                if DECISION_EVENT in attrs or OUTCOME_KEY in attrs:
+                    misplaced.append(
+                        {
+                            "trace_id": span.get("traceId"),
+                            "span_id": span.get("spanId"),
+                            "keys": [
+                                key for key in (DECISION_EVENT, OUTCOME_KEY) if key in attrs
+                            ],
+                        }
+                    )
                 if attrs.get(OPERATION_KEY) != EXECUTE_TOOL:
                     continue
                 executions.append(
@@ -70,13 +83,36 @@ def _walk_otlp(doc: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str
                         "span_id": span.get("spanId"),
                     }
                 )
-    return decisions, executions
+    return decisions, executions, misplaced
 
 
 def verify(doc: dict[str, Any]) -> dict[str, Any]:
-    decisions, executions = _walk_otlp(doc)
+    decisions, executions, misplaced = _walk_otlp(doc)
     errors: list[dict[str, Any]] = []
     unresolved: list[dict[str, Any]] = []
+
+    for item in misplaced:
+        errors.append(
+            {
+                "code": "MISPLACED_DECISION_SIGNAL",
+                "reason": (
+                    "gen_ai.tool.call.decision is an event name and "
+                    "gen_ai.tool.call.decision.outcome is an event attribute; "
+                    "neither belongs on a span as a substitute for the decision event"
+                ),
+                "trace_id": item.get("trace_id"),
+                "span_id": item.get("span_id"),
+                "keys": item.get("keys", []),
+            }
+        )
+
+    if not decisions and not misplaced:
+        unresolved.append(
+            {
+                "code": "NO_DECISION_EVENT_EVIDENCE",
+                "reason": "input contains no gen_ai.tool.call.decision log event",
+            }
+        )
 
     by_call_decisions: dict[str, list[dict[str, Any]]] = defaultdict(list)
     by_call_execs: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -97,9 +133,20 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
         else:
             by_call_decisions[str(d["call_id"])].append(d)
 
-    for e in executions:
+    for i, e in enumerate(executions):
         if e["call_id"]:
             by_call_execs[str(e["call_id"])].append(e)
+        else:
+            unresolved.append(
+                {
+                    "code": "UNRESOLVED_EXECUTION_CORRELATION",
+                    "execution_index": i,
+                    "reason": "execute_tool span has no gen_ai.tool.call.id",
+                    "tool_name": e["tool_name"],
+                    "trace_id": e["trace_id"],
+                    "span_id": e["span_id"],
+                }
+            )
 
     lifecycles: list[dict[str, Any]] = []
     for call_id in sorted(set(by_call_decisions) | set(by_call_execs)):
@@ -132,8 +179,23 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
             status = "NO_EXECUTION_OBSERVED"
         elif "allow" in outcomes and not es:
             status = "ALLOW_WITHOUT_OBSERVED_EXECUTION"
+            unresolved.append(
+                {"code": "ALLOW_WITHOUT_OBSERVED_EXECUTION", "call_id": call_id}
+            )
         elif es and not ds:
             status = "EXECUTION_WITHOUT_OBSERVED_DECISION"
+            unresolved.append(
+                {
+                    "code": "EXECUTION_WITHOUT_OBSERVED_DECISION",
+                    "call_id": call_id,
+                    "observed_executions": len(es),
+                }
+            )
+        elif "require_approval" in outcomes and "allow" not in outcomes and "deny" not in outcomes:
+            status = "APPROVAL_LIFECYCLE_UNRESOLVED"
+            unresolved.append(
+                {"code": "APPROVAL_LIFECYCLE_UNRESOLVED", "call_id": call_id}
+            )
 
         lifecycles.append(
             {
@@ -148,6 +210,7 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
         "profile": "otel-tool-decision-lifecycle.v0.1",
         "decision_events": len(decisions),
         "execute_tool_spans": len(executions),
+        "misplaced_decision_signals": len(misplaced),
         "lifecycles": lifecycles,
         "unresolved": unresolved,
         "errors": errors,
@@ -155,7 +218,9 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
         "external_effect_confirmation": False,
         "notes": [
             "Missing execute_tool telemetry is not proof of non-execution.",
-            "A PASS only validates observed lifecycle correlation; it does not prove authorization correctness or durable external effect."
+            "A PASS only validates observed lifecycle correlation; it does not prove authorization correctness or durable external effect.",
+            "No decision evidence is UNRESOLVED, never PASS.",
+            "Decision signals placed on spans instead of emitted as events are rejected as semantic drift."
         ],
     }
 
