@@ -2,13 +2,17 @@ name: "SpatialRuntime interop conformance"
 description: "Run model-independent conformance checks for agent decision, execution, effect, and cross-runtime evidence."
 inputs:
   mode:
-    description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, or effect-evidence-v0.2"
+    description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, effect-evidence-bundle, or effect-evidence-v0.2"
     required: true
   file:
     description: "Path to the claim, mapping, OTLP evidence, or observation JSON in the caller workspace"
     required: true
   policy:
     description: "Path to the trusted evidence registry/policy JSON for effect-evidence-v0.2"
+    required: false
+    default: ""
+  adapter_command:
+    description: "External verifier command for effect-evidence-bundle mode; omit to run the built-in reference evaluator"
     required: false
     default: ""
 outputs:
@@ -34,6 +38,7 @@ runs:
         CONFORMANCE_MODE: ${{ inputs.mode }}
         CONFORMANCE_FILE: ${{ inputs.file }}
         CONFORMANCE_POLICY: ${{ inputs.policy }}
+        CONFORMANCE_ADAPTER_COMMAND: ${{ inputs.adapter_command }}
       run: |
         set -euo pipefail
         ROOT="$GITHUB_ACTION_PATH/.."
@@ -58,6 +63,14 @@ runs:
             python "$ROOT/decision-execution-binding/verify.py" \
               "$CONFORMANCE_FILE" \
               --github-output "$GITHUB_OUTPUT"
+            ;;
+          effect-evidence-bundle)
+            if [[ -n "$CONFORMANCE_ADAPTER_COMMAND" ]]; then
+              python "$ROOT/agent-effect-authority/run_conformance.py" \
+                --adapter-command "$CONFORMANCE_ADAPTER_COMMAND"
+            else
+              python "$ROOT/agent-effect-authority/run_conformance.py"
+            fi
             ;;
           effect-evidence-v0.2)
             if [[ -z "$CONFORMANCE_POLICY" ]]; then
