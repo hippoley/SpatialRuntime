@@ -60,10 +60,31 @@ def verify_case(fixture: dict[str, Any], obs: dict[str, Any]) -> list[dict[str, 
 
     if audit.get("present") is not True:
         errors.append({"code": "AUDIT_MISSING"})
-    if audit.get("signed") is not True:
-        errors.append({"code": "AUDIT_NOT_VERIFIED_SIGNED"})
     if audit.get("contains_credential_material") is not False:
         errors.append({"code": "AUDIT_CREDENTIAL_LEAK"})
+
+    integrity = audit.get("integrity_evidence")
+    if not isinstance(integrity, dict):
+        errors.append({"code": "AUDIT_INTEGRITY_EVIDENCE_MISSING"})
+    else:
+        if integrity.get("kind") != "signature":
+            errors.append({
+                "code": "AUDIT_NOT_SIGNED",
+                "kind": integrity.get("kind"),
+            })
+        if integrity.get("verified") is not True:
+            errors.append({"code": "AUDIT_SIGNATURE_NOT_VERIFIED"})
+        key_id = integrity.get("key_id")
+        if not isinstance(key_id, str) or not key_id:
+            errors.append({"code": "AUDIT_SIGNING_KEY_ID_MISSING"})
+        digest = integrity.get("record_digest")
+        if (
+            not isinstance(digest, str)
+            or not digest.startswith("sha256:")
+            or len(digest) != 71
+            or any(ch not in "0123456789abcdef" for ch in digest[7:])
+        ):
+            errors.append({"code": "AUDIT_RECORD_DIGEST_INVALID"})
 
     decision = broker.get("decision")
     executed = broker.get("operation_executed")
