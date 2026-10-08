@@ -72,3 +72,14 @@ For `effect-evidence-bundle`, the Action exposes:
 - `total_count`.
 
 This lets a caller gate CI without parsing the JSON report printed to stdout.
+
+
+## Consumer quickstart
+
+Copy-oriented examples live under `interop/conformance/examples/`:
+
+- `github-action.yml` — minimal CI wiring for a binding claim or external verifier bundle;
+- `effect_verifier_adapter.py` — safe adapter stub that returns `UNRESOLVED` until a real verifier is wired;
+- `README.md` — integration steps.
+
+The quickstart intentionally has no default passing adapter.
