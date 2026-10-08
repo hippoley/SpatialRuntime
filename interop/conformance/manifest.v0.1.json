@@ -19,13 +19,13 @@
     },
     {
       "mode": "mapping",
-      "profile": "agent-effect-authority.mapping.v0.1",
+      "profile": "effect-authority.semantic-mapping.v0.1",
       "entrypoint": "interop/agent-effect-authority/verify_semantic_mapping.py",
       "structured_action_result": false
     },
     {
       "mode": "mapping-v0.2",
-      "profile": "agent-effect-authority.mapping.v0.2",
+      "profile": "effect-authority.semantic-mapping.v0.2",
       "entrypoint": "interop/agent-effect-authority/verify_semantic_mapping_v02.py",
       "structured_action_result": false
     },
@@ -54,7 +54,7 @@
     },
     {
       "mode": "effect-evidence-v0.2",
-      "profile": "effect-evidence.v0.2",
+      "profile": "authoritative-effect-evidence.v0.2",
       "entrypoint": "interop/agent-effect-authority/verify_effect_observation_v02.py",
       "requires_policy": true,
       "structured_action_result": false
