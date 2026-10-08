@@ -53,6 +53,20 @@ def main() -> None:
                 f"{entry.get('profile_source')}[{key!r}] {actual!r}"
             )
 
+        adapter_source = entry.get("external_adapter_source")
+        adapter_protocol = entry.get("external_adapter_protocol")
+        if adapter_source is not None:
+            adapter_path = ROOT / str(adapter_source)
+            if not adapter_path.is_file():
+                errors.append(f"{mode}: missing external_adapter_source {adapter_source}")
+            else:
+                adapter_doc = json.loads(adapter_path.read_text(encoding="utf-8"))
+                if adapter_doc.get("protocol") != adapter_protocol:
+                    errors.append(
+                        f"{mode}: adapter protocol {adapter_protocol!r} != "
+                        f"{adapter_source}['protocol'] {adapter_doc.get('protocol')!r}"
+                    )
+
         outputs = entry.get("outputs", [])
         if entry.get("structured_action_result") is True and "conformance_result" not in outputs:
             errors.append(f"{mode}: structured mode missing conformance_result output")
