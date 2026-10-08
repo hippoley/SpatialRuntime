@@ -41,8 +41,9 @@
     },
     {
       "id": "AEA-008",
-      "title": "Compensation is a distinct linked effect",
-      "must": "Compensation is represented as a separate effect related to the original; compensation requested, dispatched, acknowledged, and verified are not collapsed into one state."
+      "title": "Compensation, when supported, is a distinct linked effect",
+      "must": "A runtime may omit compensation. If compensation is supported, it must be represented as a distinct effect related to the original, and compensation requested, dispatched, acknowledged, and verified must not be collapsed into one state. A runtime that does not support compensation must not imply that reconciliation or retry is equivalent to rollback.",
+      "applicability": "conditional"
     },
     {
       "id": "AEA-009",
