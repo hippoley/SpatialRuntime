@@ -5,10 +5,11 @@
     "logical_effect_id",
     "observed_after_attempt",
     "fresh",
-    "authoritative_source",
+    "source_id",
     "observation_kind",
     "verdict"
   ],
+  "authority_policy_required": true,
   "verdicts": ["CONFIRMED","CONTRADICTED","UNRESOLVED"],
   "rules": [
     {
@@ -25,7 +26,7 @@
     },
     {
       "id": "AEE-004",
-      "rule": "The source must be authoritative for the claimed effect domain."
+      "rule": "The observation source must be authorized by an external authority policy for the claimed effect domain and observation kind."
     },
     {
       "id": "AEE-005",
@@ -33,7 +34,7 @@
     },
     {
       "id": "AEE-006",
-      "rule": "If any required authority condition is missing, verdict remains UNRESOLVED."
+      "rule": "If any required authority condition is missing or the source is not allowed by policy, verdict remains UNRESOLVED."
     }
   ]
 }
