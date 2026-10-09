@@ -133,5 +133,13 @@
         "conformance_result"
       ]
     }
-  ]
+  ],
+  "runtime_requirements": {
+    "python": ">=3.10",
+    "shell": "bash",
+    "notes": [
+      "The composite Action does not install Python.",
+      "External adapter commands may have additional implementation-owned dependencies."
+    ]
+  }
 }
