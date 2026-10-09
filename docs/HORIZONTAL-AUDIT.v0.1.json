@@ -1,0 +1,240 @@
+{
+  "schema": "spatialruntime.horizontal-audit.v0.1",
+  "scope": "Repository-owned P0 stories from docs/P0-CLOSURE.v0.1.json; other stories remain governed by PRODUCT-BOUNDARY-AUDIT.md",
+  "rules": {
+    "verified_closed": "Requires vertical and all applicable horizontal dimensions with executed evidence; N/A requires rationale",
+    "external": "CF-06 remains independently gated; self-owned probes do not satisfy external adoption"
+  },
+  "stories": [
+    {
+      "id": "P0-A",
+      "vertical": "UNVERIFIED",
+      "horizontal": {
+        "function": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "state": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "integration": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "security": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "performance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "maintenance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "traceability": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "testing": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "user_value": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "external_compatibility": {
+          "status": "unverified",
+          "evidence": []
+        }
+      }
+    },
+    {
+      "id": "P0-B",
+      "vertical": "UNVERIFIED",
+      "horizontal": {
+        "function": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "state": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "integration": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "security": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "performance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "maintenance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "traceability": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "testing": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "user_value": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "external_compatibility": {
+          "status": "unverified",
+          "evidence": []
+        }
+      }
+    },
+    {
+      "id": "P0-C",
+      "vertical": "UNVERIFIED",
+      "horizontal": {
+        "function": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "state": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "integration": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "security": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "performance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "maintenance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "traceability": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "testing": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "user_value": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "external_compatibility": {
+          "status": "unverified",
+          "evidence": []
+        }
+      }
+    },
+    {
+      "id": "P0-D",
+      "vertical": "UNVERIFIED",
+      "horizontal": {
+        "function": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "state": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "integration": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "security": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "performance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "maintenance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "traceability": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "testing": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "user_value": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "external_compatibility": {
+          "status": "unverified",
+          "evidence": []
+        }
+      }
+    },
+    {
+      "id": "P0-E",
+      "vertical": "UNVERIFIED",
+      "horizontal": {
+        "function": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "state": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "integration": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "security": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "performance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "maintenance": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "traceability": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "testing": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "user_value": {
+          "status": "unverified",
+          "evidence": []
+        },
+        "external_compatibility": {
+          "status": "unverified",
+          "evidence": []
+        }
+      }
+    }
+  ]
+}
