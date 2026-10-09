@@ -69,8 +69,26 @@ def main() -> None:
                     )
 
         outputs = entry.get("outputs", [])
-        if entry.get("structured_action_result") is True and "conformance_result" not in outputs:
-            errors.append(f"{mode}: structured mode missing conformance_result output")
+        if entry.get("structured_action_result") is not True:
+            errors.append(f"{mode}: every canonical mode must declare structured_action_result=true")
+        if "conformance_result" not in outputs:
+            errors.append(f"{mode}: canonical mode missing conformance_result output")
+
+    compatibility = ROOT / str(catalog.get("compatibility_policy", ""))
+    if not compatibility.is_file():
+        errors.append("compatibility_policy missing or unreadable")
+    else:
+        compatibility_doc = json.loads(compatibility.read_text(encoding="utf-8"))
+        if compatibility_doc.get("scope") != "interop/conformance":
+            errors.append("compatibility_policy scope mismatch")
+        rule_ids = {
+            row.get("id")
+            for row in compatibility_doc.get("rules", [])
+            if isinstance(row, dict)
+        }
+        for required_rule in {"COMPAT-001", "COMPAT-002", "COMPAT-003", "COMPAT-004"}:
+            if required_rule not in rule_ids:
+                errors.append(f"compatibility_policy missing {required_rule}")
 
     action_path = ROOT / str(catalog.get("preferred_action", "")) / "action.yml"
     if action_path.is_file():
