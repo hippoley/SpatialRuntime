@@ -45,6 +45,12 @@ outputs:
   report_path:
     description: "Durable JSON report path when requested"
     value: ${{ steps.verify.outputs.report_path }}
+  validation_result:
+    description: "PASS or FAIL for declaration/envelope validation modes"
+    value: ${{ steps.verify.outputs.validation_result }}
+  assessment_scope:
+    description: "Assurance scope for the result, for example envelope_only"
+    value: ${{ steps.verify.outputs.assessment_scope }}
 runs:
   using: "composite"
   steps:
@@ -75,18 +81,30 @@ runs:
             return "$rc"
           fi
         }
+        run_envelope_only() {
+          echo "assessment_scope=envelope_only" >> "$GITHUB_OUTPUT"
+          if "$@"; then
+            echo "validation_result=PASS" >> "$GITHUB_OUTPUT"
+            echo "conformance_result=UNRESOLVED" >> "$GITHUB_OUTPUT"
+          else
+            rc=$?
+            echo "validation_result=FAIL" >> "$GITHUB_OUTPUT"
+            echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+            return "$rc"
+          fi
+        }
         case "$CONFORMANCE_MODE" in
           claim)
             require_file
-            run_pass_fail python "$ROOT/agent-effect-authority/verify_claim.py"               "$CONFORMANCE_FILE"               --manifest "$ROOT/agent-effect-authority/manifest.json"
+            run_envelope_only python "$ROOT/agent-effect-authority/verify_claim.py"               "$CONFORMANCE_FILE"               --manifest "$ROOT/agent-effect-authority/manifest.json"
             ;;
           mapping)
             require_file
-            run_pass_fail python "$ROOT/agent-effect-authority/verify_semantic_mapping.py" "$CONFORMANCE_FILE"
+            run_envelope_only python "$ROOT/agent-effect-authority/verify_semantic_mapping.py" "$CONFORMANCE_FILE"
             ;;
           mapping-v0.2)
             require_file
-            run_pass_fail python "$ROOT/agent-effect-authority/verify_semantic_mapping_v02.py" "$CONFORMANCE_FILE"
+            run_envelope_only python "$ROOT/agent-effect-authority/verify_semantic_mapping_v02.py" "$CONFORMANCE_FILE"
             ;;
           tool-decision-lifecycle)
             require_file
