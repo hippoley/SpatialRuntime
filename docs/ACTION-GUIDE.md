@@ -146,3 +146,22 @@ Investment rule for this node:
 - do not introduce SpatialRuntime vocabulary into ANP;
 - do not call illustrative implementation-policy scenarios protocol conformance;
 - stop if maintainers prefer another testing path or if an equivalent runner lands first.
+
+
+## 9. Closed node: OpenTelemetry execute_tool clarification
+
+OpenTelemetry GenAI PR #588 received two rounds of substantive maintainer review and was closed after the maintainer still did not see a concrete instrumentation-author or telemetry-consumer use for the external-effect-confirmation distinction.
+
+Treat this as a scope result:
+
+- do not reopen with different wording;
+- do not add OTel-specific fields or semantics in SpatialRuntime;
+- keep effect truth / reconciliation in the runtime-evidence layer;
+- only re-enter observability work if a future concrete consumer can name both:
+  1. a signal the instrumentation can actually capture, and
+  2. an action a telemetry consumer would take from that signal.
+
+Current external attention moves to:
+1. ANP #105 — SDK execution of existing scenario vectors, if maintainers accept the contribution direction;
+2. Assay Stage-3 vector review/adoption;
+3. CF-06 — unrelated consumption/falsification of the neutral conformance surface.
