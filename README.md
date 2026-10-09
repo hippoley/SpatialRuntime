@@ -19,7 +19,7 @@ Progress in one lane does **not** prove maturity in the other.
 
 ### If you are here to integrate conformance
 
-The preferred third-party entry point is being standardized under `interop/conformance` (see PR #41 while it is not yet on `main`). Existing consumers can continue using `interop/agent-effect-authority`.
+The preferred third-party entry point is now `interop/conformance`, merged via PR #49. Existing consumers can continue using `interop/agent-effect-authority` as a compatibility path.
 
 Current stable-on-main building blocks include:
 
@@ -415,7 +415,7 @@ Reusable GitHub Action:
 
 ```yaml
 - id: conformance
-  uses: hippoley/SpatialRuntime/interop/agent-effect-authority@<pinned-sha>
+  uses: hippoley/SpatialRuntime/interop/conformance@<pinned-sha>
   with:
     mode: decision-execution-binding
     file: evidence/decision-execution-binding.json
