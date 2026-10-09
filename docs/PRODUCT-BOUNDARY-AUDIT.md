@@ -146,7 +146,9 @@ Every external compatibility workflow must produce:
 - evidence method;
 - immutable artifact reference when available.
 
-Queued workflow is not executed evidence. OpenAdapt #38 and AgentX #39 now have completed successful executed probes; Assay #43 has a completed official scored run under `other_disclosed`.
+Queued workflow is not executed evidence. OpenAdapt #38 and AgentX #39 have completed successful executed probes; Assay has a completed official scored run under `other_disclosed`.
+
+Because GitHub Actions artifacts expire, the first three external execution reports are also retained under `interop/external-results/runs/` and bound from the registry by Git blob SHA. The original workflow run/artifact ID/digest remains recorded as execution provenance; the Git-retained JSON is the long-lived machine-readable copy.
 
 ### P0-C — Maturity matrix
 
@@ -197,6 +199,8 @@ Implemented:
 - CI validation
 
 The first registry entries freeze OpenAdapt, AgentX and Assay execution lineage including implementation/profile revision, workflow run, artifact id/digest, evidence method, observed result, acknowledgment state and adoption claim ceiling.
+
+For externally-executed or stronger evidence, the registry also requires a repository-retained raw report whose Git blob SHA is verified in CI. This prevents a 90-day Actions artifact retention window from erasing 6–12 month evidence.
 
 The validator rejects an `adoption_claim=true` unless evidence maturity is `externally-consumed` and unrelated project-owned consumer evidence exists.
 
