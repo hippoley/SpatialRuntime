@@ -65,6 +65,38 @@ jobs:
           git tag -a "$TAG" "$RELEASE_SHA" -F /tmp/conformance-release.json
           git push origin "refs/tags/$TAG"
 
+      - name: Publish discoverable GitHub Release once
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "GitHub Release $TAG already exists; leaving it unchanged."
+          else
+            cat >/tmp/release-notes.md <<'EOF'
+          # SpatialRuntime Conformance v0.1.0
+
+          First immutable distribution snapshot of the neutral `interop/conformance` surface.
+
+          Consumers can pin:
+
+          ```yaml
+          uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.1.0
+          ```
+
+          This release freezes the Action/catalog/compatibility set at one green commit. It does **not** promote experimental profile semantics or claim unrelated third-party adoption.
+
+          The attached `conformance-release.json` records the exact commit, included modes, compatibility aliases, changelog path, maturity source, and evidence registry.
+          EOF
+
+            gh release create "$TAG" /tmp/conformance-release.json \
+              --repo "$GITHUB_REPOSITORY" \
+              --verify-tag \
+              --title "SpatialRuntime Conformance v0.1.0" \
+              --notes-file /tmp/release-notes.md
+          fi
+
       - name: Preserve generated manifest as workflow evidence
         uses: actions/upload-artifact@v4
         with:
