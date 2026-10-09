@@ -18,7 +18,9 @@ single = _load("verify_effect_observation", "verify_effect_observation.py")
 multi = _load("verify_effect_evidence_set", "verify_effect_evidence_set.py")
 
 def _matches_expected(observed, expected):
-    return all(observed.get(key) == value for key, value in expected.items())
+    return isinstance(observed, dict) and all(
+        observed.get(key) == value for key, value in expected.items()
+    )
 
 def _call_adapter(command, suite_id, policy, case):
     envelope = {
@@ -32,13 +34,26 @@ def _call_adapter(command, suite_id, policy, case):
     if "observations" in case:
         envelope["observations"] = case["observations"]
 
-    proc = subprocess.run(
-        shlex.split(command),
-        input=json.dumps(envelope),
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+    try:
+        proc = subprocess.run(
+            shlex.split(command),
+            input=json.dumps(envelope),
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=15,
+        )
+    except subprocess.TimeoutExpired:
+        return {
+            "status": "ADAPTER_ERROR",
+            "reason": "TIMEOUT",
+        }
+    except (OSError, ValueError) as exc:
+        return {
+            "status": "ADAPTER_ERROR",
+            "reason": "INVOCATION_ERROR",
+            "error_type": type(exc).__name__,
+        }
     if proc.returncode != 0:
         return {
             "status": "ADAPTER_ERROR",
@@ -48,13 +63,19 @@ def _call_adapter(command, suite_id, policy, case):
         }
 
     try:
-        return json.loads(proc.stdout)
+        verdict = json.loads(proc.stdout)
     except json.JSONDecodeError:
         return {
             "status": "ADAPTER_ERROR",
             "reason": "INVALID_JSON",
             "stdout": proc.stdout.strip(),
         }
+    if not isinstance(verdict, dict) or not isinstance(verdict.get("status"), str):
+        return {
+            "status": "ADAPTER_ERROR",
+            "reason": "INVALID_VERDICT_SHAPE",
+        }
+    return verdict
 
 def _builtin_observe(suite_id, policy, case):
     if suite_id == "iev-adversarial-v0.1":
