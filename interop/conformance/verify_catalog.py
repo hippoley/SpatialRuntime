@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -70,6 +71,26 @@ def main() -> None:
         outputs = entry.get("outputs", [])
         if entry.get("structured_action_result") is True and "conformance_result" not in outputs:
             errors.append(f"{mode}: structured mode missing conformance_result output")
+
+    action_path = ROOT / str(catalog.get("preferred_action", "")) / "action.yml"
+    if action_path.is_file():
+        action_text = action_path.read_text(encoding="utf-8")
+        action_modes = set(
+            re.findall(r"^          ([a-z][a-z0-9.-]*)\)\s*$", action_text, flags=re.MULTILINE)
+        )
+        catalog_modes = set(seen_modes)
+        missing_in_action = sorted(catalog_modes - action_modes)
+        undocumented_in_catalog = sorted(action_modes - catalog_modes)
+        if missing_in_action:
+            errors.append(
+                "canonical Action/catalog mode drift: catalog-only "
+                + ", ".join(missing_in_action)
+            )
+        if undocumented_in_catalog:
+            errors.append(
+                "canonical Action/catalog mode drift: action-only "
+                + ", ".join(undocumented_in_catalog)
+            )
 
     if errors:
         raise SystemExit("\n".join(errors))
