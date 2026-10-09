@@ -1,0 +1,57 @@
+{
+  "audit_kind": "executed",
+  "failed": 0,
+  "implementation": "OpenAdaptAI/openadapt-flow",
+  "nonclaims": [
+    "This probe executes a pinned public OpenAdapt commit.",
+    "It validates only the effect-verifier taxonomy boundary exercised here.",
+    "It does not imply OpenAdapt adoption of SpatialRuntime."
+  ],
+  "passed": 6,
+  "probe": "effect-evidence-taxonomy-v0.1",
+  "rows": [
+    {
+      "native": "confirmed",
+      "neutral": "confirmed",
+      "pass": true,
+      "reconciliation_required": false,
+      "transaction_outcome": null
+    },
+    {
+      "native": "refuted",
+      "neutral": "contradicted-or-absent",
+      "pass": true,
+      "reconciliation_required": false,
+      "transaction_outcome": "HALTED_BEFORE_EFFECT"
+    },
+    {
+      "native": "unavailable",
+      "neutral": "unresolved",
+      "pass": true,
+      "reconciliation_required": true,
+      "transaction_outcome": "RECONCILIATION_REQUIRED"
+    },
+    {
+      "native": "stale",
+      "neutral": "unresolved",
+      "pass": true,
+      "reconciliation_required": true,
+      "transaction_outcome": "RECONCILIATION_REQUIRED"
+    },
+    {
+      "native": "conflicting",
+      "neutral": "conflict",
+      "pass": true,
+      "reconciliation_required": true,
+      "transaction_outcome": "RECONCILIATION_REQUIRED"
+    },
+    {
+      "native": "indeterminate",
+      "neutral": "unresolved",
+      "pass": true,
+      "reconciliation_required": true,
+      "transaction_outcome": "RECONCILIATION_REQUIRED"
+    }
+  ],
+  "total": 6
+}

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
 from typing import Any
 
 HERE = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = HERE / "registry.v0.1.json"
 SCHEMA = HERE / "schema.v0.1.json"
 
@@ -25,6 +27,12 @@ ACK = {"none", "unknown", "explicit"}
 def _require(condition: bool, message: str, errors: list[str]) -> None:
     if not condition:
         errors.append(message)
+
+
+def _git_blob_sha(path: Path) -> str:
+    data = path.read_bytes()
+    header = f"blob {len(data)}\0".encode("utf-8")
+    return hashlib.sha1(header + data).hexdigest()
 
 
 def verify(doc: dict[str, Any]) -> dict[str, Any]:
@@ -176,6 +184,52 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
                 f"{prefix}: external consumption requires unrelated project-owned evidence",
                 errors,
             )
+
+        retained = entry.get("retained_report")
+        if maturity in {"externally-executed", "externally-reproduced", "externally-consumed"}:
+            _require(
+                isinstance(retained, dict),
+                f"{prefix}: retained_report required for durable external evidence",
+                errors,
+            )
+            if isinstance(retained, dict):
+                rel = retained.get("path")
+                blob_sha = retained.get("git_blob_sha")
+                _require(
+                    isinstance(rel, str) and bool(rel),
+                    f"{prefix}.retained_report.path required",
+                    errors,
+                )
+                _require(
+                    isinstance(blob_sha, str) and bool(SHA40.fullmatch(blob_sha)),
+                    f"{prefix}.retained_report.git_blob_sha must be 40-hex",
+                    errors,
+                )
+                if isinstance(rel, str) and rel:
+                    report_path = ROOT / rel
+                    _require(
+                        report_path.is_file(),
+                        f"{prefix}: retained report missing: {rel}",
+                        errors,
+                    )
+                    if report_path.is_file() and isinstance(blob_sha, str):
+                        actual_blob = _git_blob_sha(report_path)
+                        _require(
+                            actual_blob == blob_sha,
+                            f"{prefix}: retained report blob drift: {actual_blob} != {blob_sha}",
+                            errors,
+                        )
+                _require(
+                    retained.get("retention") == "git_history",
+                    f"{prefix}.retained_report.retention must be git_history",
+                    errors,
+                )
+                _require(
+                    retained.get("source_artifact_digest")
+                    == (entry.get("execution") or {}).get("artifact_digest"),
+                    f"{prefix}: retained report must bind original artifact digest",
+                    errors,
+                )
 
         if entry.get("adoption_claim") is True:
             _require(
