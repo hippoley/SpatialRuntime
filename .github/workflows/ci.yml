@@ -101,6 +101,8 @@ jobs:
           test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
       - name: Validate neutral conformance catalog
         run: python interop/conformance/verify_catalog.py
+      - name: Guard against false P0 closure classifications
+        run: python -m unittest discover -s docs -p test_verify_p0_closure.py -v
       - name: Verify repository-owned P0 closure
         run: python docs/verify_p0_closure.py
       - name: Validate conformance maturity coverage
