@@ -101,6 +101,8 @@ jobs:
         run: python interop/conformance/verify_catalog.py
       - name: Verify external-results evidence registry
         run: python interop/external-results/verify_registry.py
+      - name: Verify conformance release contract
+        run: python interop/conformance/verify_release_contract.py
       - name: Verify neutral conformance Action entry point
         id: neutral_binding
         uses: ./interop/conformance
