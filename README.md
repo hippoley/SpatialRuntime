@@ -21,7 +21,7 @@ Progress in one lane does **not** prove maturity in the other.
 
 The preferred third-party entry point is now `interop/conformance`, merged via PR #49. Existing consumers can continue using `interop/agent-effect-authority` as a compatibility path.
 
-Current candidate-on-main building blocks include:
+The first stable distribution snapshot is `conformance-v0.1.0`. It freezes the neutral Action/catalog/compatibility set at one green commit; individual profile maturity remains independent.
 
 - effect-evidence hostile vectors and external-verifier adapter protocol;
 - decision→execution binding checks;
@@ -33,12 +33,12 @@ Current candidate-on-main building blocks include:
 
 #### 60-second CI quickstart
 
-Pin an immutable SpatialRuntime commit. Until the first `conformance-v*` release exists, do **not** pin `main`.
+Pin the stable conformance release. Use an exact commit SHA only when reproducing older historical evidence; do **not** pin `main`.
 
 ```yaml
 - name: Check decision/execution binding
   id: spatialruntime
-  uses: hippoley/SpatialRuntime/interop/conformance@ce7cce687e623ed16f9c60db782bed05e9b117ba
+  uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.1.0
   with:
     mode: decision-execution-binding-v0.2
     file: evidence/decision-execution-binding.json
@@ -437,7 +437,7 @@ Reusable GitHub Action:
 
 ```yaml
 - id: conformance
-  uses: hippoley/SpatialRuntime/interop/conformance@<pinned-sha>
+  uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.1.0
   with:
     mode: decision-execution-binding
     file: evidence/decision-execution-binding.json
@@ -446,7 +446,7 @@ Reusable GitHub Action:
   run: exit 1
 ```
 
-Consumers SHOULD pin an immutable commit SHA. `PASS` means only that the supplied evidence satisfies the selected conformance profile; it does not establish real-world effect completion. External projects cited in profile evidence are pressure sources, not adopters or endorsers of SpatialRuntime.
+Consumers SHOULD pin `conformance-v0.1.0` for the published snapshot, or an exact commit SHA for historical evidence. `PASS` means only that the supplied evidence satisfies the selected conformance profile; it does not establish real-world effect completion. External projects cited in profile evidence are pressure sources, not adopters or endorsers of SpatialRuntime.
 
 ## Development
 

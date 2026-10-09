@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: "3.12"
       - id: bundle
-        uses: hippoley/SpatialRuntime/interop/conformance@ce7cce687e623ed16f9c60db782bed05e9b117ba
+        uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.1.0
         with:
           mode: effect-evidence-bundle
           report_path: artifacts/effect-evidence-conformance.json
