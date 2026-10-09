@@ -11,9 +11,10 @@
 
 ## Reproduction method
 
-- Mode: `from_spec_then_conformance`
+- Mode: `other_disclosed`
 - Implementation frozen at: filled after candidate commit
 - First scorer run at: filled after first run
+- Sequence disclosure: `gen_vectors.py` and public producer fixtures were read before the first candidate implementation was written, so this attempt does not satisfy `blind_from_spec` or `from_spec_then_conformance` as clarified by the profile maintainer.
 - Materials read before the implementation was frozen:
   - Assay #1840 public reproduction issue
   - `CONFORMANCE-PROTOCOL.md`
