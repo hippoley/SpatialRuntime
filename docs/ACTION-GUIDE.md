@@ -4,30 +4,39 @@ This file is execution order, not a backlog.
 
 ## 1. Stop creating new public profile brands
 
-Until AD-01, AD-02, AD-03 and CF-06 are closed:
+Until AD-03 and CF-06 are closed:
 - new adversarial cases may extend existing profiles;
 - external standards probes are allowed when they target a measured external gap;
 - no new top-level public conformance vocabulary.
 
-## 2. Make one external entry point canonical
+## 2. One external entry point is canonical — COMPLETED
 
-Target: PR #41.
+Merged via PR #49:
 
-Required before merge:
-- neutral Action path;
-- manifest;
+- neutral `interop/conformance` Action path;
+- machine-readable manifest;
 - safe copy-paste example;
 - external adapter mode;
 - structured outputs;
-- README points to neutral path first.
+- README points to the neutral path first.
+
+Do not reopen this design unless an unrelated consumer demonstrates a concrete incompatibility.
 
 ## 3. Preserve external-result evidence
+
+Canonical registry:
+
+`interop/external-results/registry.v0.1.json`
 
 For each external probe:
 - keep the first run;
 - never rewrite a mismatch out of history;
 - record source commit and profile commit;
-- distinguish queued, executed, and externally reproduced.
+- record workflow run + artifact id + digest;
+- distinguish queued, executed, reproduced, consumed, and acknowledged evidence;
+- never set `adoption_claim=true` without unrelated project-owned consumption evidence.
+
+CI runs `interop/external-results/verify_registry.py`.
 
 ## 4. Drive only demand-side external work
 
