@@ -1,0 +1,97 @@
+{
+  "schema": "spatialruntime.consequential-effects.mutants.v0.1",
+  "benchmark": "consequential-effects-v0.1",
+  "purpose": "Synthetic sensitivity controls. A mutant is killed when at least one scored case's canonical expected verdict differs from the mutant's intentionally faulty verdict.",
+  "nonclaims": [
+    "Mutant kill rate is not an external implementation pass rate.",
+    "These synthetic mutants do not prove the corpus catches every real bug class.",
+    "A mutant must encode a concrete incorrect boundary, not arbitrary output corruption."
+  ],
+  "mutants": [
+    {
+      "id": "accept-self-declared-authority",
+      "defect": "Treat any self-reported CONFIRMED observation as authoritative.",
+      "probes": [
+        {
+          "suite": "iev-adversarial-v0.1",
+          "case_id": "self-declared-authority-rejected",
+          "faulty_verdict": {
+            "status": "CONFIRMED",
+            "reason": "AUTHORITATIVE_OBSERVATION"
+          }
+        }
+      ]
+    },
+    {
+      "id": "accept-stale-authoritative-state",
+      "defect": "Ignore freshness and accept stale authoritative readback.",
+      "probes": [
+        {
+          "suite": "iev-adversarial-v0.1",
+          "case_id": "stale-authoritative-source-still-unresolved",
+          "faulty_verdict": {
+            "status": "CONFIRMED",
+            "reason": "AUTHORITATIVE_OBSERVATION"
+          }
+        }
+      ]
+    },
+    {
+      "id": "promote-transport-ack-to-effect-truth",
+      "defect": "Treat transport acknowledgement as proof of the external effect.",
+      "probes": [
+        {
+          "suite": "iev-adversarial-v0.1",
+          "case_id": "transport-ack-cannot-prove-effect",
+          "faulty_verdict": {
+            "status": "CONFIRMED",
+            "reason": "AUTHORITATIVE_OBSERVATION"
+          }
+        }
+      ]
+    },
+    {
+      "id": "accept-pre-attempt-readback",
+      "defect": "Ignore temporal ordering and allow a pre-attempt observation to close the effect.",
+      "probes": [
+        {
+          "suite": "iev-adversarial-v0.1",
+          "case_id": "pre-attempt-observation-cannot-resolve",
+          "faulty_verdict": {
+            "status": "CONFIRMED",
+            "reason": "AUTHORITATIVE_OBSERVATION"
+          }
+        }
+      ]
+    },
+    {
+      "id": "collapse-authoritative-conflict",
+      "defect": "Collapse contradictory authoritative observations into success.",
+      "probes": [
+        {
+          "suite": "authentic-evidence-conflict-v0.1",
+          "case_id": "two-authoritative-sources-conflict",
+          "faulty_verdict": {
+            "status": "CONFIRMED",
+            "reason": "CONSISTENT_AUTHORITATIVE_EVIDENCE",
+            "ordinary_continuation": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "ignore-logical-effect-id-mismatch",
+      "defect": "Combine observations from different logical effects as one evidence set.",
+      "probes": [
+        {
+          "suite": "authentic-evidence-conflict-v0.1",
+          "case_id": "different-effect-ids-cannot-be-combined",
+          "faulty_verdict": {
+            "status": "CONFLICT",
+            "reason": "AUTHENTIC_EVIDENCE_CONFLICT"
+          }
+        }
+      ]
+    }
+  ]
+}
