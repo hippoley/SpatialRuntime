@@ -134,7 +134,7 @@ Action:
   - real solver deployment;
   - a concrete bug blocking AirTrajectory/HomeAI usage.
 
-## P0 gaps to close before adding new profiles
+## Repository-owned P0 closure — COMPLETE
 
 ### P0-A — Canonical external entry point
 
@@ -179,9 +179,11 @@ and independently:
 
 These axes must not be conflated.
 
-### P0-D — First unrelated consumer
+### External Exit Gate — First unrelated consumer
 
-Issue #14 remains the only adoption gate that matters.
+This is **not** repository-owned P0 work and cannot be made DONE by adding more SpatialRuntime code.
+
+Issue #14 remains the only unrelated-adoption gate that matters. It is tracked separately from P0 because satisfying it requires an independent project to choose a canonical, versioned SpatialRuntime surface at an immutable revision.
 
 Do not close it for:
 - our own second repository;
@@ -189,7 +191,9 @@ Do not close it for:
 - analyst-authored mappings;
 - upstream discussions that do not consume SpatialRuntime.
 
-### P0-E — Explicit application assembly — COMPLETED
+The previous profile-specific adoption probe #47 is closed as superseded by #14 so the project has one adoption success condition rather than multiple competing gates.
+
+### P0-D — Explicit application assembly — COMPLETED
 
 Closed by PR #63.
 
@@ -197,7 +201,7 @@ The runtime can now inject solver/gateway/ledger/device bindings from applicatio
 
 This closes a genuine runtime product gap without reopening arbitrary executable configuration.
 
-### P0-F — Live RuntimeSession resume — COMPLETED
+### P0-E — Live RuntimeSession resume — COMPLETED
 
 Closed by PR #64, merge commit:
 
@@ -211,6 +215,21 @@ Resume requires:
 - only resumable final statuses.
 
 A hardware-incomplete resume preserves `committed_target_unconfirmed` and remains fail-closed until fresh device evidence arrives.
+
+
+### P0 closure result
+
+All repository-owned P0 items are now closed:
+
+- P0-A canonical external entry point — CI-checked canonical Action/catalog;
+- P0-B evidence artifact retention — Git-retained machine reports + registry integrity checks;
+- P0-C maturity matrix — semantic maturity and evidence maturity checked independently in CI;
+- P0-D explicit application assembly — merged runtime behavior;
+- P0-E live RuntimeSession resume — merged fail-closed recovery behavior.
+
+The unrelated-consumer threshold is intentionally **not** counted as P0 completion because it is an external adoption outcome, not work the repository can honestly self-complete.
+
+This means new internal work must now be justified by an external consumer, real deployment, upstream request, or discovered correctness failure. P0 status may not be reopened for roadmap convenience.
 
 ## P1 gaps
 
