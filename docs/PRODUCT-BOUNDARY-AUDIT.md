@@ -55,7 +55,7 @@ Legend:
 | CF-02 | As a runtime author, I can plug my own verifier into hostile effect-evidence vectors | DONE | external adapter protocol and bundle are on main |
 | CF-03 | As a consumer, I can discover available conformance modes and versions machine-readably | DONE | machine-readable catalog merged via PR #49 |
 | CF-04 | As a consumer, I can copy one minimal workflow and get a safe default that cannot manufacture PASS | DONE | quickstart merged via PR #49; adapter stub defaults to UNRESOLVED |
-| CF-05 | As a maintainer, I can distinguish source review from executed/reproduced evidence | PARTIAL | OpenAdapt and AgentX probes are now executed; Assay was officially scored, but unrelated reproduction/consumption still remains open |
+| CF-05 | As a maintainer, I can distinguish source review from executed/reproduced evidence | DONE | `interop/external-results/registry.v0.1.json` records method, run, artifact digest, maturity, acknowledgment and adoption ceiling; CF-06 separately tracks unrelated consumption |
 | CF-06 | As an unrelated project, I can pin SpatialRuntime and use it in my CI/release process | OPEN | issue #14 remains the adoption gate |
 | CF-07 | As a standards/profile author, I can use SpatialRuntime hostile vectors to increase my own corpus discrimination | PARTIAL | Assay Stage-3 proposal published; not yet adopted upstream |
 | CF-08 | As an external profile author, I can run a SpatialRuntime candidate against my official scorer | DONE | Assay official scorer completed 14/14 with method `other_disclosed`; claim ceiling excludes blind independence |
@@ -187,20 +187,20 @@ Needed:
 - changelog/migration note for semantic changes;
 - deprecation window for old modes.
 
-### P1-B — External-results registry
+### P1-B — External-results registry — COMPLETED
 
-A result registry should record only verifiable public evidence.
+Implemented:
 
-Minimum fields:
-- implementation
-- implementation revision
-- profile/vector revision
-- evidence method
-- run artifact
-- observed result
-- source project acknowledgment (optional, explicit)
+- `interop/external-results/registry.v0.1.json`
+- `interop/external-results/schema.v0.1.json`
+- `interop/external-results/verify_registry.py`
+- CI validation
 
-No project is called an adopter without project-owned evidence.
+The first registry entries freeze OpenAdapt, AgentX and Assay execution lineage including implementation/profile revision, workflow run, artifact id/digest, evidence method, observed result, acknowledgment state and adoption claim ceiling.
+
+The validator rejects an `adoption_claim=true` unless evidence maturity is `externally-consumed` and unrelated project-owned consumer evidence exists.
+
+This closes the evidence-classification user story. It does **not** close CF-06; no unrelated consumer is claimed.
 
 ### P1-C — Root README product split
 
