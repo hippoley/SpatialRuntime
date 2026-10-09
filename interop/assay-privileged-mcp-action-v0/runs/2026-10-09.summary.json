@@ -1,0 +1,88 @@
+{
+  "schema": "spatialruntime.external-conformance-run.v0.1",
+  "external_profile": "privileged-mcp-action/v0",
+  "upstream": "Rul1an/assay",
+  "reproduction_mode": "other_disclosed",
+  "authorship_method": "agent-assisted",
+  "successful_workflow_run": 37869812018,
+  "failed_harness_workflow_run": 37762433820,
+  "artifact_id": 11589459426,
+  "artifact_digest": "sha256:bbb536f94f807ee688ca828448f8de7c116d2f917a2eb78fdd05ccff9b8a46b3",
+  "implementation_commit": "009de9eccc2ec6cdfe14c75432941fdf9eb1522c",
+  "pack_sha256": "sha256:4a3d5a713d424b37eb77ab238e73582e3dd26d42f8b656d0a6216c2993909b72",
+  "source_corpus_digest": "sha256:cb58ce91863f52e0568742b977f0642158453ec11bbcd25821f9171dccd03342",
+  "rendered_set_digest": "sha256:b2f715408c82346b0928852f0bc6cb11c17dd7e3233395316d764b282080a05c",
+  "scorer_commit": "2c692088d794345235809b038d729e589e339c3d",
+  "summary": {
+    "total": 14,
+    "match": 14,
+    "mismatch": 0,
+    "execution_error": 0,
+    "harness_error": 0,
+    "review_warnings": 0
+  },
+  "case_statuses": [
+    {
+      "case_id": "case-001",
+      "status": "match"
+    },
+    {
+      "case_id": "case-002",
+      "status": "match"
+    },
+    {
+      "case_id": "case-003",
+      "status": "match"
+    },
+    {
+      "case_id": "case-004",
+      "status": "match"
+    },
+    {
+      "case_id": "case-005",
+      "status": "match"
+    },
+    {
+      "case_id": "case-006",
+      "status": "match"
+    },
+    {
+      "case_id": "case-007",
+      "status": "match"
+    },
+    {
+      "case_id": "case-008",
+      "status": "match"
+    },
+    {
+      "case_id": "case-009",
+      "status": "match"
+    },
+    {
+      "case_id": "case-010",
+      "status": "match"
+    },
+    {
+      "case_id": "case-011",
+      "status": "match"
+    },
+    {
+      "case_id": "case-012",
+      "status": "match"
+    },
+    {
+      "case_id": "case-013",
+      "status": "match"
+    },
+    {
+      "case_id": "case-014",
+      "status": "match"
+    }
+  ],
+  "claim_ceiling": [
+    "agreement on the pinned 14-case corpus only",
+    "not blind_from_spec",
+    "does not establish implementation independence",
+    "does not establish security, compliance, complete profile determinacy, or provider outcomes"
+  ]
+}
