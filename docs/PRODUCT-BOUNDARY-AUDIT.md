@@ -51,7 +51,7 @@ Legend:
 | SR-05 | As a hardware user, I can dispatch through a real gateway/device fleet and prove physical convergence | PARTIAL | SpatialRuntime gateway/ledger contracts exist; WindowPilot has a real CWDS-CA01 hardware/identity/write-gate path, but its own claim ceiling still withholds physical τ₀ until a real window movement is measured |
 | SR-06 | As an operator, I can prove durable restart/recovery behavior against real device-side uncertainty | PARTIAL | durable ledger/reconciliation logic exists and owned downstream hardware contracts are stronger, but no field-grade restart/recovery evidence from a real device deployment is frozen yet |
 | SR-07 | As a scene-source consumer, I can use the same reviewed world model from an unrelated BIM/CAD/SLAM integration | PARTIAL | owned scene-source repo `interior-kitchen-original` exports `spatialruntime_world_snapshot_v1`, imports SpatialRuntime `WorldSnapshot`, validates handoff hashes, and rejects stale source drift in CI; unrelated BIM/CAD/SLAM consumption is still missing |
-| CF-01 | As a runtime author, I can run stable conformance checks without adopting SpatialRuntime internals | DONE | neutral `interop/conformance` Action merged via PR #49; legacy AEA path retained for compatibility |
+| CF-01 | As a runtime author, I can run conformance checks without adopting SpatialRuntime internals | DONE | neutral Action is canonical; declaration-only modes no longer manufacture semantic PASS |
 | CF-02 | As a runtime author, I can plug my own verifier into hostile effect-evidence vectors | DONE | external adapter protocol and bundle are on main |
 | CF-03 | As a consumer, I can discover available conformance modes and versions machine-readably | DONE | machine-readable catalog merged via PR #49 |
 | CF-04 | As a consumer, I can copy one minimal workflow and get a safe default that cannot manufacture PASS | DONE | quickstart merged via PR #49; adapter stub defaults to UNRESOLVED |
@@ -64,8 +64,8 @@ Legend:
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
 | AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | compatibility/deprecation contract is defined and CI-validated; consumers still pin immutable commit SHAs because no stable conformance release/tag is claimed yet |
-| AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | `interop/conformance-maturity.v0.1.json` added by this audit |
-| AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |
+| AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | every canonical mode is mapped exactly once in the maturity registry and CI rejects drift |
+| AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |\n| AD-06 | As a consumer, I can distinguish declaration validity from independently verified conformance | DONE | envelope-only modes expose `validation_result` + `assessment_scope=envelope_only` and remain conformance UNRESOLVED |\n| AD-07 | As a consumer, I know neutral Action runner prerequisites before adoption | DONE | catalog + README declare bash and Python >=3.10 requirements |
 
 ## What is actually finished
 
