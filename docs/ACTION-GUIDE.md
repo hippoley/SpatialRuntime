@@ -27,17 +27,16 @@ Current investment order:
    - owned downstream AirTrajectory already supplies real Windows/ContamX grounding;
    - improve retention/public reproducibility only when it adds evidence quality, not architecture.
 
-4. **AD-03 immutable conformance release tag**
-   - reduces adoption friction;
-   - useful only after an exact green commit is selected;
-   - does not count as external adoption.
+4. **CF-07 upstream vector/corpus acceptance**
+   - Assay Stage-3 is already scoped to a measured discrimination gap;
+   - advance only on maintainer review/adoption, not by adding private variants.
 
 Switch away from any line when two high-quality external attempts produce no maintainer response, consumer run, counterexample, citation, or upstream path.
 
 
 ## 1. Stop creating new public profile brands
 
-Until AD-03 and CF-06 are closed:
+Until CF-06 is closed:
 - new adversarial cases may extend existing profiles;
 - external standards probes are allowed when they target a measured external gap;
 - no new top-level public conformance vocabulary.
@@ -101,20 +100,18 @@ Until then, stars, self-consumption and our own cross-repo use are supporting si
 Do not relabel CF-06 as unfinished P0. The repository cannot honestly self-manufacture an unrelated consumer.
 
 
-## 7. Release discipline
+## 7. Release discipline — first release completed
 
-AD-03 remains PARTIAL until a real immutable `conformance-v*` tag exists.
+`conformance-v0.1.0` is published at green commit `6d8e0d4a5c9c665e10dad853ab6aadc280db6b55`, with an annotated-tag manifest and a GitHub Release asset.
 
-Before creating a tag:
-1. repository CI is green;
-2. `verify_catalog.py` passes;
-3. `verify_registry.py` passes;
-4. `verify_release_contract.py` passes;
-5. generate the release manifest with `prepare_release.py` for the exact commit;
-6. review `CHANGELOG.md`;
-7. create the immutable tag/release.
+For future releases, keep the same gate:
+1. repository CI green;
+2. catalog / external-results / release-contract / P0 validators green;
+3. release manifest generated for the exact target commit;
+4. tag never moved after publication;
+5. compatibility/migration notes updated before any semantic change.
 
-A branch name or package version is not a conformance release.
+Release packaging remains separate from semantic maturity and unrelated adoption.
 
 
 ## 8. Do not compete with generic protocol formalization
