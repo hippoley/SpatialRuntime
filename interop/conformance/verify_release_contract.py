@@ -82,8 +82,19 @@ def main() -> None:
         errors.append('legacy AEA compatibility action missing from catalog')
 
     changelog_text = CHANGELOG.read_text(encoding='utf-8')
-    if 'No immutable' not in changelog_text or 'tag exists yet.' not in changelog_text:
-        errors.append('changelog must state current no-tag release blocker')
+    policy_text = POLICY.read_text(encoding='utf-8')
+    if '## Unreleased' not in changelog_text:
+        errors.append('changelog must retain an Unreleased section')
+
+    released_tag = 'conformance-v0.1.0'
+    released_commit = '6d8e0d4a5c9c665e10dad853ab6aadc280db6b55'
+    released_run = '37878503867'
+    released_digest = 'a567aa55052c055a174891037d65c5d72a09dea2ece2fc9e963b0675397994dc'
+    release_markers = (released_tag, released_commit, released_run, released_digest)
+    if any(marker not in changelog_text for marker in release_markers):
+        errors.append('changelog release evidence is incomplete')
+    if released_tag not in policy_text or released_commit not in policy_text:
+        errors.append('release policy does not identify the published release target')
 
     report = {
         'schema': contract.get('schema'),
