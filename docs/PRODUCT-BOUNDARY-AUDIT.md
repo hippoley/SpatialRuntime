@@ -52,7 +52,7 @@ Legend:
 | SR-06 | As an operator, I can prove durable restart/recovery behavior against real device-side uncertainty | PARTIAL | durable ledger/reconciliation logic exists and owned downstream hardware contracts are stronger, but no field-grade restart/recovery evidence from a real device deployment is frozen yet |
 | SR-07 | As a scene-source consumer, I can use the same reviewed world model from an unrelated BIM/CAD/SLAM integration | PARTIAL | owned scene-source repo `interior-kitchen-original` exports `spatialruntime_world_snapshot_v1`, imports SpatialRuntime `WorldSnapshot`, validates handoff hashes, and rejects stale source drift in CI; unrelated BIM/CAD/SLAM consumption is still missing |
 | SR-08 | As an application, I can inject a real solver/gateway into the same closed loop without making scenario JSON executable | DONE | PR #63 merged as `10b5c2e81a8ea3565ed801e522f2ca06acb2c6d8`; explicit application assembly injects solver/gateway/ledger/bindings from code, fingerprints them in the execution manifest, and keeps executable dependency config out of scenario data |
-| SR-09 | As an operator, I can rebuild a live RuntimeSession from a validated saved episode and continue safely | PARTIAL | PR #64 implements manifest-bound resume, catalog/graph fingerprint checks, history/state/step restoration, and fail-closed hardware-incomplete resume; CI fix is in progress before merge |
+| SR-09 | As an operator, I can rebuild a live RuntimeSession from a validated saved episode and continue safely | DONE | PR #64 merged as `ce7cce687e623ed16f9c60db782bed05e9b117ba`; resume validates bundle/manifest, rebinds catalog and safety-graph fingerprints, restores history/state/step/revision, and preserves fail-closed hardware-incomplete uncertainty |
 | CF-01 | As a runtime author, I can run conformance checks without adopting SpatialRuntime internals | DONE | neutral Action is canonical; declaration-only modes no longer manufacture semantic PASS |
 | CF-02 | As a runtime author, I can plug my own verifier into hostile effect-evidence vectors | DONE | external adapter protocol and bundle are on main |
 | CF-03 | As a consumer, I can discover available conformance modes and versions machine-readably | DONE | machine-readable catalog merged via PR #49 |
@@ -121,10 +121,10 @@ Action:
 The spatial lane has enough architecture to serve as grounding.
 
 The 2026-10-09 re-audit found two closure gaps rather than new subsystems:
-- explicit application assembly — now closed by PR #63;
-- live session resume — PR #64 in review.
+- explicit application assembly — closed by PR #63;
+- live session resume — closed by PR #64.
 
-After those closure fixes, return to the freeze.
+Both repository-owned closure gaps are now complete. Return to the spatial expansion freeze.
 
 Action:
 - no new large spatial subsystem until at least one trigger exists:
@@ -196,11 +196,13 @@ The runtime can now inject solver/gateway/ledger/device bindings from applicatio
 
 This closes a genuine runtime product gap without reopening arbitrary executable configuration.
 
-### P0-F — Live RuntimeSession resume — IN REVIEW
+### P0-F — Live RuntimeSession resume — COMPLETED
 
-PR #64 adds first-class resume from a validated episode bundle.
+Closed by PR #64, merge commit:
 
-Required checks:
+`ce7cce687e623ed16f9c60db782bed05e9b117ba`
+
+Resume requires:
 - bundle/trace integrity;
 - execution manifest present;
 - exact entity-catalog fingerprint;
@@ -208,8 +210,6 @@ Required checks:
 - only resumable final statuses.
 
 A hardware-incomplete resume preserves `committed_target_unconfirmed` and remains fail-closed until fresh device evidence arrives.
-
-This P0 is closed only after PR #64 CI is green and the change is merged.
 
 ## P1 gaps
 
