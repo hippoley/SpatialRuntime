@@ -43,7 +43,7 @@ jobs:
           implementation-name: "SpatialRuntime Python candidate"
           implementation-source: ${{ github.server_url }}/${{ github.repository }}
           implementation-commit: ${{ github.sha }}
-          reproduction-mode: from_spec_then_conformance
+          reproduction-mode: other_disclosed
           report: assay-pmav0-conformance.json
 
       - name: Upload scorer report
