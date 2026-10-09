@@ -34,6 +34,19 @@ Current investment order:
 Switch away from any line when two high-quality external attempts produce no maintainer response, consumer run, counterexample, citation, or upstream path.
 
 
+## 0.5 Two-layer closure gate
+
+Every User Story now has two acceptance layers:
+
+1. longitudinal requirement closure in `PRODUCT-BOUNDARY-AUDIT.md`;
+2. horizontal system closure in `horizontal-completeness.v0.1.json`.
+
+Do not call a story **Verified Closed** unless both layers pass.
+
+Before adding code to a PARTIAL/OPEN story, classify the blocker as repository-owned, field, unrelated-external, or upstream-governance. Field/external/upstream gates do not become internal feature work merely because they remain open.
+
+The P0 verifier executes the horizontal adversarial acceptance checks through P0-F.
+
 ## 1. Stop creating new public profile brands
 
 Until CF-06 is closed:
