@@ -62,3 +62,20 @@ No architecture expansion for hypothetical future scene sources.
 The project enters the next identity tier only when issue #14 is satisfied by an unrelated repository.
 
 Until then, stars, self-consumption and our own cross-repo use are supporting signals, not the goal.
+
+
+## 7. Release discipline
+
+AD-03 is PARTIAL until a real immutable `conformance-v*` tag exists.
+
+Before creating a tag:
+
+1. CI must pass;
+2. `verify_catalog.py` must pass;
+3. `verify_registry.py` must pass;
+4. `verify_release_contract.py` must pass;
+5. generate the release manifest with `prepare_release.py` using the exact commit;
+6. review `CHANGELOG.md`;
+7. create the immutable tag/release outside this repository's mutable branches.
+
+A branch named like a release is not a release. A package version is not a conformance release. Do not mark AD-03 DONE until the immutable Git ref exists.
