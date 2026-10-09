@@ -9,7 +9,7 @@ It deliberately does **not** require a caller to adopt the Agent Effect Authorit
 ```yaml
 - name: Verify decision → execution binding
   id: conformance
-  uses: hippoley/SpatialRuntime/interop/conformance@<pinned-sha>
+  uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.1.0
   with:
     mode: decision-execution-binding
     file: evidence/decision-execution-binding.json
@@ -19,7 +19,7 @@ It deliberately does **not** require a caller to adopt the Agent Effect Authorit
   run: exit 1
 ```
 
-Consumers should pin an immutable commit SHA.
+Consumers should pin the published `conformance-v0.1.0` tag. Use an exact commit SHA when reproducing evidence created before that release.
 
 Runtime prerequisites: the composite Action expects `bash` and `python >= 3.10` to already be available on the runner. It does not install Python. External adapter commands may require additional consumer-owned dependencies.
 
@@ -42,7 +42,7 @@ A successful process exit does not always mean `PASS`. `claim`, `mapping`, and `
 
 `manifest.v0.1.json` lists the currently exposed Action modes, profile versions, verifier entry points, structured outputs, and result semantics.
 
-This catalog is descriptive: it does not override the profile files or verifier behavior. Consumers should still pin an immutable SpatialRuntime commit SHA.
+This catalog is descriptive: it does not override the profile files or verifier behavior. Consumers should pin `conformance-v0.1.0` for the released snapshot, or an exact commit SHA for older evidence.
 
 `verify_catalog.py` checks that every catalog mode points to an existing verifier, that its declared profile/version matches the source artifact exactly, and that structured modes expose `conformance_result`. Repository CI runs this check to prevent catalog drift.
 
@@ -55,7 +55,7 @@ The adapter contract is `effect-evidence-adapter.v0.1`: one JSON envelope on std
 ```yaml
 - name: Run hostile effect-evidence vectors against our verifier
   id: effect_evidence
-  uses: hippoley/SpatialRuntime/interop/conformance@<pinned-sha>
+  uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.1.0
   with:
     mode: effect-evidence-bundle
     adapter_command: python scripts/my_effect_verifier_adapter.py
@@ -100,7 +100,7 @@ The quickstart intentionally has no default passing adapter.
 ```yaml
 - name: Verify temporal approval → execution binding
   id: binding
-  uses: hippoley/SpatialRuntime/interop/conformance@<pinned-sha>
+  uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.1.0
   with:
     mode: decision-execution-binding-v0.2
     file: evidence/decision-execution-v0.2.json
@@ -121,4 +121,4 @@ Key guarantees for the current candidate channel:
 - deprecated modes are declared before removal and are never repurposed for incompatible meaning;
 - durable historical reports keep the meaning of the pinned profile/vector revision.
 
-There is **not yet a stable conformance release tag**. Consumers should continue to pin an immutable commit SHA. The compatibility contract reduces semantic drift risk but does not itself upgrade the project to stable or externally adopted.
+`conformance-v0.1.0` is the first stable distribution tag for this Action/catalog snapshot. Release packaging does not promote experimental profile semantics and does not establish unrelated external adoption.
