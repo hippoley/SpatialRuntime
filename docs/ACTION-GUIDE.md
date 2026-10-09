@@ -92,11 +92,13 @@ The explicit application assembly and live-session resume closure work is comple
 
 No architecture expansion for hypothetical future scene sources.
 
-## 6. Adoption close condition
+## 6. Repository P0 is machine-closed; adoption is an external exit gate
 
-The project enters the next identity tier only when issue #14 is satisfied by an unrelated repository.
+`docs/verify_p0_closure.py` enforces that every repository-owned P0 remains backed by its evidence artifacts in CI. The project enters the next identity tier only when issue #14 is satisfied by an unrelated repository.
 
 Until then, stars, self-consumption and our own cross-repo use are supporting signals, not the goal.
+
+Do not relabel CF-06 as unfinished P0. The repository cannot honestly self-manufacture an unrelated consumer.
 
 
 ## 7. Release discipline
