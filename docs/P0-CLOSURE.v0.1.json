@@ -1,0 +1,68 @@
+{
+  "schema": "spatialruntime.p0-closure.v0.1",
+  "generated_for": "2026-10-09 repository truth audit",
+  "rule": "Repository-owned P0s may close by code+test+CI evidence. External-adoption P0-D may close only from unrelated externally-consumed evidence in the canonical external-results registry.",
+  "p0": [
+    {
+      "id": "P0-A",
+      "name": "Canonical external entry point",
+      "owner": "repository",
+      "expected": "CLOSED",
+      "evidence_paths": [
+        "interop/conformance/action.yml",
+        "interop/conformance/manifest.v0.1.json",
+        "interop/conformance/verify_catalog.py",
+        "interop/conformance/examples/github-action.yml"
+      ]
+    },
+    {
+      "id": "P0-B",
+      "name": "Durable external evidence retention",
+      "owner": "repository",
+      "expected": "CLOSED",
+      "evidence_paths": [
+        "interop/external-results/registry.v0.1.json",
+        "interop/external-results/schema.v0.1.json",
+        "interop/external-results/verify_registry.py"
+      ]
+    },
+    {
+      "id": "P0-C",
+      "name": "Conformance maturity matrix",
+      "owner": "repository",
+      "expected": "CLOSED",
+      "evidence_paths": [
+        "interop/conformance-maturity.v0.1.json",
+        "interop/verify_maturity.py"
+      ]
+    },
+    {
+      "id": "P0-D",
+      "name": "First unrelated consumer",
+      "owner": "external",
+      "expected": "OPEN_UNTIL_EXTERNAL_EVIDENCE",
+      "evidence_source": "interop/external-results/registry.v0.1.json",
+      "closure_rule": "At least one entry must be evidence_maturity=externally-consumed, external_consumption=true, and contain consumer.project_owned_evidence=true for a repository not owned by hippoley."
+    },
+    {
+      "id": "P0-E",
+      "name": "Explicit application assembly",
+      "owner": "repository",
+      "expected": "CLOSED",
+      "evidence_paths": [
+        "src/spatialruntime/runtime/application.py",
+        "tests/test_runtime_application_assembly.py"
+      ]
+    },
+    {
+      "id": "P0-F",
+      "name": "Safe live RuntimeSession resume",
+      "owner": "repository",
+      "expected": "CLOSED",
+      "evidence_paths": [
+        "src/spatialruntime/runtime/replay.py",
+        "tests/test_runtime_session_resume.py"
+      ]
+    }
+  ]
+}
