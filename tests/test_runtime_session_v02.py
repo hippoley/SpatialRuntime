@@ -139,3 +139,106 @@ def test_hardware_feedback_becomes_next_state_and_trace_can_advance():
     with pytest.raises(RuntimeSessionError):
         # Stale trace is rejected even before integrity would be considered.
         s.advance(tampered)
+
+
+def test_unconfirmed_hardware_target_cannot_become_next_safe_control_state():
+    s = session()
+    ledger = CommandLedger()
+    gateway = MockGateway(offline_devices={"window-1"})
+
+    first = s.execute(
+        solver_feedback=solver(),
+        policy_action=action(0.7),
+        safety_context=context(),
+        gateway=gateway,
+        command_ledger=ledger,
+        device_bindings={"w": {"device_id": "window-1"}},
+        now_ms=1000,
+    )
+
+    assert first["status"] == "hardware_incomplete"
+    assert first["next_runtime_state"]["w"]["executed_state"]["open_ratio"] == 0.7
+    assert first["next_runtime_state"]["w"]["state_source"] == "committed_target_unconfirmed"
+
+    s.advance(first)
+    assert (s.step, s.revision) == (1, 1)
+
+    second = s.execute(
+        solver_feedback={
+            "source_step": 1,
+            "source_revision": 1,
+            "zones": {},
+            "flow_paths": {},
+        },
+        policy_action={
+            "source_step": 1,
+            "source_revision": 1,
+            "changes": {"w": {"open_ratio": 0.8}},
+        },
+        safety_context={
+            "source_step": 1,
+            "source_revision": 1,
+            "sensors": {"rain": {"value": "dry"}},
+        },
+    )
+
+    assert second["status"] == "observation_blocked"
+    assert second["blocked_at"] == "observation"
+    disagreements = second["stages"]["reconcile"]["disagreements"]
+    assert any(
+        item["kind"] == "unconfirmed_committed_target"
+        and item["entity_id"] == "w"
+        and item["severity"] == "hard"
+        for item in disagreements
+    )
+
+
+def test_fresh_device_feedback_can_clear_unconfirmed_target_state():
+    s = RuntimeSession(
+        case_id="case",
+        step=1,
+        revision=1,
+        runtime_state={
+            "w": {
+                "executed_state": {"open_ratio": 0.7},
+                "state_source": "committed_target_unconfirmed",
+            }
+        },
+        entity_catalog=CATALOG,
+        compiled_safety_graph=compiled_graph(),
+    )
+
+    trace = s.execute(
+        solver_feedback={
+            "source_step": 1,
+            "source_revision": 1,
+            "zones": {},
+            "flow_paths": {},
+        },
+        device_feedback={
+            "source_step": 1,
+            "source_revision": 1,
+            "devices": {
+                "w": {"quality": 1.0, "state": {"open_ratio": 0.7}},
+            },
+        },
+        policy_action={
+            "source_step": 1,
+            "source_revision": 1,
+            "changes": {},
+        },
+        safety_context={
+            "source_step": 1,
+            "source_revision": 1,
+            "sensors": {"rain": {"value": "dry"}},
+        },
+    )
+
+    assert trace["status"] == "completed"
+    device = trace["stages"]["reconcile"]["devices"]["w"]
+    assert device["source"] == "device_feedback"
+    assert device["confidence"] == 1.0
+    assert not any(
+        item["kind"] == "unconfirmed_committed_target"
+        for item in trace["stages"]["reconcile"]["disagreements"]
+    )
