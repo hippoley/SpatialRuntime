@@ -51,21 +51,37 @@ Legend:
 | SR-05 | As a hardware user, I can dispatch through a real gateway/device fleet and prove physical convergence | PARTIAL | gateway/ledger contracts exist; repository examples remain fixture/mock-oriented |
 | SR-06 | As an operator, I can prove durable restart/recovery behavior against real device-side uncertainty | PARTIAL | durable ledger/reconciliation logic exists; no unrelated production deployment evidence |
 | SR-07 | As a scene-source consumer, I can use the same reviewed world model from an unrelated BIM/CAD/SLAM integration | OPEN | architecture supports adapters, but no unrelated scene-source integration is recorded |
-| CF-01 | As a runtime author, I can run stable conformance checks without adopting SpatialRuntime internals | DONE | neutral `interop/conformance` Action merged via PR #49; legacy AEA path retained for compatibility |
+| CF-01 | As a runtime author, I can run conformance checks without adopting SpatialRuntime internals | DONE | neutral `interop/conformance` Action is canonical; envelope-only declaration modes no longer manufacture conformance PASS |
 | CF-02 | As a runtime author, I can plug my own verifier into hostile effect-evidence vectors | DONE | external adapter protocol and bundle are on main |
-| CF-03 | As a consumer, I can discover available conformance modes and versions machine-readably | DONE | machine-readable catalog merged via PR #49 |
+| CF-03 | As a consumer, I can discover available conformance modes, outputs, prerequisites and versions machine-readably | DONE | catalog is cross-checked against Action modes, structured outputs, runtime prerequisites, release policy and maturity coverage |
 | CF-04 | As a consumer, I can copy one minimal workflow and get a safe default that cannot manufacture PASS | DONE | quickstart merged via PR #49; adapter stub defaults to UNRESOLVED |
 | CF-05 | As a maintainer, I can distinguish source review from executed/reproduced evidence | DONE | `interop/external-results/registry.v0.1.json` records method, run, artifact digest, maturity, acknowledgment and adoption ceiling; CF-06 separately tracks unrelated consumption |
 | CF-06 | As an unrelated project, I can pin SpatialRuntime and use it in my CI/release process | OPEN | issue #14 remains the adoption gate |
 | CF-07 | As a standards/profile author, I can use SpatialRuntime hostile vectors to increase my own corpus discrimination | PARTIAL | Assay Stage-3 proposal published; not yet adopted upstream |
-| CF-08 | As an external profile author, I can run a SpatialRuntime candidate against my official scorer | DONE | Assay official scorer completed 14/14 with method `other_disclosed`; claim ceiling excludes blind independence |
+| CF-08 | As an external profile author, I can run a SpatialRuntime candidate against my official scorer | DONE | Assay official scorer completed 14/14 with method `other_disclosed`; full verifier/report/run lineage is now durable on main via PR #50 |
 | CF-09 | As an observability maintainer, I can review a precise tool-execution vs external-effect boundary upstream | PARTIAL | OpenTelemetry #588 open; no human review yet |
 | CF-10 | As a standards community, I can reuse a SpatialRuntime reporting/provenance format | HOLD | do not invent a parallel standard; align to upstream communities |
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
-| AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | OPEN | package version exists, but no conformance release/tag lifecycle is defined |
-| AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | `interop/conformance-maturity.v0.1.json` added by this audit |
+| AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | release policy + changelog are defined and linked from the catalog; no immutable conformance tag/release has been published yet |
+| AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | maturity registry now maps every canonical catalog mode exactly once; `interop/verify_maturity.py` enforces coverage in CI |
 | AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |
+| AD-06 | As a consumer, I can distinguish envelope validity from independently verified conformance | DONE | envelope-only modes expose validation scope and remain conformance UNRESOLVED |
+| AD-07 | As a consumer, I can know runner prerequisites before adopting the Action | DONE | catalog + README declare bash and Python >=3.10 requirements |
+
+## 2026-10-09 deep-audit corrections
+
+This pass found several places where documentation maturity was ahead of repository truth:
+
+- duplicate PR #40 was still open after equivalent correctness work merged in #37; #40 is now closed as superseded;
+- Assay's full durable evidence lived outside main even though the registry summarized it; PR #50 is now merged and preserves the verifier, report, Stage-3 proposal and scored summary on main;
+- the canonical catalog misdeclared structured outputs for several modes;
+- neutral `claim` / `mapping` modes incorrectly promoted envelope validity to conformance `PASS`;
+- the maturity registry did not cover every canonical mode and had no drift check;
+- runner prerequisites were implicit;
+- no conformance release lifecycle existed and GitHub Releases were empty.
+
+The audit rule is now stricter: a user story is not DONE merely because prose, a self-test, or a registry summary exists. Its public contract must be executable, truthfully scoped, and drift-checked where possible.
 
 ## What is actually finished
 
@@ -177,15 +193,19 @@ Do not close it for:
 
 ## P1 gaps
 
-### P1-A — Release lifecycle
+### P1-A — Release lifecycle — PARTIAL
 
-Conformance users should not be forced to pin arbitrary moving commits forever.
+Implemented internally:
+- machine-readable release policy;
+- immutable tag naming contract;
+- compatibility/deprecation rules;
+- conformance changelog;
+- catalog linkage + CI validation.
 
-Needed:
-- versioned conformance manifest;
-- immutable Git tag/release for stable profiles;
-- changelog/migration note for semantic changes;
-- deprecation window for old modes.
+Still externally incomplete:
+- no immutable conformance tag/release has been published yet.
+
+Do not publish the first tag until the public result-semantics correction is merged and green.
 
 ### P1-B — External-results registry — COMPLETED
 
