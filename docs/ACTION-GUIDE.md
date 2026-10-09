@@ -23,11 +23,19 @@ Required before merge:
 
 ## 3. Preserve external-result evidence
 
+Canonical registry:
+
+`interop/external-results/registry.v0.1.json`
+
 For each external probe:
 - keep the first run;
 - never rewrite a mismatch out of history;
 - record source commit and profile commit;
-- distinguish queued, executed, and externally reproduced.
+- record workflow run + artifact id + digest;
+- distinguish queued, executed, reproduced, consumed, and acknowledged evidence;
+- never set `adoption_claim=true` without unrelated project-owned consumption evidence.
+
+CI runs `interop/external-results/verify_registry.py`.
 
 ## 4. Drive only demand-side external work
 
