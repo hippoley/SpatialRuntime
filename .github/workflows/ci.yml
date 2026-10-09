@@ -99,6 +99,8 @@ jobs:
           test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
       - name: Validate neutral conformance catalog
         run: python interop/conformance/verify_catalog.py
+      - name: Verify repository-owned P0 closure
+        run: python docs/verify_p0_closure.py
       - name: Validate conformance maturity coverage
         run: python interop/verify_maturity.py
       - name: Verify envelope-only claim semantics through neutral action
