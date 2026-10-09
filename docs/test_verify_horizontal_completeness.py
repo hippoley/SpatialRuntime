@@ -80,5 +80,15 @@ class HorizontalCompletenessVerifierTests(unittest.TestCase):
         self.assertTrue(any("vertical status drift" in e for e in report["errors"]))
 
 
+    def test_generic_ci_alone_cannot_prove_verified_dimension(self):
+        doc = copy.deepcopy(self.base_doc)
+        doc["stories"]["CF-01"]["dimensions"]["functional_completeness"]["evidence"] = [
+            "repo:.github/workflows/ci.yml"
+        ]
+        report = self._verify(doc)
+        self.assertFalse(report["horizontal_audit_valid"])
+        self.assertTrue(any("generic CI" in e for e in report["errors"]))
+
+
 if __name__ == "__main__":
     unittest.main()
