@@ -202,13 +202,13 @@ The validator rejects an `adoption_claim=true` unless evidence maturity is `exte
 
 This closes the evidence-classification user story. It does **not** close CF-06; no unrelated consumer is claimed.
 
-### P1-C — Root README product split
+### P1-C — Root README product split — COMPLETED
 
-Root README should present:
+Root README now presents:
 1. Conformance / interoperability — preferred external adoption path.
 2. Executable spatial runtime — reference/grounding runtime.
 
-The current README reverses that priority.
+The two product lanes and their separate maturity claims are explicit on the first screen.
 
 ## Stop / switch criteria
 
