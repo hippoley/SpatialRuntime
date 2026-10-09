@@ -92,11 +92,13 @@ The explicit application assembly and live-session resume closure work is comple
 
 No architecture expansion for hypothetical future scene sources.
 
-## 6. Adoption close condition
+## 6. Repository P0 is closed; adoption is an external exit gate
 
-The project enters the next identity tier only when issue #14 is satisfied by an unrelated repository.
+All repository-owned P0 closure work is complete. The project enters the next identity tier only when issue #14 is satisfied by an unrelated repository.
 
 Until then, stars, self-consumption and our own cross-repo use are supporting signals, not the goal.
+
+Do not relabel CF-06 as unfinished internal P0. It is deliberately external: the repository cannot honestly self-manufacture an unrelated consumer. Profile-specific adoption issue #47 is closed as superseded by #14.
 
 
 ## 7. Release discipline
