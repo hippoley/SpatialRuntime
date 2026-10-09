@@ -21,7 +21,7 @@ Progress in one lane does **not** prove maturity in the other.
 
 The preferred third-party entry point is now `interop/conformance`, merged via PR #49. Existing consumers can continue using `interop/agent-effect-authority` as a compatibility path.
 
-Current stable-on-main building blocks include:
+Current candidate-on-main building blocks include:
 
 - effect-evidence hostile vectors and external-verifier adapter protocol;
 - decision→execution binding checks;
@@ -29,6 +29,27 @@ Current stable-on-main building blocks include:
 - explicit PASS / UNRESOLVED / FAIL semantics.
 
 **Adoption claim ceiling:** repository self-tests, our own downstream repos, analyst-authored mappings, and queued external workflows do not count as unrelated adoption. Issue #14 remains the external-consumer gate.
+
+
+#### 60-second CI quickstart
+
+Pin an immutable SpatialRuntime commit. Until the first `conformance-v*` release exists, do **not** pin `main`.
+
+```yaml
+- name: Check decision/execution binding
+  id: spatialruntime
+  uses: hippoley/SpatialRuntime/interop/conformance@ce7cce687e623ed16f9c60db782bed05e9b117ba
+  with:
+    mode: decision-execution-binding-v0.2
+    file: evidence/decision-execution-binding.json
+
+- name: Require resolved conformance
+  run: test "${{ steps.spatialruntime.outputs.conformance_result }}" = "PASS"
+```
+
+For declaration-only modes such as `claim` and `mapping`, a valid envelope returns `validation_result=PASS` but `conformance_result=UNRESOLVED`; envelope validity is not independent evidence verification.
+
+See `interop/conformance/README.md` for external-verifier mode, durable reports, and all supported modes.
 
 ### If you are here for the spatial runtime
 
