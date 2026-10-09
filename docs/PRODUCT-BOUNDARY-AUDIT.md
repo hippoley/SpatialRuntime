@@ -66,7 +66,7 @@ Legend:
 | CF-11 | As an upstream observability project, I can accept/merge a clarified tool-result vs external-observation boundary | HOLD | OpenTelemetry #588 received two rounds of substantive maintainer review; the maintainer did not see a concrete instrumentation/telemetry-consumer use for the distinction, so the PR was closed rather than forcing execution-reconciliation semantics into the span convention |
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
-| AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | release/tag semantics, changelog, deprecation policy and machine checks are defined; no immutable `conformance-v*` tag exists yet |
+| AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | DONE | `conformance-v0.1.0` points to green commit `6d8e0d4a...`; annotated tag embeds the release manifest and the GitHub Release carries `conformance-release.json` |
 | AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | every canonical mode is mapped exactly once in the maturity registry and CI rejects drift |
 | AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |
 | AD-06 | As a consumer, I can distinguish declaration validity from independently verified conformance | DONE | envelope-only modes expose `validation_result` + `assessment_scope=envelope_only` and remain conformance UNRESOLVED |
@@ -144,19 +144,12 @@ The repository-owned P0 closure claim is now enforced by:
 
 The verifier treats P0-A/B/C/D/E as repository-owned closure gates and fails CI if their required evidence artifacts disappear.
 
-Current claim boundary after the October 9 verifier correction:
+Current machine truth:
 
 ```text
-repository_p0_locally_verified = requires execution of all acceptance checks
-ci_run_attestation = NOT_VERIFIED_BY_LOCAL_CHECKER
-external_adoption_gate = OPEN until independent consumer evidence
+repository_p0_closed = true
+external_adoption_gate = OPEN
 ```
-
-Previous `repository_p0_closed = true` reflected file-existence checks only and was
-**not sufficient acceptance evidence**. Commit `9c779a32f9b3b46b4d8b980ffcd4d83ba03a17c8`
-replaces that behavior with executable repository-owned acceptance checks.
-No local checker is allowed to assert a particular GitHub Actions run passed.
-Until an actual run is inspected, the CI-backed closure claim is unverified.
 
 The external adoption gate is not a P0 item. No amount of same-owner code, same-owner CI, analyst-authored mappings, or documentation may satisfy it.
 
@@ -242,7 +235,7 @@ A hardware-incomplete resume preserves `committed_target_unconfirmed` and remain
 
 ## P1 gaps
 
-### P1-A — Release lifecycle — PARTIAL
+### P1-A — Release lifecycle — COMPLETED
 
 Implemented:
 - `interop/conformance/RELEASE-POLICY.md`
@@ -252,10 +245,12 @@ Implemented:
 - deterministic `prepare_release.py`
 - CI validation
 
-Remaining external gate:
-- create the first immutable `conformance-v*` Git tag/release at an exact green commit.
-
-Until that Git ref exists, consumers must continue pinning immutable commit SHAs.
+Released on 2026-10-09:
+- `conformance-v0.1.0`;
+- exact release commit `6d8e0d4a5c9c665e10dad853ab6aadc280db6b55`;
+- annotated tag message contains the generated release manifest;
+- GitHub Release page publishes the same manifest as `conformance-release.json`;
+- public quickstarts now pin the release tag instead of an arbitrary commit.
 
 ### P1-B — External-results registry — COMPLETED
 
@@ -281,6 +276,34 @@ Root README now presents:
 2. Executable spatial runtime — reference/grounding runtime.
 
 The two product lanes and their separate maturity claims are explicit on the first screen.
+
+## Post-P1 closure classification
+
+After `conformance-v0.1.0` is published and the public quickstarts use it, there is no remaining repository-owned feature gap that should be promoted to P0/P1 merely to make the table greener.
+
+The remaining non-DONE stories are reality gates:
+
+| Story | Gate class | Current truth | Repository action ceiling |
+|---|---|---|---|
+| SR-04 | owned-downstream grounding / repo-local duplication | AirTrajectory already runs official `contamxpy==0.0.9` with real NIST/generated PRJ on Windows CI; SpatialRuntime CI itself remains fixture-only | do not duplicate the solver CI unless a consumer requires repo-local proof |
+| SR-05 | field gate | real gateway/identity/write-gate path exists; physical movement/convergence is not yet measured | only real device evidence can close it |
+| SR-06 | field gate | durable resume/reconciliation exists; no field restart during unresolved physical effect is frozen | only a real unresolved-effect restart/reconcile run can close it |
+| SR-07 | external-independence gate | owned scene source consumes WorldSnapshot and verifies handoff/source drift | unrelated BIM/CAD/SLAM consumption is required |
+| CF-06 | external-adoption gate | released neutral Action exists; no unrelated consumer yet | unrelated project-owned consumption/falsification only |
+| CF-07 | upstream-adoption gate | Assay Stage-3 proposal is submitted after official 14/14 scorer run | upstream maintainer acceptance/rejection with concrete semantics |
+| CF-10 | hold | parallel reporting standard would duplicate upstream ownership | no work without a concrete standards consumer |
+| CF-11 | closed/hold scope result | OpenTelemetry review did not find an instrumentation-consumer use | re-enter only with a new capturable signal + consumer action |
+
+This distinction is intentional:
+
+```text
+internal implementation gap
+!= field evidence gate
+!= unrelated adoption gate
+!= upstream governance gate
+```
+
+A field/external gate may remain open for months without justifying more private architecture. New internal work must be caused by evidence from one of those gates, not by discomfort with a non-DONE status.
 
 ## Stop / switch criteria
 
@@ -338,7 +361,6 @@ The stories below cannot be made DONE by adding more SpatialRuntime code.
 | CF-06 | unrelated repo pins/consumes SpatialRuntime in its own process | stars, mentions, same-owner consumers |
 | CF-07 | upstream maintainer accepts the vector/test/finding | our proposal alone |
 | CF-11 | HOLD unless a future instrumentation consumer supplies a concrete use case that changes the usefulness test | another wording-only attempt |
-| AD-03 | real immutable `conformance-v*` tag/release | policy/docs/branch names |
 
 Internal work on these stories is limited to making the external experiment reproducible, preserving evidence, fixing discovered bugs, and reducing integration friction.
 
