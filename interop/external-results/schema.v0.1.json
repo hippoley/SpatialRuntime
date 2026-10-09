@@ -1,0 +1,30 @@
+{
+  "schema": "spatialruntime.external-results-registry-schema.v0.1",
+  "required_entry_fields": [
+    "id",
+    "implementation",
+    "spatialruntime",
+    "evidence_method",
+    "execution",
+    "observed_result",
+    "evidence_maturity",
+    "source_project_acknowledgment",
+    "external_consumption",
+    "adoption_claim",
+    "nonclaims"
+  ],
+  "evidence_maturity": [
+    "self-tested",
+    "external-source-reviewed",
+    "externally-executed",
+    "externally-reproduced",
+    "externally-consumed"
+  ],
+  "source_project_acknowledgment": [
+    "none",
+    "unknown",
+    "explicit"
+  ],
+  "digest_format": "sha256:<64 lowercase hex>",
+  "adoption_rule": "adoption_claim=true requires evidence_maturity=externally-consumed, external_consumption=true, and project-owned unrelated consumer evidence"
+}
