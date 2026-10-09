@@ -46,6 +46,26 @@
         "The repository itself states that physical tau0 is not claimed until a real window moves and the measured evidence chain is complete.",
         "Fixture tests and hardware-shaped configuration are not field execution evidence."
       ]
+    },
+    {
+      "id": "interior-kitchen-spatialruntime-world-consumer-2026-10-09",
+      "repository": "hippoley/interior-kitchen-original",
+      "revision": "dc75cb427786477dae69cbd21451c5e54ba7c514",
+      "relationship": "owned downstream scene-source consumer",
+      "evidence": {
+        "workflow": ".github/workflows/spatialruntime-consumer.yml",
+        "world_schema": "spatialruntime_world_snapshot_v1",
+        "exports_authored_spatial_scene": true,
+        "imports_spatialruntime_worldsnapshot": true,
+        "builds_relation_graph": true,
+        "stale_source_drift_negative_test": true,
+        "handoff_hash_binding": true
+      },
+      "claim_ceiling": [
+        "Proves an owned scene-source repository can export and validate SpatialRuntime WorldSnapshot/handoff artifacts.",
+        "Proves stale source drift is rejected in downstream CI.",
+        "Does not establish an unrelated BIM/CAD/SLAM consumer or external adoption."
+      ]
     }
   ]
 }
