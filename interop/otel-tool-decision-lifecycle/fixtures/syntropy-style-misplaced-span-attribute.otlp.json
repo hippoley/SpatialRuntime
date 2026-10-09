@@ -1,0 +1,15 @@
+{
+  "resourceSpans": [{
+    "scopeSpans": [{
+      "spans": [{
+        "traceId": "syntropy-trace",
+        "spanId": "syntropy-span",
+        "name": "gen_ai.tool.call Bash",
+        "attributes": [
+          {"key": "gen_ai.tool.name", "value": {"stringValue": "Bash"}},
+          {"key": "gen_ai.tool.call.decision", "value": {"stringValue": "deny"}}
+        ]
+      }]
+    }]
+  }]
+}

@@ -1,0 +1,13 @@
+{
+  "resourceLogs": [{
+    "scopeLogs": [{
+      "logRecords": [{
+        "eventName": "gen_ai.tool.call.decision",
+        "attributes": [
+          {"key": "gen_ai.tool.call.decision.outcome", "value": {"stringValue": "require_approval"}},
+          {"key": "gen_ai.tool.call.id", "value": {"stringValue": "call-pending"}}
+        ]
+      }]
+    }]
+  }]
+}

@@ -62,3 +62,28 @@ Available outputs:
 - `error_count`: observed contradictions or invalid decision values.
 
 The default verifier still exits non-zero only for `FAIL`. This is intentional: a producer that cannot observe a correlation id is not lying or broken. Downstream policy decides whether `UNRESOLVED` is acceptable for that lane.
+
+
+## Namespace-collision pressure case
+
+An unrelated implementation exposed an important negative control.
+
+`elhossam7/syntropy-platform-build@d6deeedefc057ddd6411178e8a78d43570411d5f` (committed 2026-07-30, before OpenTelemetry GenAI PR #535 opened on 2026-09-23) places:
+
+```text
+gen_ai.tool.call.decision = <decision>
+```
+
+directly on a tool span.
+
+The later #535 proposal defines `gen_ai.tool.call.decision` as an **event name** and `gen_ai.tool.call.decision.outcome` as the event's decision attribute. These are independently developed, incompatible shapes that happen to reuse the same key text.
+
+The verifier therefore rejects the span-attribute shape as `MISPLACED_DECISION_SIGNAL` **relative to this #535-oriented profile** rather than silently interpreting it as the proposal's decision event. This is not a claim that Syntropy violated a proposal that did not yet exist.
+
+The same fail-unknown rule applies to incomplete evidence:
+
+- no decision event at all → `UNRESOLVED`;
+- `allow` with no observed execution → `UNRESOLVED`;
+- `require_approval` with no observed terminal decision → `UNRESOLVED`.
+
+This pressure source is evidence of ecosystem namespace/shape collision, not an adopter, endorser, or non-compliant implementation of this profile.
