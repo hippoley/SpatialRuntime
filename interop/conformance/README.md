@@ -105,3 +105,18 @@ The quickstart intentionally has no default passing adapter.
 ```
 
 The result remains `PASS`, `UNRESOLVED`, or `FAIL`. Missing execution-start evidence is unresolved; execution outside the approved window fails.
+
+
+## Compatibility contract
+
+The canonical Action follows `compatibility.v0.1.json`.
+
+Key guarantees for the current candidate channel:
+
+- every mode exposes `conformance_result`;
+- PASS / UNRESOLVED / FAIL meanings are not silently changed within the same mode/profile version;
+- breaking semantics require a new profile version and, when invocation meaning changes, a new versioned mode;
+- deprecated modes are declared before removal and are never repurposed for incompatible meaning;
+- durable historical reports keep the meaning of the pinned profile/vector revision.
+
+There is **not yet a stable conformance release tag**. Consumers should continue to pin an immutable commit SHA. The compatibility contract reduces semantic drift risk but does not itself upgrade the project to stable or externally adopted.
