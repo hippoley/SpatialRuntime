@@ -49,3 +49,16 @@ def test_release_page_is_idempotent_and_attaches_manifest():
     assert 'gh release create "$TAG" /tmp/conformance-release.json' in text
     assert "--verify-tag" in text
     assert "GitHub Release $TAG already exists; leaving it unchanged." in text
+
+
+def test_manifest_attestation_is_digest_idempotent():
+    text = WORKFLOW.read_text(encoding="utf-8")
+    assert "id-token: write" in text
+    assert "attestations: write" in text
+    assert "artifact-metadata: write" in text
+    assert "/attestations/$digest?predicate_type=provenance" in text
+    assert 'echo "needs_attestation=false" >> "$GITHUB_OUTPUT"' in text
+    assert 'echo "needs_attestation=true" >> "$GITHUB_OUTPUT"' in text
+    assert "uses: actions/attest@v4" in text
+    assert "subject-path: /tmp/conformance-release.json" in text
+    assert "if: steps.attestation.outputs.needs_attestation == 'true'" in text
