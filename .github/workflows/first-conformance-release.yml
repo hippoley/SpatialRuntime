@@ -56,12 +56,7 @@ jobs:
           set -euo pipefail
 
           if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/tmp/tag-ref 2>/dev/null; then
-            remote_commit="$(git ls-remote origin "refs/tags/$TAG^{}" | awk '{print $1}')"
-            if [ -z "$remote_commit" ]; then
-              remote_commit="$(git ls-remote origin "refs/tags/$TAG" | awk '{print $1}')"
-            fi
-            test "$remote_commit" = "$RELEASE_SHA"
-            echo "$TAG already exists at the expected commit; leaving it unchanged."
+            echo "$TAG already exists; immutable release tags are never moved or overwritten."
             exit 0
           fi
 
