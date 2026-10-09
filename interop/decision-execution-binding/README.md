@@ -85,3 +85,55 @@ The profile is an independent conformance artifact; the projects below have **no
   - `docs/specs/SPEC-01-telemetry-and-execution-graph.md`
 
 This evidence establishes independent pressure on the identity/cardinality model. It does not establish source-project conformance, dependency, or endorsement.
+
+
+## v0.2: temporal validity and execution-attempt evidence
+
+`decision-execution-binding.v0.2` is additive. v0.1 remains unchanged for historical claims.
+
+v0.2 adds optional decision and execution timestamps:
+
+- decision `decided_at`;
+- decision `valid_until`;
+- execution `started_at`.
+
+When a decision supplies a temporal window, the verifier distinguishes:
+
+- execution begins inside the window → may PASS when the other binding evidence passes;
+- execution begins before the decision → `FAIL / EXECUTION_PRECEDES_DECISION`;
+- execution begins at or after expiry → `FAIL / DECISION_EXPIRED_BEFORE_EXECUTION`;
+- no execution-start evidence → `UNRESOLVED`, never silently PASS.
+
+The existing per-call cardinality rule still applies: one `per_call` decision cannot authorize two execution attempts.
+
+### External pressure: Agent Approval Protocol v1
+
+Agent Approval Protocol v1 is mapped as an independent pressure source, not an adopter:
+
+`mappings/agent-approval-protocol-v1.json`
+
+The mapping uses:
+
+```text
+AAP approval request id  -> decision_id
+AAP Idempotency-Key      -> execution-attempt / tool_call_id
+AAP tool+server+arguments -> scope_binding evidence
+AAP decision.expires_at  -> valid_until
+actual tool start         -> started_at
+```
+
+AAP defines the approval-provider plane and leaves execution tracking to the adapter/harness. v0.2 deliberately stays on that boundary: it can verify supplied approval→execution evidence, but it does not claim the provider proves external effect completion.
+
+### Reusable GitHub Action
+
+Downstream CI can pin a SpatialRuntime revision and run:
+
+```yaml
+- name: Verify decision/execution binding v0.2
+  uses: hippoley/SpatialRuntime/interop/agent-effect-authority@<pinned-sha>
+  with:
+    mode: decision-execution-binding-v0.2
+    file: evidence/decision-execution.json
+```
+
+Pin an immutable commit rather than `main` for historical evidence.

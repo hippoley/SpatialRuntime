@@ -1,0 +1,20 @@
+{
+  "profile": "decision-execution-binding.v0.2",
+  "decisions": [
+    {
+      "decision_id": "aap-request-no-start",
+      "binding_mode": "per_call",
+      "outcome": "allow",
+      "decided_at": "2026-09-16T12:02:00Z",
+      "valid_until": "2026-09-16T12:07:00Z"
+    }
+  ],
+  "executions": [
+    {
+      "execution_id": "exec-refund-no-start",
+      "tool_call_id": "idempotency-key-no-start",
+      "decision_id": "aap-request-no-start",
+      "scope_binding": "match"
+    }
+  ]
+}

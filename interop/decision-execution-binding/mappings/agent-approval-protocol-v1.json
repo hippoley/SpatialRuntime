@@ -1,0 +1,53 @@
+{
+  "mapping": "decision-execution-binding.external-pressure.v0.1",
+  "source": {
+    "name": "Agent Approval Protocol",
+    "short_name": "AAP Approval",
+    "version": "1.0.0",
+    "website": "https://agentapprovalprotocol.io/",
+    "openapi": "https://agentapprovalprotocol.io/specification/reference/openapi",
+    "source_stability": "versioned web specification; repository revision could not be resolved through the current GitHub connector, so this mapping does not claim immutable source pinning"
+  },
+  "observed_semantics": [
+    {
+      "external": "approval request id",
+      "target": "decision_id",
+      "relation": "equivalent identity role",
+      "evidence_claim": "The provider stores one approval request with an immutable terminal decision."
+    },
+    {
+      "external": "Idempotency-Key on createApprovalRequest",
+      "target": "tool_call_id / execution-attempt identity",
+      "relation": "strong pressure",
+      "evidence_claim": "The v1 OpenAPI describes the idempotency key as identifying one execution attempt; same-key same-input retries return the existing request."
+    },
+    {
+      "external": "tool + server + arguments",
+      "target": "scope_binding",
+      "relation": "requires adapter evidence",
+      "evidence_claim": "Submitted approval-request fields are immutable, but an independent runtime still needs to prove the action about to execute matches them."
+    },
+    {
+      "external": "decision.expires_at",
+      "target": "decision.valid_until",
+      "relation": "equivalent temporal bound",
+      "evidence_claim": "The adapter must start an approved call before expires_at."
+    },
+    {
+      "external": "actual tool execution start",
+      "target": "execution.started_at",
+      "relation": "outside provider authority",
+      "evidence_claim": "AAP Approval states that the adapter enforces permission and the harness or adapter tracks whether execution happened."
+    }
+  ],
+  "important_boundary": "The provider records permission to execute; it does not establish authoritative execution finality. This mapping therefore stops at decision→execution binding and does not claim external-effect confirmation.",
+  "adoption_claim": false,
+  "endorsement_claim": false,
+  "real_adapter_pressure": {
+    "source": "https://agentapprovalprotocol.io/docs/adapters/pi",
+    "observed_limit": "The Pi adapter documentation warns that extensions which replace tool inputs after approval can change what actually runs.",
+    "implication": "An approval outcome alone is not sufficient evidence that the executed arguments still match the reviewed arguments.",
+    "target": "scope_binding",
+    "expected_conformance_behavior": "post-approval argument mutation must produce mismatch/fail rather than inheriting the prior approval"
+  }
+}

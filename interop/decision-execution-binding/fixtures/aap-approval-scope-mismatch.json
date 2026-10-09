@@ -1,0 +1,21 @@
+{
+  "profile": "decision-execution-binding.v0.2",
+  "decisions": [
+    {
+      "decision_id": "aap-request-scope",
+      "binding_mode": "per_call",
+      "outcome": "allow",
+      "decided_at": "2026-09-16T12:02:00Z",
+      "valid_until": "2026-09-16T12:07:00Z"
+    }
+  ],
+  "executions": [
+    {
+      "execution_id": "exec-refund-mutated",
+      "tool_call_id": "idempotency-key-mutated",
+      "decision_id": "aap-request-scope",
+      "scope_binding": "mismatch",
+      "started_at": "2026-09-16T12:03:00Z"
+    }
+  ]
+}

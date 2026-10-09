@@ -1,0 +1,29 @@
+{
+  "profile": "decision-execution-binding.v0.2",
+  "status": "experimental-additive",
+  "purpose": "Verify decision-to-execution identity, cardinality, exact scope evidence, and temporal validity without conflating approval with execution or external-effect truth.",
+  "binding_modes": [
+    "per_call",
+    "standing"
+  ],
+  "scope_binding_results": [
+    "match",
+    "mismatch",
+    "not_checked"
+  ],
+  "optional_temporal_fields": {
+    "decision": [
+      "decided_at",
+      "valid_until"
+    ],
+    "execution": [
+      "started_at"
+    ]
+  },
+  "result_classes": {
+    "PASS": "binding, cardinality, scope, and supplied temporal evidence are internally consistent",
+    "UNRESOLVED": "required binding/scope/time evidence is absent or unknown",
+    "FAIL": "evidence contradicts the declared decision authority or validity window"
+  },
+  "additive_to": "decision-execution-binding.v0.1"
+}
