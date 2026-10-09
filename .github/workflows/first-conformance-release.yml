@@ -16,19 +16,47 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: conformance-v0.1.0
-      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+      GREEN_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
-      - name: Check out the exact green commit
+      - name: Check out the green main commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.RELEASE_SHA }}
+          ref: ${{ env.GREEN_SHA }}
           fetch-depth: 0
+
+      - name: Resolve immutable release target
+        id: target
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"
+            tag_commit="$(git rev-list -n 1 "$TAG")"
+            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
+            echo "release_sha=$tag_commit" >> "$GITHUB_OUTPUT"
+            echo "$TAG already exists; recovery will bind all evidence to $tag_commit."
+          else
+            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
+            echo "release_sha=$GREEN_SHA" >> "$GITHUB_OUTPUT"
+            echo "first release will target green main commit $GREEN_SHA."
+          fi
+
+      - name: Check out the exact immutable release target
+        env:
+          RELEASE_SHA: ${{ steps.target.outputs.release_sha }}
+        run: |
+          set -euo pipefail
+          git checkout --detach "$RELEASE_SHA"
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
 
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Re-verify release contract at the green commit
+      - name: Re-verify release contract at the release target
+        env:
+          RELEASE_SHA: ${{ steps.target.outputs.release_sha }}
         run: |
           test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
           python interop/conformance/verify_catalog.py
@@ -37,6 +65,8 @@ jobs:
           python docs/verify_p0_closure.py
 
       - name: Generate exact release manifest
+        env:
+          RELEASE_SHA: ${{ steps.target.outputs.release_sha }}
         run: |
           python interop/conformance/prepare_release.py \
             --tag "$TAG" \
@@ -51,15 +81,12 @@ jobs:
           PY
 
       - name: Create immutable annotated tag once
+        if: steps.target.outputs.tag_exists == 'false'
+        env:
+          RELEASE_SHA: ${{ steps.target.outputs.release_sha }}
         shell: bash
         run: |
           set -euo pipefail
-
-          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/tmp/tag-ref 2>/dev/null; then
-            echo "$TAG already exists; immutable release tags are never moved or overwritten."
-            exit 0
-          fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG" "$RELEASE_SHA" -F /tmp/conformance-release.json
