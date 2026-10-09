@@ -13,7 +13,7 @@ def _is_unrelated(repo: object) -> bool:
     return isinstance(repo, str) and "/" in repo and not repo.startswith("hippoley/")
 
 
-def _external_gate_closed(registry: dict) -> tuple[bool, list[dict]]:
+def _external_gate(registry: dict) -> tuple[bool, list[dict]]:
     qualifying: list[dict] = []
     for entry in registry.get("entries", []):
         if not isinstance(entry, dict):
@@ -44,50 +44,37 @@ def verify() -> dict:
 
     for item in doc.get("p0", []):
         p0_id = item.get("id")
-        owner = item.get("owner")
-        expected = item.get("expected")
-
-        if owner == "repository":
-            missing = []
-            for rel in item.get("evidence_paths", []):
-                path = ROOT / rel
-                if not path.is_file():
-                    missing.append(rel)
-            status = "CLOSED" if not missing else "OPEN"
-            if expected == "CLOSED" and missing:
-                errors.append(f"{p0_id}: missing evidence paths: {missing}")
-            rows.append({
-                "id": p0_id,
-                "owner": owner,
-                "status": status,
-                "missing_evidence": missing,
-            })
+        if item.get("owner") != "repository":
+            errors.append(f"{p0_id}: repository P0 manifest may not contain external-owned gates")
             continue
 
-        if p0_id == "P0-D":
-            closed, qualifying = _external_gate_closed(registry)
-            rows.append({
-                "id": p0_id,
-                "owner": owner,
-                "status": "CLOSED" if closed else "OPEN_EXTERNAL_GATE",
-                "qualifying_evidence": qualifying,
-            })
-            if expected == "OPEN_UNTIL_EXTERNAL_EVIDENCE" and not closed:
-                # This is not a repository failure. It is the explicit external gate.
-                pass
-            continue
+        missing = []
+        for rel in item.get("evidence_paths", []):
+            if not (ROOT / rel).is_file():
+                missing.append(rel)
+        status = "CLOSED" if not missing else "OPEN"
+        if item.get("expected") == "CLOSED" and missing:
+            errors.append(f"{p0_id}: missing evidence paths: {missing}")
+        rows.append({
+            "id": p0_id,
+            "status": status,
+            "missing_evidence": missing,
+        })
 
-        errors.append(f"{p0_id}: unknown P0 owner/rule")
+    repository_p0_closed = bool(rows) and all(row["status"] == "CLOSED" for row in rows)
 
-    repository_p0 = [row for row in rows if row["owner"] == "repository"]
-    internal_closed = all(row["status"] == "CLOSED" for row in repository_p0)
-    external_open = any(row["status"] == "OPEN_EXTERNAL_GATE" for row in rows)
+    external_closed, qualifying = _external_gate(registry)
+    external = doc.get("external_exit_gate", {})
+    external_status = "CLOSED" if external_closed else "OPEN_EXTERNAL_GATE"
 
     return {
         "schema": doc.get("schema"),
-        "repository_owned_p0_closed": internal_closed,
-        "external_gate_open": external_open,
-        "all_p0_closed": internal_closed and not external_open,
+        "repository_p0_closed": repository_p0_closed,
+        "external_adoption_gate": {
+            "id": external.get("id"),
+            "status": external_status,
+            "qualifying_evidence": qualifying,
+        },
         "rows": rows,
         "errors": errors,
     }
@@ -96,9 +83,7 @@ def verify() -> dict:
 def main() -> None:
     report = verify()
     print(json.dumps(report, indent=2, sort_keys=True))
-    if report["errors"]:
-        raise SystemExit(1)
-    if not report["repository_owned_p0_closed"]:
+    if report["errors"] or not report["repository_p0_closed"]:
         raise SystemExit(1)
 
 
