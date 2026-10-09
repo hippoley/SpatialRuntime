@@ -157,6 +157,41 @@
           "invariant": "protocol-level deduplication must not be presented as universal exactly-once external effect completion"
         }
       ]
+    },
+    {
+      "id": "tool-retry-ambiguous-outcome",
+      "reference": "https://github.com/langchain-ai/langchain/issues/40688",
+      "pressure_cases": [
+        {
+          "case": "mutating tool commits effect, response is lost, default retry executes the same logical operation again",
+          "requirements": [
+            "AEA-002",
+            "AEA-003",
+            "AEA-005",
+            "AEA-006",
+            "AEA-007",
+            "AEA-009"
+          ],
+          "invariant": "ambiguous transport failure after dispatch must not authorize blind replay of a consequential logical effect"
+        }
+      ]
+    },
+    {
+      "id": "parallel-partial-success",
+      "reference": "https://github.com/google/adk-python/issues/7428",
+      "pressure_cases": [
+        {
+          "case": "one parallel sibling commits an external effect before another sibling fails and the batch loses the finished response",
+          "requirements": [
+            "AEA-002",
+            "AEA-005",
+            "AEA-006",
+            "AEA-007",
+            "AEA-009"
+          ],
+          "invariant": "batch failure does not erase per-effect truth; completed sibling evidence must survive independently or retry can duplicate the committed effect"
+        }
+      ]
     }
   ],
   "coverage_rule": "every AEA requirement must be exercised by at least one independently motivated domain pressure case",
