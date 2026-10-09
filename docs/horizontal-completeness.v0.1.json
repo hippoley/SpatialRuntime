@@ -72,76 +72,84 @@
         "functional_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_runtime_session_v02.py",
+            "repo:tests/test_kitchen_living_scenario_v03.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Main runtime episode and representative multi-step scenario are exercised."
         },
         "state_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_runtime_session_v02.py",
+            "repo:tests/test_replay_cli_v04.py",
+            "repo:tests/test_v21_durable_ledger.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Session/replay/durable-ledger state continuity is exercised."
         },
         "integration_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_kitchen_living_scenario_v03.py",
+            "repo:tests/test_runtime_application_assembly.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Closed-loop scenario and explicit application assembly are exercised."
         },
         "security_correctness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_v30_safety_supervisor.py",
+            "repo:tests/test_v34_safety_pipeline.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Safety supervision and fail-closed pipeline behavior are exercised."
         },
         "performance_scalability": {
-          "status": "VERIFIED",
-          "evidence": [
-            "repo:.github/workflows/ci.yml"
-          ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "status": "N_A",
+          "evidence": [],
+          "note": "The current SR-01 acceptance contract defines deterministic correctness, not a latency/throughput SLO; no performance claim is made."
         },
         "maintainability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_scenario_spec_v05.py",
+            "repo:README.md"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Scenario/runtime boundaries are versioned and documented."
         },
         "observability_traceability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_execution_manifest_v07.py",
+            "repo:tests/test_replay_cli_v04.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Execution manifest and replay evidence support traceability."
         },
         "testability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_runtime_session_v02.py",
+            "repo:tests/test_v28_fault_recovery.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Normal and failure/recovery paths have dedicated tests."
         },
         "user_value_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_kitchen_living_scenario_v03.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "A representative user-facing runtime scenario reaches a verifiable result."
         },
         "external_compatibility": {
           "status": "N_A",
           "evidence": [],
-          "note": "Not material to this story's acceptance boundary."
+          "note": "SR-01 is the internal runtime contract; external protocol compatibility is handled by separate conformance stories."
         }
       },
       "independent_acceptance": {
         "status": "VERIFIED",
         "evidence": [
-          "repo:.github/workflows/ci.yml"
+          "repo:tests/test_runtime_session_v02.py",
+          "repo:tests/test_kitchen_living_scenario_v03.py",
+          "repo:tests/test_v28_fault_recovery.py"
         ],
         "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
       },
@@ -161,74 +169,78 @@
         "functional_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_solver_adapter_v06.py",
+            "repo:tests/test_scenario_spec_v05.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Solver injection works through an explicit adapter while scenario data stays inert."
         },
         "state_completeness": {
-          "status": "VERIFIED",
-          "evidence": [
-            "repo:.github/workflows/ci.yml"
-          ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "status": "N_A",
+          "evidence": [],
+          "note": "SR-02 defines an execution boundary rather than a persistent state machine."
         },
         "integration_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_solver_adapter_v06.py",
+            "repo:tests/test_runtime_application_assembly.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Adapter-to-runtime assembly is exercised."
         },
         "security_correctness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_scenario_spec_v05.py",
+            "repo:tests/test_solver_adapter_v06.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Scenario data cannot directly become arbitrary executable dependency configuration."
         },
         "performance_scalability": {
           "status": "N_A",
           "evidence": [],
-          "note": "Not material to this story's acceptance boundary."
+          "note": "No solver throughput or latency SLO is part of SR-02; solver-specific performance belongs to concrete adapters."
         },
         "maintainability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:README.md",
+            "repo:tests/test_solver_adapter_v06.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "The adapter seam is explicit and documented/tested."
         },
         "observability_traceability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_execution_manifest_v07.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Injected solver identity/configuration is represented in execution evidence."
         },
         "testability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_solver_adapter_v06.py",
+            "repo:tests/test_scenario_spec_v05.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Adapter and inert-scenario contracts are independently testable."
         },
         "user_value_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_runtime_application_assembly.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Applications can supply a solver without making scenario JSON executable."
         },
         "external_compatibility": {
           "status": "N_A",
           "evidence": [],
-          "note": "Not material to this story's acceptance boundary."
+          "note": "External solver-specific compatibility is delegated to adapter stories such as SR-03/SR-04."
         }
       },
       "independent_acceptance": {
         "status": "VERIFIED",
         "evidence": [
-          "repo:.github/workflows/ci.yml"
+          "repo:tests/test_solver_adapter_v06.py",
+          "repo:tests/test_scenario_spec_v05.py"
         ],
         "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
       },
@@ -248,76 +260,87 @@
         "functional_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_contam_adapter_v09.py",
+            "repo:tests/test_contam_mutation_v010.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Reviewed CONTAM binding and understood parameter mutation are exercised."
         },
         "state_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_contam_mutation_v010.py",
+            "repo:tests/test_v38_spatial_compile_lineage.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Mutation/compile lineage preserves source-to-derived-state traceability."
         },
         "integration_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_contam_execution_v011.py",
+            "repo:tests/test_contam_adapter_v09.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "CONTAM adapter/execution boundary is integrated at repository level; real ContamX execution is separately gated by SR-04."
         },
         "security_correctness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_contam_mutation_v010.py",
+            "repo:tests/test_scenario_spec_v05.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Only understood reviewed mutation surfaces are accepted; arbitrary scenario execution remains outside the data model."
         },
         "performance_scalability": {
           "status": "N_A",
           "evidence": [],
-          "note": "Not material to this story's acceptance boundary."
+          "note": "SR-03 claims safe format binding/mutation, not ContamX performance; real solver scale belongs to SR-04."
         },
         "maintainability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_contam_adapter_v09.py",
+            "repo:tests/test_contam_execution_v011.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Versioned adapter/execution contracts have focused regression tests."
         },
         "observability_traceability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_v38_spatial_compile_lineage.py",
+            "repo:tests/test_execution_manifest_v07.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Compile and execution lineage are retained."
         },
         "testability": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_contam_adapter_v09.py",
+            "repo:tests/test_contam_mutation_v010.py",
+            "repo:tests/test_contam_execution_v011.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Parsing/binding/mutation/execution seams have dedicated tests."
         },
         "user_value_completeness": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_contam_execution_v011.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "A CONTAM-oriented application can reach the repository execution boundary; field solver proof remains SR-04."
         },
         "external_compatibility": {
           "status": "VERIFIED",
           "evidence": [
-            "repo:.github/workflows/ci.yml"
+            "repo:tests/test_contam_adapter_v09.py",
+            "repo:tests/test_contam_execution_v011.py"
           ],
-          "note": "Covered by current implementation and acceptance evidence."
+          "note": "Repository behavior is bound to the reviewed CONTAM PRJ/adapter contract; real official solver execution evidence is tracked separately by SR-04."
         }
       },
       "independent_acceptance": {
         "status": "VERIFIED",
         "evidence": [
-          "repo:.github/workflows/ci.yml"
+          "repo:tests/test_contam_adapter_v09.py",
+          "repo:tests/test_contam_mutation_v010.py",
+          "repo:tests/test_contam_execution_v011.py"
         ],
         "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
       },
