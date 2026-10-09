@@ -1,0 +1,78 @@
+name: First Conformance Release
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  tag-first-release:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    env:
+      TAG: conformance-v0.1.0
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Check out the exact green commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_SHA }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Re-verify release contract at the green commit
+        run: |
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+          python interop/conformance/verify_catalog.py
+          python interop/external-results/verify_registry.py
+          python interop/conformance/verify_release_contract.py
+          python docs/verify_p0_closure.py
+
+      - name: Generate exact release manifest
+        run: |
+          python interop/conformance/prepare_release.py \
+            --tag "$TAG" \
+            --commit "$RELEASE_SHA" \
+            --output /tmp/conformance-release.json
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          doc = json.loads(Path("/tmp/conformance-release.json").read_text())
+          assert doc["tag"] == os.environ["TAG"]
+          assert doc["commit"] == os.environ["RELEASE_SHA"]
+          PY
+
+      - name: Create immutable annotated tag once
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/tmp/tag-ref 2>/dev/null; then
+            remote_commit="$(git ls-remote origin "refs/tags/$TAG^{}" | awk '{print $1}')"
+            if [ -z "$remote_commit" ]; then
+              remote_commit="$(git ls-remote origin "refs/tags/$TAG" | awk '{print $1}')"
+            fi
+            test "$remote_commit" = "$RELEASE_SHA"
+            echo "$TAG already exists at the expected commit; leaving it unchanged."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" "$RELEASE_SHA" -F /tmp/conformance-release.json
+          git push origin "refs/tags/$TAG"
+
+      - name: Preserve generated manifest as workflow evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-v0.1.0-release-manifest
+          path: /tmp/conformance-release.json
+          retention-days: 90
