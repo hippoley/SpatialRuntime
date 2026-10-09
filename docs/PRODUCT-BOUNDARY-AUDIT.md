@@ -63,7 +63,7 @@ Legend:
 | CF-10 | As a standards community, I can reuse a SpatialRuntime reporting/provenance format | HOLD | do not invent a parallel standard; align to upstream communities |
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical on main; AEA path is compatibility surface |
-| AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | OPEN | package version exists, but no conformance release/tag lifecycle is defined |
+| AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | release/tag semantics, changelog, deprecation policy and machine checks are defined; no immutable `conformance-v*` tag exists yet |
 | AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | `interop/conformance-maturity.v0.1.json` added by this audit |
 | AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |
 
@@ -177,15 +177,29 @@ Do not close it for:
 
 ## P1 gaps
 
-### P1-A — Release lifecycle
+### P1-A — Release lifecycle — PARTIAL
 
-Conformance users should not be forced to pin arbitrary moving commits forever.
+Implemented:
 
-Needed:
-- versioned conformance manifest;
-- immutable Git tag/release for stable profiles;
-- changelog/migration note for semantic changes;
-- deprecation window for old modes.
+- `interop/conformance/RELEASE-POLICY.md`
+- `interop/conformance/CHANGELOG.md`
+- `interop/conformance/release-contract.v0.1.json`
+- `interop/conformance/verify_release_contract.py`
+- CI validation
+
+Defined:
+
+- `conformance-vMAJOR.MINOR.PATCH` tag namespace;
+- PATCH / MINOR / MAJOR compatibility rules;
+- required release checks;
+- deprecation window and migration rules;
+- separation between package version, profile version and conformance release version.
+
+Remaining external/tooling gate:
+
+- create the first immutable `conformance-v*` Git tag/release.
+
+Until that tag exists, consumers must continue pinning immutable commit SHAs.
 
 ### P1-B — External-results registry — COMPLETED
 
@@ -240,3 +254,29 @@ It is:
 > maintainer/contributor of reproducible conformance evidence for consequential agent execution, grounded by real runtime and physical-system experience.
 
 SpatialRuntime should remain the implementation home only while that structure reduces friction. If conformance adoption eventually becomes independently valuable enough, repository separation can be reconsidered based on actual consumers rather than aesthetics.
+
+
+## External-only closure gates
+
+The stories below cannot be made DONE by adding more SpatialRuntime code. Closing them requires evidence from a system outside the repository.
+
+| Story | What closes it | What does **not** close it |
+|---|---|---|
+| SR-04 real ContamX | CI or a durable public run executes a real compatible ContamX binary and preserves solver/result evidence | fake executable, parser tests, command-shape tests |
+| SR-05 real hardware convergence | a real gateway/device run preserves command id, ACK, authoritative state feedback and convergence evidence | MockGateway, DeterministicGatewayFixture, synthetic state feedback |
+| SR-06 restart under real uncertainty | process restart occurs while a real device effect is unresolved and recovery/reconciliation evidence survives | replaying only deterministic journal fixtures |
+| SR-07 unrelated scene source | a BIM/CAD/SLAM integration not maintained by hippoley consumes the reviewed world/spatial compile boundary | another hippoley repository or hand-authored fixture |
+| CF-06 unrelated consumer | an unrelated repository pins the Action/verifier/profile in its own CI, release, evidence or review flow | stars, mentions, our own downstream repos |
+| CF-07 upstream corpus adoption | an upstream profile/corpus maintainer accepts a vector/test/finding into their project | our own proposal branch or analyst mapping |
+| CF-09 observability review | an upstream observability maintainer provides substantive review/merge/citation of the boundary | comments authored only by hippoley |
+| AD-03 immutable release | a real `conformance-v*` tag/release is created at an exact commit | release policy alone, mutable branch names |
+
+### Internal closure rule
+
+For these stories, SpatialRuntime work is limited to:
+- making the external experiment reproducible;
+- preserving evidence;
+- fixing bugs exposed by the experiment;
+- reducing integration friction.
+
+Do **not** add architecture solely to make the status table look more complete.
