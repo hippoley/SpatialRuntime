@@ -133,7 +133,7 @@
         "review_warnings": 0
       },
       "evidence_maturity": "externally-executed",
-      "source_project_acknowledgment": "none",
+      "source_project_acknowledgment": "explicit",
       "external_consumption": false,
       "adoption_claim": false,
       "nonclaims": [
@@ -146,6 +146,14 @@
         "git_blob_sha": "bd4d1ac35db0ca9d71710c571ecd1015403a48df",
         "retention": "git_history",
         "source_artifact_digest": "sha256:bbb536f94f807ee688ca828448f8de7c116d2f917a2eb78fdd05ccff9b8a46b3"
+      },
+      "acknowledgment_evidence": {
+        "repository": "Rul1an/assay",
+        "issue": 1840,
+        "comment_id": 6061129417,
+        "comment_url": "https://github.com/Rul1an/assay/issues/1840#issuecomment-6061129417",
+        "observed_claim": "Maintainer explicitly acknowledged the candidate attempt, corrected the reproduction-mode classification, froze the profile/corpus until the first run record, and stated that the Stage 3 origin/code proposal would be reviewed after the first result.",
+        "claim_ceiling": "Acknowledgment of the attempt/review process only; not adoption, endorsement, or consumption of SpatialRuntime."
       }
     }
   ]
