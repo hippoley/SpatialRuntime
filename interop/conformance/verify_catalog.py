@@ -22,6 +22,20 @@ def main() -> None:
         if not path.is_file():
             errors.append(f"legacy action missing action.yml: {path.relative_to(ROOT)}")
 
+    release_policy = catalog.get("release_policy")
+    if not isinstance(release_policy, str) or not release_policy:
+        errors.append("catalog missing release_policy")
+    else:
+        release_path = ROOT / release_policy
+        if not release_path.is_file():
+            errors.append(f"missing release policy: {release_policy}")
+        else:
+            release_doc = json.loads(release_path.read_text(encoding="utf-8"))
+            if release_doc.get("schema") != "spatialruntime.conformance-release-policy.v0.1":
+                errors.append("release policy schema mismatch")
+            if release_doc.get("immutable_tags") is not True:
+                errors.append("release policy must require immutable tags")
+
     seen_modes: set[str] = set()
     for index, entry in enumerate(catalog.get("profiles", [])):
         mode = entry.get("mode")
