@@ -51,6 +51,8 @@ Legend:
 | SR-05 | As a hardware user, I can dispatch through a real gateway/device fleet and prove physical convergence | PARTIAL | SpatialRuntime gateway/ledger contracts exist; WindowPilot has a real CWDS-CA01 hardware/identity/write-gate path, but its own claim ceiling still withholds physical τ₀ until a real window movement is measured |
 | SR-06 | As an operator, I can prove durable restart/recovery behavior against real device-side uncertainty | PARTIAL | durable ledger/reconciliation logic exists and owned downstream hardware contracts are stronger, but no field-grade restart/recovery evidence from a real device deployment is frozen yet |
 | SR-07 | As a scene-source consumer, I can use the same reviewed world model from an unrelated BIM/CAD/SLAM integration | PARTIAL | owned scene-source repo `interior-kitchen-original` exports `spatialruntime_world_snapshot_v1`, imports SpatialRuntime `WorldSnapshot`, validates handoff hashes, and rejects stale source drift in CI; unrelated BIM/CAD/SLAM consumption is still missing |
+| SR-08 | As an application, I can inject a real solver/gateway into the same closed loop without making scenario JSON executable | DONE | PR #63 merged as `10b5c2e81a8ea3565ed801e522f2ca06acb2c6d8`; explicit application assembly injects solver/gateway/ledger/bindings from code, fingerprints them in the execution manifest, and keeps executable dependency config out of scenario data |
+| SR-09 | As an operator, I can rebuild a live RuntimeSession from a validated saved episode and continue safely | PARTIAL | PR #64 implements manifest-bound resume, catalog/graph fingerprint checks, history/state/step restoration, and fail-closed hardware-incomplete resume; CI fix is in progress before merge |
 | CF-01 | As a runtime author, I can run conformance checks without adopting SpatialRuntime internals | DONE | neutral Action is canonical; declaration-only modes no longer manufacture semantic PASS |
 | CF-02 | As a runtime author, I can plug my own verifier into hostile effect-evidence vectors | DONE | external adapter protocol and bundle are on main |
 | CF-03 | As a consumer, I can discover available conformance modes and versions machine-readably | DONE | machine-readable catalog merged via PR #49 |
@@ -65,7 +67,9 @@ Legend:
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
 | AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | release/tag semantics, changelog, deprecation policy and machine checks are defined; no immutable `conformance-v*` tag exists yet |
 | AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | every canonical mode is mapped exactly once in the maturity registry and CI rejects drift |
-| AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |\n| AD-06 | As a consumer, I can distinguish declaration validity from independently verified conformance | DONE | envelope-only modes expose `validation_result` + `assessment_scope=envelope_only` and remain conformance UNRESOLVED |\n| AD-07 | As a consumer, I know neutral Action runner prerequisites before adoption | DONE | catalog + README declare bash and Python >=3.10 requirements |
+| AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |
+| AD-06 | As a consumer, I can distinguish declaration validity from independently verified conformance | DONE | envelope-only modes expose `validation_result` + `assessment_scope=envelope_only` and remain conformance UNRESOLVED |
+| AD-07 | As a consumer, I know neutral Action runner prerequisites before adoption | DONE | catalog + README declare bash and Python >=3.10 requirements |
 
 ## What is actually finished
 
@@ -73,6 +77,7 @@ The repository is already strong in:
 - fail-closed runtime/session mechanics;
 - deterministic replay and state continuity;
 - explicit solver and hardware boundaries;
+- explicit application-side dependency assembly for real solver/gateway adapters;
 - evidence/authority separation;
 - hostile conformance vectors;
 - adapter-based verifier integration;
@@ -114,6 +119,12 @@ Action:
 ### 3. Spatial runtime expansion without new real consumer
 
 The spatial lane has enough architecture to serve as grounding.
+
+The 2026-10-09 re-audit found two closure gaps rather than new subsystems:
+- explicit application assembly — now closed by PR #63;
+- live session resume — PR #64 in review.
+
+After those closure fixes, return to the freeze.
 
 Action:
 - no new large spatial subsystem until at least one trigger exists:
@@ -176,6 +187,29 @@ Do not close it for:
 - our own workflow;
 - analyst-authored mappings;
 - upstream discussions that do not consume SpatialRuntime.
+
+### P0-E — Explicit application assembly — COMPLETED
+
+Closed by PR #63.
+
+The runtime can now inject solver/gateway/ledger/device bindings from application code into one evidence-preserving closed loop while scenario JSON remains inert.
+
+This closes a genuine runtime product gap without reopening arbitrary executable configuration.
+
+### P0-F — Live RuntimeSession resume — IN REVIEW
+
+PR #64 adds first-class resume from a validated episode bundle.
+
+Required checks:
+- bundle/trace integrity;
+- execution manifest present;
+- exact entity-catalog fingerprint;
+- exact safety-graph fingerprint;
+- only resumable final statuses.
+
+A hardware-incomplete resume preserves `committed_target_unconfirmed` and remains fail-closed until fresh device evidence arrives.
+
+This P0 is closed only after PR #64 CI is green and the change is merged.
 
 ## P1 gaps
 
@@ -270,7 +304,7 @@ The stories below cannot be made DONE by adding more SpatialRuntime code.
 |---|---|---|
 | SR-04 | durable public real ContamX execution evidence | parser/fake executable only |
 | SR-05 | real gateway/device command + ACK + authoritative convergence evidence | mock/fixture feedback |
-| SR-06 | restart while a real device effect is unresolved, with durable reconciliation evidence | deterministic journal-only replay |
+| SR-06 | restart while a real device effect is unresolved, with durable reconciliation evidence | local session resume or deterministic journal replay without field device uncertainty |
 | SR-07 | unrelated BIM/CAD/SLAM consumer of the reviewed world boundary | owned downstream repo |
 | CF-06 | unrelated repo pins/consumes SpatialRuntime in its own process | stars, mentions, same-owner consumers |
 | CF-07 | upstream maintainer accepts the vector/test/finding | our proposal alone |
