@@ -55,6 +55,17 @@
         "src/spatialruntime/runtime/replay.py",
         "tests/test_runtime_session_resume.py"
       ]
+    },
+    {
+      "id": "P0-F",
+      "name": "Horizontal User Story completeness gate",
+      "owner": "repository",
+      "expected": "CLOSED",
+      "evidence_paths": [
+        "docs/horizontal-completeness.v0.1.json",
+        "docs/verify_horizontal_completeness.py",
+        "docs/test_verify_horizontal_completeness.py"
+      ]
     }
   ],
   "external_exit_gate": {
