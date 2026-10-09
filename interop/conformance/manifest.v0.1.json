@@ -7,7 +7,7 @@
   ],
   "result_semantics": {
     "PASS": "Supplied evidence satisfies the selected profile.",
-    "UNRESOLVED": "Evidence is insufficient to reach a safe pass/fail conclusion.",
+    "UNRESOLVED": "Evidence or semantic truth is insufficient to reach a safe conformance conclusion; envelope-only modes also return UNRESOLVED after a valid declaration.",
     "FAIL": "Supplied evidence contradicts or violates the selected profile."
   },
   "profiles": [
@@ -20,8 +20,11 @@
       "profile_key": "spec",
       "requires_file": true,
       "outputs": [
-        "conformance_result"
-      ]
+        "conformance_result",
+        "validation_result",
+        "assessment_scope"
+      ],
+      "result_scope": "envelope_only"
     },
     {
       "mode": "mapping",
@@ -32,8 +35,11 @@
       "profile_key": "mapping_spec",
       "requires_file": true,
       "outputs": [
-        "conformance_result"
-      ]
+        "conformance_result",
+        "validation_result",
+        "assessment_scope"
+      ],
+      "result_scope": "envelope_only"
     },
     {
       "mode": "mapping-v0.2",
@@ -44,8 +50,11 @@
       "profile_key": "mapping_spec",
       "requires_file": true,
       "outputs": [
-        "conformance_result"
-      ]
+        "conformance_result",
+        "validation_result",
+        "assessment_scope"
+      ],
+      "result_scope": "envelope_only"
     },
     {
       "mode": "tool-decision-lifecycle",
