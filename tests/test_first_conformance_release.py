@@ -32,3 +32,11 @@ def test_release_rechecks_contract_and_p0_before_tagging():
     ]
     for marker in required:
         assert marker in text
+
+
+def test_release_page_is_idempotent_and_attaches_manifest():
+    text = WORKFLOW.read_text(encoding="utf-8")
+    assert 'gh release view "$TAG"' in text
+    assert 'gh release create "$TAG" /tmp/conformance-release.json' in text
+    assert '--verify-tag' in text
+    assert 'GitHub Release $TAG already exists; leaving it unchanged.' in text
