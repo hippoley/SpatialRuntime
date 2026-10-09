@@ -1,0 +1,79 @@
+name: External conformance result / adoption evidence
+description: Report an unrelated implementation result, consumer integration, or falsifying counterexample.
+title: "[external evidence] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for reproducible external evidence. PASS is not required; UNRESOLVED and FAIL are equally useful when they expose a real boundary.
+
+  - type: input
+    id: repository
+    attributes:
+      label: External repository
+      description: Repository that owns the implementation or consumer evidence.
+      placeholder: owner/repo
+    validations:
+      required: true
+
+  - type: input
+    id: revision
+    attributes:
+      label: Immutable external revision
+      description: Commit SHA, immutable release, or exact package version.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: evidence_kind
+    attributes:
+      label: Evidence kind
+      options:
+        - CI consumer of SpatialRuntime conformance
+        - External verifier / adapter execution
+        - Official scorer or corpus result
+        - Falsifying counterexample
+        - Semantic/result-shape incompatibility
+    validations:
+      required: true
+
+  - type: input
+    id: mode
+    attributes:
+      label: SpatialRuntime mode/profile
+      placeholder: decision-execution-binding-v0.2
+    validations:
+      required: true
+
+  - type: textarea
+    id: result
+    attributes:
+      label: First machine-readable result
+      description: Include PASS / UNRESOLVED / FAIL, counts, or the smallest relevant JSON excerpt. Do not omit an earlier failing run.
+    validations:
+      required: true
+
+  - type: input
+    id: run_url
+    attributes:
+      label: Public run / artifact URL
+      description: Workflow run, release asset, report, or reproducible command location.
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim_ceiling
+    attributes:
+      label: Claim ceiling / non-claims
+      description: State what this evidence does not establish.
+    validations:
+      required: true
+
+  - type: textarea
+    id: relationship
+    attributes:
+      label: Relationship / authorship disclosure
+      description: Maintainer relationship, prior exposure to expected outcomes, and material AI assistance if relevant.
+    validations:
+      required: true
