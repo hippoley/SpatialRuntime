@@ -3,6 +3,7 @@ import importlib.util
 from pathlib import Path
 import subprocess
 import unittest
+import unittest.mock
 from unittest.mock import patch
 
 SPEC = importlib.util.spec_from_file_location("verify_p0_closure", Path(__file__).with_name("verify_p0_closure.py"))
@@ -32,16 +33,24 @@ class P0ClosureEvidenceTests(unittest.TestCase):
 
     def test_missing_story_in_manifest_blocks_global_closure(self):
         manifest = {"schema": "test", "p0": []}
-        with patch.object(module.MANIFEST, "read_text", return_value=__import__("json").dumps(manifest)), \
-             patch.object(module.EXTERNAL_REGISTRY, "read_text", return_value='{"entries": []}'):
+        manifest_path = unittest.mock.Mock()
+        manifest_path.read_text.return_value = __import__("json").dumps(manifest)
+        registry_path = unittest.mock.Mock()
+        registry_path.read_text.return_value = '{"entries": []}'
+        with patch.object(module, "MANIFEST", manifest_path), \
+             patch.object(module, "EXTERNAL_REGISTRY", registry_path):
             result = module.verify()
         self.assertFalse(result["repository_p0_locally_verified"])
         self.assertTrue(any("coverage drift" in error for error in result["errors"]))
 
     def test_duplicate_story_id_blocks_global_closure(self):
         manifest = {"schema": "test", "p0": [{"id": "P0-A", "owner": "repository", "evidence_paths": []}] * 2}
-        with patch.object(module.MANIFEST, "read_text", return_value=__import__("json").dumps(manifest)), \
-             patch.object(module.EXTERNAL_REGISTRY, "read_text", return_value='{"entries": []}'), \
+        manifest_path = unittest.mock.Mock()
+        manifest_path.read_text.return_value = __import__("json").dumps(manifest)
+        registry_path = unittest.mock.Mock()
+        registry_path.read_text.return_value = '{"entries": []}'
+        with patch.object(module, "MANIFEST", manifest_path), \
+             patch.object(module, "EXTERNAL_REGISTRY", registry_path), \
              patch.object(module, "_check", return_value={"passed": True}):
             result = module.verify()
         self.assertFalse(result["repository_p0_locally_verified"])
