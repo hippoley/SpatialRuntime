@@ -371,6 +371,7 @@ Current surfaces:
 - `interop/agent-effect-authority/` — effect-authority claim, evidence, and cross-runtime semantic mapping checks.
 - `interop/otel-tool-decision-lifecycle/` — per-call `gen_ai.tool.call.decision` → `execute_tool` correlation, preserving `UNRESOLVED` when a safe call identity is unavailable.
 - `interop/decision-execution-binding/` — separates authorization/approval decision identity from execution identity, including standing 1:N decisions and scope-binding checks.
+- `interop/aap-broker-behavior/` — independent AAP Broker Profile Level-1 behavior probe for default-deny, opaque denials, context hygiene, signed-audit evidence, and result-only return; includes negative controls and a pinned spec/reference-implementation gap finding.
 
 Reusable GitHub Action:
 
