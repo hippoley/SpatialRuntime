@@ -31,15 +31,30 @@ def audit(data: dict, required: set[str]) -> list[str]:
                 completed = False
                 continue
             status = value["status"]
-            if status == "verified" and not value.get("evidence"):
-                errors.append(f"{sid}/{name}: verified without evidence")
+            if status == "verified":
+                evidence = value.get("evidence")
+                if not isinstance(evidence, list) or not evidence or not all(
+                    isinstance(entry, dict)
+                    and isinstance(entry.get("source"), str)
+                    and entry["source"].strip()
+                    and entry.get("result") == "PASS"
+                    for entry in evidence
+                ):
+                    errors.append(f"{sid}/{name}: verified requires structured passing evidence")
             if status == "not_applicable" and not value.get("rationale"):
                 errors.append(f"{sid}/{name}: N/A without rationale")
             if status not in ("verified","not_applicable"):
                 completed = False
         if item.get("closure") == "VERIFIED_CLOSED" and (not completed or errors):
             errors.append(f"{sid}: unsupported VERIFIED_CLOSED claim")
-        if item.get("closure") == "VERIFIED_CLOSED" and not item.get("vertical_evidence"):
+        if item.get("closure") == "VERIFIED_CLOSED" and not (
+            isinstance(item.get("vertical_evidence"), list)
+            and item["vertical_evidence"]
+            and all(
+                isinstance(e, dict) and e.get("result") == "PASS" and e.get("source")
+                for e in item["vertical_evidence"]
+            )
+        ):
             errors.append(f"{sid}: missing vertical execution evidence")
     return errors
 
