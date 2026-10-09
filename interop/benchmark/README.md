@@ -130,6 +130,36 @@ A new case should be added only when it does at least one of the following:
 
 Do not add near-duplicate cases merely to increase dataset size.
 
+## Current dataset growth priority
+
+The benchmark reports requirement-level skew instead of treating case count as progress.
+
+Current scored distribution:
+
+```text
+AEA-006  10 executable cases
+AEA-009   9
+AEA-005   2
+AEA-002   1
+AEA-001   0
+AEA-003   0
+AEA-004   0
+AEA-007   0
+AEA-008   0
+```
+
+Among requirements with zero executable coverage, current independent pressure counts rank the next work as:
+
+```text
+1. AEA-007 retry identity              10 pressure cases
+2. AEA-003 prospective effect class     4
+3. AEA-004 explicit authorization       4
+4. AEA-008 compensation boundary        3
+5. AEA-001 proposal != authority        1
+```
+
+Therefore the next useful dataset increment is not another evidence-freshness variant. It should preferably convert a real retry-identity pressure case (LangChain/MCP/A2A family) into an implementation-neutral executable vector.
+
 ## Promotion rule
 
 Pressure-only case:
