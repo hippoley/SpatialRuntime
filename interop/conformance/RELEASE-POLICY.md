@@ -56,12 +56,16 @@ Security/correctness exceptions may fail closed immediately, but the changelog m
 
 ## Pinning
 
-Consumers SHOULD pin an immutable conformance tag after the first release exists.
-
-Until then, consumers MUST pin an immutable commit SHA. Pinning `main` is not reproducible evidence.
+Consumers SHOULD pin an immutable conformance tag for released snapshots. Use an exact commit SHA only for evidence that predates a release or intentionally targets another historical revision. Pinning `main` is not reproducible evidence.
 
 ## Current state
 
-The lifecycle contract is defined, but no immutable conformance tag has been created yet.
+The first release is published:
 
-Therefore AD-03 remains **PARTIAL**, not DONE.
+- tag: `conformance-v0.1.0`
+- commit: `6d8e0d4a5c9c665e10dad853ab6aadc280db6b55`
+- release page: `SpatialRuntime Conformance v0.1.0`
+- release asset: `conformance-release.json`
+- release workflow run: `37878503867`
+
+The annotated tag contains the exact release manifest. The public Release page carries the same manifest as an asset. This closes AD-03 at the distribution/pinning layer; it does not promote profile semantic maturity or prove unrelated adoption.
