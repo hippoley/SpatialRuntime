@@ -36,7 +36,7 @@ jobs:
           gh attestation verify privileged-mcp-action-v0-clean-room.tar.gz             --repo Rul1an/assay             --bundle attestation-bundle.json             --signer-workflow Rul1an/assay/.github/workflows/privileged-mcp-action-pack-release.yml             --source-digest "$source_digest"             --source-ref refs/heads/main
 
       - name: Run official conformance scorer
-        uses: Rul1an/assay/.github/actions/privileged-mcp-action-conformance@16ea2b84e472412e3e5c4d9dcabff61b7fac72f8
+        uses: Rul1an/assay/.github/actions/privileged-mcp-action-conformance@2c692088d794345235809b038d729e589e339c3d
         with:
           pack: privileged-mcp-action-v0-clean-room.tar.gz
           entrypoint: "python interop/assay-privileged-mcp-action-v0/verifier.py"
