@@ -47,9 +47,9 @@ Legend:
 | SR-01 | As an application, I can execute a deterministic spatial runtime episode with reconciliation, safety, commit gating, and replay | DONE | RuntimeSession + scenario/replay tests |
 | SR-02 | As an application, I can plug in solver output without letting a scenario file execute arbitrary local commands | DONE | fixture mode + explicit solver adapter boundary |
 | SR-03 | As a CONTAM user, I can bind a reviewed PRJ and safely mutate understood flow parameters | DONE | parser/binding/mutation lineage |
-| SR-04 | As a CONTAM user, I can prove a real ContamX solve in repository CI | OPEN | CI explicitly uses fake executable; no real ContamX claim |
-| SR-05 | As a hardware user, I can dispatch through a real gateway/device fleet and prove physical convergence | PARTIAL | gateway/ledger contracts exist; repository examples remain fixture/mock-oriented |
-| SR-06 | As an operator, I can prove durable restart/recovery behavior against real device-side uncertainty | PARTIAL | durable ledger/reconciliation logic exists; no unrelated production deployment evidence |
+| SR-04 | As a CONTAM user, I can prove a real ContamX solve in repository CI | PARTIAL | SpatialRuntime CI remains fixture-only, but owned downstream AirTrajectory executes official `contamxpy==0.0.9` + real NIST/generated PRJ on Windows CI while pinning SpatialRuntime `d123ab9a...`; this is grounding evidence, not repository-local proof |
+| SR-05 | As a hardware user, I can dispatch through a real gateway/device fleet and prove physical convergence | PARTIAL | SpatialRuntime gateway/ledger contracts exist; WindowPilot has a real CWDS-CA01 hardware/identity/write-gate path, but its own claim ceiling still withholds physical τ₀ until a real window movement is measured |
+| SR-06 | As an operator, I can prove durable restart/recovery behavior against real device-side uncertainty | PARTIAL | durable ledger/reconciliation logic exists and owned downstream hardware contracts are stronger, but no field-grade restart/recovery evidence from a real device deployment is frozen yet |
 | SR-07 | As a scene-source consumer, I can use the same reviewed world model from an unrelated BIM/CAD/SLAM integration | OPEN | architecture supports adapters, but no unrelated scene-source integration is recorded |
 | CF-01 | As a runtime author, I can run stable conformance checks without adopting SpatialRuntime internals | DONE | neutral `interop/conformance` Action merged via PR #49; legacy AEA path retained for compatibility |
 | CF-02 | As a runtime author, I can plug my own verifier into hostile effect-evidence vectors | DONE | external adapter protocol and bundle are on main |
@@ -244,3 +244,14 @@ It is:
 > maintainer/contributor of reproducible conformance evidence for consequential agent execution, grounded by real runtime and physical-system experience.
 
 SpatialRuntime should remain the implementation home only while that structure reduces friction. If conformance adoption eventually becomes independently valuable enough, repository separation can be reconsidered based on actual consumers rather than aesthetics.
+
+
+## Owned downstream grounding evidence
+
+Machine-readable grounding evidence lives at:
+
+`interop/owned-downstream-evidence/registry.v0.1.json`
+
+It is intentionally separate from `interop/external-results/registry.v0.1.json`.
+
+Owned repositories can prove real execution and reduce architecture-to-reality risk, but they do **not** satisfy the unrelated-adoption gate in issue #14.
