@@ -1,0 +1,25 @@
+{
+  "implementation": "studivox/agentx",
+  "version": "0.1.1",
+  "probe": "proof-sufficiency-v0.1",
+  "audit_kind": "executed",
+  "rows": [
+    {
+      "case_id": "structured-response-without-postcondition-proof",
+      "outcome": "PROVEN_COMMITTED",
+      "state": "COMMITTED",
+      "notes": "Verifier returned valid structured entity representation"
+    },
+    {
+      "case_id": "missing-field-without-completeness-guarantee",
+      "outcome": "PROVEN_ABSENT",
+      "state": "FAILED",
+      "notes": "Key path status absent in response"
+    }
+  ],
+  "interpretation": [
+    "The first case demonstrates the published verifier's current behavior when structured JSON is returned without matchKeyPath.",
+    "The second case demonstrates the current behavior when matchKeyPath is absent from the verifier response.",
+    "These are compatibility observations relative to SpatialRuntime hostile vectors, not claims that AgentX violates its own contract."
+  ]
+}
