@@ -37,6 +37,24 @@ class AdapterRobustnessTests(unittest.TestCase):
         with patch.object(module.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, json.dumps({"reason": "none"}), "")):
             self.assertEqual(self.call()["reason"], "INVALID_VERDICT_SHAPE")
 
+    def test_empty_expected_cannot_pass(self):
+        self.assertFalse(module._matches_expected({"status": "CONFIRMED"}, {}))
+
+    def test_non_dict_expected_cannot_pass(self):
+        self.assertFalse(module._matches_expected({"status": "CONFIRMED"}, None))
+
+    def test_empty_vector_suite_is_rejected(self):
+        with patch.object(module.Path, "read_text", return_value=json.dumps({"authority_policy": {}, "cases": []})):
+            with self.assertRaisesRegex(ValueError, "nonempty cases"):
+                module._run_suite([], "iev-adversarial-v0.1", "mock.json")
+
+    def test_duplicate_case_ids_are_rejected(self):
+        case = {"id": "duplicate", "observation": {}, "expected": {"status": "UNRESOLVED"}}
+        doc = {"authority_policy": {}, "cases": [case, case]}
+        with patch.object(module.Path, "read_text", return_value=json.dumps(doc)):
+            with self.assertRaisesRegex(ValueError, "duplicate case id"):
+                module._run_suite([], "iev-adversarial-v0.1", "mock.json")
+
     def test_bad_shape_never_matches_expected(self):
         self.assertFalse(module._matches_expected([], {"status": "CONFIRMED"}))
         self.assertFalse(module._matches_expected(None, {"status": "CONFIRMED"}))
