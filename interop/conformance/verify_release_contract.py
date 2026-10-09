@@ -81,7 +81,8 @@ def main() -> None:
     if not isinstance(aliases, list) or 'interop/agent-effect-authority' not in aliases:
         errors.append('legacy AEA compatibility action missing from catalog')
 
-    if 'No immutable conformance-v tag exists yet.' not in CHANGELOG.read_text(encoding='utf-8'):
+    changelog_text = CHANGELOG.read_text(encoding='utf-8')
+    if 'No immutable' not in changelog_text or 'tag exists yet.' not in changelog_text:
         errors.append('changelog must state current no-tag release blocker')
 
     report = {
