@@ -49,7 +49,13 @@
       "nonclaims": [
         "Does not imply OpenAdapt adoption or endorsement of SpatialRuntime.",
         "Validates only the exercised effect-evidence taxonomy boundary."
-      ]
+      ],
+      "retained_report": {
+        "path": "interop/external-results/runs/openadapt-effect-evidence-taxonomy-2026-10-08.json",
+        "git_blob_sha": "053594a99577b8e18b095a46fc70039678215403",
+        "retention": "git_history",
+        "source_artifact_digest": "sha256:ce816af6f1aaecbf894129b5644c05ead6db7e06f19d4a22fb7655ad15acd897"
+      }
     },
     {
       "id": "agentx-proof-sufficiency-2026-10-08",
@@ -82,7 +88,13 @@
       "nonclaims": [
         "Does not claim AgentX violates its own contract.",
         "Does not imply AgentX adoption or endorsement of SpatialRuntime."
-      ]
+      ],
+      "retained_report": {
+        "path": "interop/external-results/runs/agentx-proof-sufficiency-2026-10-08.json",
+        "git_blob_sha": "62d9d3844021ef1acfad11302c21c502a4f3277f",
+        "retention": "git_history",
+        "source_artifact_digest": "sha256:b1c4c979cfe2b0db872c5d051a1f23c10b3d8f5af1b99f6c9c7c44d2e538776c"
+      }
     },
     {
       "id": "assay-privileged-mcp-action-v0-2026-10-09",
@@ -128,7 +140,13 @@
         "Agreement is limited to the pinned 14-case corpus.",
         "Reproduction mode is other_disclosed, not blind_from_spec.",
         "Does not establish implementation independence, security, compliance, or complete profile determinacy."
-      ]
+      ],
+      "retained_report": {
+        "path": "interop/external-results/runs/assay-privileged-mcp-action-v0-2026-10-09.json",
+        "git_blob_sha": "bd4d1ac35db0ca9d71710c571ecd1015403a48df",
+        "retention": "git_history",
+        "source_artifact_digest": "sha256:bbb536f94f807ee688ca828448f8de7c116d2f917a2eb78fdd05ccff9b8a46b3"
+      }
     }
   ]
 }
