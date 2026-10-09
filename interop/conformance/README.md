@@ -21,6 +21,8 @@ It deliberately does **not** require a caller to adopt the Agent Effect Authorit
 
 Consumers should pin an immutable commit SHA.
 
+Runtime prerequisites: the composite Action expects `bash` and `python >= 3.10` to already be available on the runner. It does not install Python. External adapter commands may require additional consumer-owned dependencies.
+
 ## Modes
 
 - `claim`
@@ -34,7 +36,7 @@ Consumers should pin an immutable commit SHA.
 
 The Action delegates to the existing verifier implementations rather than duplicating their rules.
 
-A successful process exit does not always mean `PASS`: profiles may intentionally return `UNRESOLVED` when evidence is incomplete. Use structured outputs when available and choose policy in the caller.
+A successful process exit does not always mean `PASS`. `claim`, `mapping`, and `mapping-v0.2` validate declaration envelopes only: a valid envelope returns `validation_result=PASS`, `assessment_scope=envelope_only`, and `conformance_result=UNRESOLVED` because evidence truth or analyst interpretation is not independently verified. Evidence-bearing profiles may also return `UNRESOLVED` when evidence is incomplete.
 
 ## Machine-readable catalog
 
