@@ -107,11 +107,20 @@ jobs:
         with:
           mode: decision-execution-binding
           file: interop/decision-execution-binding/fixtures/standing-pass.json
+      - name: Verify temporal binding through neutral action
+        id: neutral_binding_v02
+        uses: ./interop/conformance
+        with:
+          mode: decision-execution-binding-v0.2
+          file: interop/decision-execution-binding/fixtures/aap-approval-pass.json
       - name: Assert neutral conformance Action outputs
         run: |
           test "${{ steps.neutral_binding.outputs.conformance_result }}" = "PASS"
           test "${{ steps.neutral_binding.outputs.unresolved_count }}" = "0"
           test "${{ steps.neutral_binding.outputs.error_count }}" = "0"
+          test "${{ steps.neutral_binding_v02.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.neutral_binding_v02.outputs.unresolved_count }}" = "0"
+          test "${{ steps.neutral_binding_v02.outputs.error_count }}" = "0"
       - name: Verify external verifier bundle via neutral action
         id: external_bundle
         uses: ./interop/conformance

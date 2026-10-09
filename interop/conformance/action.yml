@@ -2,7 +2,7 @@ name: "SpatialRuntime interop conformance"
 description: "Run model-independent conformance checks for agent decision, execution, effect, and cross-runtime evidence."
 inputs:
   mode:
-    description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, effect-evidence-bundle, or effect-evidence-v0.2"
+    description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, decision-execution-binding-v0.2, effect-evidence-bundle, or effect-evidence-v0.2"
     required: true
   file:
     description: "Path to the claim, mapping, OTLP evidence, or observation JSON in the caller workspace; not used by effect-evidence-bundle"
@@ -95,6 +95,10 @@ runs:
           decision-execution-binding)
             require_file
             python "$ROOT/decision-execution-binding/verify.py"               "$CONFORMANCE_FILE"               --github-output "$GITHUB_OUTPUT"
+            ;;
+          decision-execution-binding-v0.2)
+            require_file
+            python "$ROOT/decision-execution-binding/verify_v0_2.py"            "$CONFORMANCE_FILE"               --github-output "$GITHUB_OUTPUT"
             ;;
           effect-evidence-bundle)
             args=(--github-output "$GITHUB_OUTPUT")

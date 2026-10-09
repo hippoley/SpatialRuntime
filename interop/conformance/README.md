@@ -28,6 +28,7 @@ Consumers should pin an immutable commit SHA.
 - `mapping-v0.2`
 - `tool-decision-lifecycle`
 - `decision-execution-binding`
+- `decision-execution-binding-v0.2`
 - `effect-evidence-bundle`
 - `effect-evidence-v0.2`
 
@@ -88,3 +89,19 @@ Copy-oriented examples live under `interop/conformance/examples/`:
 - `README.md` — integration steps.
 
 The quickstart intentionally has no default passing adapter.
+
+
+## Temporal binding example
+
+`decision-execution-binding-v0.2` adds decision validity windows and execution-start evidence without changing v0.1:
+
+```yaml
+- name: Verify temporal approval → execution binding
+  id: binding
+  uses: hippoley/SpatialRuntime/interop/conformance@<pinned-sha>
+  with:
+    mode: decision-execution-binding-v0.2
+    file: evidence/decision-execution-v0.2.json
+```
+
+The result remains `PASS`, `UNRESOLVED`, or `FAIL`. Missing execution-start evidence is unresolved; execution outside the approved window fails.

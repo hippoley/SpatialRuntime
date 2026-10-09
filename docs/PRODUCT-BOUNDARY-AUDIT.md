@@ -62,7 +62,7 @@ Legend:
 | CF-09 | As an observability maintainer, I can review a precise tool-execution vs external-effect boundary upstream | PARTIAL | OpenTelemetry #588 open; no human review yet |
 | CF-10 | As a standards community, I can reuse a SpatialRuntime reporting/provenance format | HOLD | do not invent a parallel standard; align to upstream communities |
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
-| AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical on main; AEA path is compatibility surface |
+| AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
 | AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | OPEN | package version exists, but no conformance release/tag lifecycle is defined |
 | AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | `interop/conformance-maturity.v0.1.json` added by this audit |
 | AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |
