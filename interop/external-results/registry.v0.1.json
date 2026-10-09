@@ -1,0 +1,134 @@
+{
+  "schema": "spatialruntime.external-results-registry.v0.1",
+  "generated_for": "2026-10-09 audit closure",
+  "evidence_maturity_order": [
+    "self-tested",
+    "external-source-reviewed",
+    "externally-executed",
+    "externally-reproduced",
+    "externally-consumed"
+  ],
+  "claim_rules": [
+    "A successful workflow in SpatialRuntime against unrelated code is externally-executed, not externally-consumed.",
+    "An upstream or official scorer can produce durable external execution evidence without implying maintainer endorsement.",
+    "Externally-reproduced requires an unrelated reproducer and public durable evidence.",
+    "Externally-consumed requires an unrelated project to make a SpatialRuntime profile/verifier part of its own CI, release, evidence, or review process.",
+    "Adoption is never inferred from stars, citations, our own cross-repo use, analyst mappings, or successful probes alone."
+  ],
+  "entries": [
+    {
+      "id": "openadapt-effect-evidence-taxonomy-2026-10-08",
+      "implementation": {
+        "repository": "OpenAdaptAI/openadapt-flow",
+        "locator_kind": "git_commit",
+        "revision": "6e4e4ed0fe4addedd7c38ced44176b42bc40165a"
+      },
+      "spatialruntime": {
+        "probe": "effect-evidence-taxonomy-v0.1",
+        "probe_revision": "5f1f753d6845a28e18b5c6eb327d9bb54ca50f15"
+      },
+      "evidence_method": "github_actions_executed_probe",
+      "execution": {
+        "workflow_run_id": 37753326767,
+        "workflow_url": "https://github.com/hippoley/SpatialRuntime/actions/runs/37753326767",
+        "artifact_id": 11553763198,
+        "artifact_name": "openadapt-effect-evidence-compat",
+        "artifact_digest": "sha256:ce816af6f1aaecbf894129b5644c05ead6db7e06f19d4a22fb7655ad15acd897"
+      },
+      "observed_result": {
+        "status": "completed",
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "interpretation": "Pinned OpenAdapt effect-result taxonomy matched the exercised neutral reconciliation expectations."
+      },
+      "evidence_maturity": "externally-executed",
+      "source_project_acknowledgment": "none",
+      "external_consumption": false,
+      "adoption_claim": false,
+      "nonclaims": [
+        "Does not imply OpenAdapt adoption or endorsement of SpatialRuntime.",
+        "Validates only the exercised effect-evidence taxonomy boundary."
+      ]
+    },
+    {
+      "id": "agentx-proof-sufficiency-2026-10-08",
+      "implementation": {
+        "repository": "studivox/agentx",
+        "locator_kind": "package_version",
+        "revision": "@studivox/agentx@0.1.1"
+      },
+      "spatialruntime": {
+        "probe": "proof-sufficiency-v0.1",
+        "probe_revision": "561d8b9af5150c1937a6cb783d1d65f44bb73438"
+      },
+      "evidence_method": "github_actions_executed_probe",
+      "execution": {
+        "workflow_run_id": 37753491071,
+        "workflow_url": "https://github.com/hippoley/SpatialRuntime/actions/runs/37753491071",
+        "artifact_id": 11555056129,
+        "artifact_name": "agentx-effect-evidence-compat",
+        "artifact_digest": "sha256:b1c4c979cfe2b0db872c5d051a1f23c10b3d8f5af1b99f6c9c7c44d2e538776c"
+      },
+      "observed_result": {
+        "status": "completed",
+        "cases": 2,
+        "interpretation": "Probe recorded current VerifierEngine behavior for structured response without postcondition proof and missing matchKeyPath."
+      },
+      "evidence_maturity": "externally-executed",
+      "source_project_acknowledgment": "none",
+      "external_consumption": false,
+      "adoption_claim": false,
+      "nonclaims": [
+        "Does not claim AgentX violates its own contract.",
+        "Does not imply AgentX adoption or endorsement of SpatialRuntime."
+      ]
+    },
+    {
+      "id": "assay-privileged-mcp-action-v0-2026-10-09",
+      "implementation": {
+        "repository": "hippoley/SpatialRuntime",
+        "locator_kind": "git_commit",
+        "revision": "009de9eccc2ec6cdfe14c75432941fdf9eb1522c",
+        "role": "candidate implementation"
+      },
+      "external_profile": {
+        "repository": "Rul1an/assay",
+        "profile": "privileged-mcp-action/v0",
+        "scorer_revision": "2c692088d794345235809b038d729e589e339c3d",
+        "source_corpus_digest": "sha256:cb58ce91863f52e0568742b977f0642158453ec11bbcd25821f9171dccd03342",
+        "rendered_set_digest": "sha256:b2f715408c82346b0928852f0bc6cb11c17dd7e3233395316d764b282080a05c"
+      },
+      "spatialruntime": {
+        "probe": "assay-official-scorer",
+        "probe_revision": "536bc2f781f4a68b8f15e6c3f808133d04e3d2f8"
+      },
+      "evidence_method": "official_external_scorer",
+      "reproduction_mode": "other_disclosed",
+      "execution": {
+        "workflow_run_id": 37869812018,
+        "workflow_url": "https://github.com/hippoley/SpatialRuntime/actions/runs/37869812018",
+        "artifact_id": 11589459426,
+        "artifact_name": "assay-conformance-result",
+        "artifact_digest": "sha256:bbb536f94f807ee688ca828448f8de7c116d2f917a2eb78fdd05ccff9b8a46b3"
+      },
+      "observed_result": {
+        "status": "completed",
+        "match": 14,
+        "mismatch": 0,
+        "execution_error": 0,
+        "harness_error": 0,
+        "review_warnings": 0
+      },
+      "evidence_maturity": "externally-executed",
+      "source_project_acknowledgment": "none",
+      "external_consumption": false,
+      "adoption_claim": false,
+      "nonclaims": [
+        "Agreement is limited to the pinned 14-case corpus.",
+        "Reproduction mode is other_disclosed, not blind_from_spec.",
+        "Does not establish implementation independence, security, compliance, or complete profile determinacy."
+      ]
+    }
+  ]
+}
