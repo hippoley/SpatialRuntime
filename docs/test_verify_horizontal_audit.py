@@ -24,6 +24,21 @@ class HorizontalAuditTests(unittest.TestCase):
     def test_not_applicable_requires_rationale(self):
         s=story();s["horizontal"]["performance"]["status"]="not_applicable"
         self.assertTrue(m.audit({"stories":[s]},{"P0-A"}))
+    def test_verified_text_is_not_evidence(self):
+        s=story()
+        s["horizontal"]["security"]={"status":"verified","evidence":["trust me"]}
+        self.assertTrue(m.audit({"stories":[s]},{"P0-A"}))
+
+    def test_verified_report_must_be_passing(self):
+        s=story()
+        s["horizontal"]["security"]={"status":"verified","evidence":[{"source":"ci/run-1","result":"FAIL"}]}
+        self.assertTrue(m.audit({"stories":[s]},{"P0-A"}))
+
+    def test_structured_passing_evidence_is_accepted_for_one_dimension(self):
+        s=story()
+        s["horizontal"]["security"]={"status":"verified","evidence":[{"source":"ci/run-1","result":"PASS"}]}
+        self.assertEqual(m.audit({"stories":[s]},{"P0-A"}),[])
+
     def test_missing_story_fails(self):
         self.assertTrue(m.audit({"stories":[]},{"P0-A"}))
     def test_duplicate_story_fails(self):
