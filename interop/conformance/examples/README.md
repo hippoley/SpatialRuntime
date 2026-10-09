@@ -1,19 +1,26 @@
 # External consumer quickstart
 
-This directory is a copy-oriented integration example for repositories that want to run SpatialRuntime conformance without importing SpatialRuntime code.
+The copyable [github-action.yml](github-action.yml) now runs a **bundled-reference smoke check**. It needs no invented consumer evidence file and no unfinished adapter. It pins the known commit `ce7cce687e623ed16f9c60db782bed05e9b117ba` while a stable release tag is unavailable.
 
-Files:
+## First execution: smoke only
 
-- `github-action.yml` — two CI patterns:
-  - validate a decision→execution binding claim;
-  - run the hostile effect-evidence bundle against a third-party verifier.
-- `effect_verifier_adapter.py` — stdin/stdout adapter stub.
+1. Copy `github-action.yml` to `.github/workflows/agent-conformance.yml`.
+2. Run it under GitHub Actions with Python 3.12 and inspect the emitted JSON artifact.
+3. Treat green output strictly as verification of SpatialRuntime's **own** bundled reference evaluator, **not** your project's effect correctness or independent adoption.
 
-Before use:
+## Second execution: your verifier (the actual consumer gate)
 
-1. The sample workflow is pinned to immutable SpatialRuntime commit `ce7cce687e623ed16f9c60db782bed05e9b117ba` (not a stable release tag). Verify this revision against your requirements before upgrading it.
-2. Copy the workflow into your repository's `.github/workflows/` directory and install the adapter at `scripts/effect_verifier_adapter.py` if you keep the second job.
-3. For `decision-execution-binding`, provide your own evidence JSON.
-4. For `effect-evidence-bundle`, replace the adapter stub's unresolved verdict with a call into your own verifier.
+After your project's verifier exists, replace the `bundle` step's inputs with:
 
-The stub deliberately returns `UNRESOLVED`; copying the example must not manufacture a passing conformance claim.
+```yaml
+with:
+  mode: effect-evidence-bundle
+  adapter_command: python scripts/effect_verifier_adapter.py
+  report_path: artifacts/effect-evidence-conformance.json
+```
+
+Copy [effect_verifier_adapter.py](effect_verifier_adapter.py) to `scripts/` and replace its intentionally unresolved stub with a real adapter to *your own* verifier. The stub always returns `UNRESOLVED`; a workflow requiring `PASS` **must fail** until genuine verification is implemented. Do not mark a missing or indeterminate effect as success to turn CI green.
+
+Record the calling repository and implementation revision, pinned SpatialRuntime commit, workflow run, and retained artifact. Only an unrelated repository running its own actual verifier or binding evidence can support CF-06; running the reference smoke job alone cannot.
+
+For consumers checking decision/execution binding instead, supply a project-owned evidence JSON file and choose `mode: decision-execution-binding-v0.2` with `file: <your-evidence-path>`. A missing evidence file is never an acceptable success case.
