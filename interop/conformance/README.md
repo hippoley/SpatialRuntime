@@ -21,6 +21,8 @@ It deliberately does **not** require a caller to adopt the Agent Effect Authorit
 
 Consumers should pin an immutable commit SHA.
 
+Runtime prerequisites: the composite Action expects `bash` and `python >= 3.10` to already be available on the runner. It does not install Python. External adapter commands may require additional consumer-owned dependencies. These prerequisites are also declared in the machine-readable catalog.
+
 ## Modes
 
 - `claim`
