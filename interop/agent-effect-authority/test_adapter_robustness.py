@@ -41,6 +41,23 @@ class AdapterRobustnessTests(unittest.TestCase):
         self.assertFalse(module._matches_expected([], {"status": "CONFIRMED"}))
         self.assertFalse(module._matches_expected(None, {"status": "CONFIRMED"}))
 
+    def test_invalid_json_is_a_failed_verdict(self):
+        with patch.object(module.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, "not-json", "")):
+            self.assertEqual(self.call()["reason"], "INVALID_JSON")
+
+    def test_nonzero_exit_is_a_failed_verdict(self):
+        with patch.object(module.subprocess, "run", return_value=subprocess.CompletedProcess([], 9, "", "failed")):
+            result = self.call()
+        self.assertEqual(result["reason"], "NONZERO_EXIT")
+        self.assertEqual(result["returncode"], 9)
+
+    def test_real_subprocess_adapter_roundtrip(self):
+        import shlex
+        import sys
+        command = shlex.join([sys.executable, "-c", "import json,sys; json.load(sys.stdin); print(json.dumps({'status':'UNRESOLVED','reason':'NO_EVIDENCE'}))"])
+        verdict = module._call_adapter(command, "suite-v0", {}, CASE)
+        self.assertEqual(verdict, {"status": "UNRESOLVED", "reason": "NO_EVIDENCE"})
+
     def test_valid_verdict_passes_through(self):
         verdict = {"status": "UNRESOLVED", "reason": "MISSING_EVIDENCE"}
         with patch.object(module.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, json.dumps(verdict), "")):
