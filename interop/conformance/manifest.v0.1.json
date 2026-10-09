@@ -141,5 +141,6 @@
       "The composite Action does not install Python.",
       "External adapter commands may have additional implementation-owned dependencies."
     ]
-  }
+  },
+  "release_policy": "interop/conformance/release-policy.v0.1.json"
 }
