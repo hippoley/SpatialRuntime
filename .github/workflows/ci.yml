@@ -99,6 +99,26 @@ jobs:
           test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
       - name: Validate neutral conformance catalog
         run: python interop/conformance/verify_catalog.py
+      - name: Verify envelope-only claim semantics through neutral action
+        id: neutral_claim
+        uses: ./interop/conformance
+        with:
+          mode: claim
+          file: interop/agent-effect-authority/claim.example.json
+      - name: Verify envelope-only mapping semantics through neutral action
+        id: neutral_mapping
+        uses: ./interop/conformance
+        with:
+          mode: mapping-v0.2
+          file: interop/agent-effect-authority/mappings/narada.v0.2.json
+      - name: Assert envelope-only modes do not manufacture conformance PASS
+        run: |
+          test "${{ steps.neutral_claim.outputs.validation_result }}" = "PASS"
+          test "${{ steps.neutral_claim.outputs.assessment_scope }}" = "envelope_only"
+          test "${{ steps.neutral_claim.outputs.conformance_result }}" = "UNRESOLVED"
+          test "${{ steps.neutral_mapping.outputs.validation_result }}" = "PASS"
+          test "${{ steps.neutral_mapping.outputs.assessment_scope }}" = "envelope_only"
+          test "${{ steps.neutral_mapping.outputs.conformance_result }}" = "UNRESOLVED"
       - name: Verify external-results evidence registry
         run: python interop/external-results/verify_registry.py
       - name: Verify neutral conformance Action entry point
