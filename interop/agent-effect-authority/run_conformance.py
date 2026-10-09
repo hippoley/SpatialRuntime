@@ -18,7 +18,7 @@ single = _load("verify_effect_observation", "verify_effect_observation.py")
 multi = _load("verify_effect_evidence_set", "verify_effect_evidence_set.py")
 
 def _matches_expected(observed, expected):
-    return isinstance(observed, dict) and all(
+    return isinstance(observed, dict) and isinstance(expected, dict) and bool(expected) and all(
         observed.get(key) == value for key, value in expected.items()
     )
 
@@ -87,8 +87,21 @@ def _builtin_observe(suite_id, policy, case):
 def _run_suite(results, suite_id, vector_file, adapter_command=None):
     payload = json.loads((BASE / vector_file).read_text(encoding="utf-8"))
     policy = payload["authority_policy"]
+    cases = payload.get("cases")
+    if not isinstance(cases, list) or not cases:
+        raise ValueError(f"{vector_file}: benchmark must contain nonempty cases")
+    seen = set()
+    for case in cases:
+        if not isinstance(case, dict) or not isinstance(case.get("id"), str) or not case["id"].strip():
+            raise ValueError(f"{vector_file}: invalid case identity")
+        if case["id"] in seen:
+            raise ValueError(f"{vector_file}: duplicate case id: {case['id']}")
+        seen.add(case["id"])
+        expected = case.get("expected")
+        if not isinstance(expected, dict) or not expected or not isinstance(expected.get("status"), str):
+            raise ValueError(f"{vector_file}/{case['id']}: invalid expected verdict")
 
-    for case in payload["cases"]:
+    for case in cases:
         observed = (
             _call_adapter(adapter_command, suite_id, policy, case)
             if adapter_command
