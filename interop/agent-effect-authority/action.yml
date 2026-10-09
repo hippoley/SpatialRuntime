@@ -2,7 +2,7 @@ name: "Agent Effect Authority conformance"
 description: "Verify effect-authority claims, semantic mappings, lifecycle correlation, or authoritative-effect evidence."
 inputs:
   mode:
-    description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, or effect-evidence-v0.2"
+    description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, decision-execution-binding-v0.2, or effect-evidence-v0.2"
     required: true
   file:
     description: "Path to the claim, mapping, or effect observation JSON in the caller workspace"
@@ -51,6 +51,9 @@ runs:
             ;;
           decision-execution-binding)
             python "$GITHUB_ACTION_PATH/../decision-execution-binding/verify.py" "$AEA_FILE" --github-output "$GITHUB_OUTPUT"
+            ;;
+          decision-execution-binding-v0.2)
+            python "$GITHUB_ACTION_PATH/../decision-execution-binding/verify_v0_2.py" "$AEA_FILE" --github-output "$GITHUB_OUTPUT"
             ;;
           effect-evidence-v0.2)
             if [[ -z "$AEA_POLICY" ]]; then
