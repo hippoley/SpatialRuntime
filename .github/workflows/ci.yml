@@ -123,6 +123,15 @@ jobs:
           test "${{ steps.neutral_mapping.outputs.conformance_result }}" = "UNRESOLVED"
       - name: Verify external-results evidence registry
         run: python interop/external-results/verify_registry.py
+      - name: Verify conformance release contract
+        run: python interop/conformance/verify_release_contract.py
+      - name: Dry-run conformance release manifest
+        run: |
+          python interop/conformance/prepare_release.py \
+            --tag conformance-v0.1.0 \
+            --commit 0000000000000000000000000000000000000000 \
+            --output /tmp/conformance-release.json
+          python -m json.tool /tmp/conformance-release.json >/dev/null
       - name: Verify neutral conformance Action entry point
         id: neutral_binding
         uses: ./interop/conformance
