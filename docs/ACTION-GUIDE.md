@@ -114,6 +114,19 @@ For future releases, keep the same gate:
 Release packaging remains separate from semantic maturity and unrelated adoption.
 
 
+## 7.5 No synthetic P2 feature backlog
+
+After the first released consumption boundary, the repository does not create a P2 feature queue merely from PARTIAL user-story labels.
+
+Residual gates are handled by their evidence owner:
+
+- field hardware gates wait for real device movement/restart evidence;
+- unrelated-adoption gates wait for unrelated project-owned use or falsification;
+- upstream gates wait for maintainer review/corpus/spec/test changes;
+- owned-downstream grounding is preserved without duplicating the same integration in this repository.
+
+P2 work is allowed only when it increases credential integrity or removes demonstrated consumer friction without changing the claim ceiling. Release-manifest attestation is an example of valid P2 hardening; another private conformance vocabulary is not.
+
 ## 8. Do not compete with generic protocol formalization
 
 Adjacent work has already established a strong spec-to-formal-analysis lane:
