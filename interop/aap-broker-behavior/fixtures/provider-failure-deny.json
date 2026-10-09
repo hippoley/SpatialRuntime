@@ -1,0 +1,11 @@
+{
+  "id": "provider-failure-deny",
+  "scenario": {
+    "kind": "provider_failure",
+    "grant_reference": "grant://orders-db",
+    "canary_credential": "CANARY_CREDENTIAL_FAIL",
+    "canary_backend": "https://backend-fail.invalid",
+    "canary_provider": "provider-failure-canary"
+  },
+  "expected": "DENY"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "unknown-grant-deny",
+  "scenario": {
+    "kind": "unknown_grant",
+    "grant_reference": "grant://does-not-exist",
+    "canary_credential": "SECRET_TOKEN_UNKNOWN_7f6a",
+    "canary_backend": "https://backend-unknown.invalid/private",
+    "canary_provider": "provider-unknown-internal"
+  },
+  "expected": "DENY"
+}

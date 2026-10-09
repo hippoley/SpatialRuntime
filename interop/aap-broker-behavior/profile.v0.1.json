@@ -1,0 +1,43 @@
+{
+  "profile": "aap-broker-behavior.v0.1",
+  "status": "experimental-independent",
+  "upstream": {
+    "repository": "opena2a-standards/agent-authorization-protocol",
+    "revision": "fb66195a9c2a4a40f91595da14673d11bb8c01e7",
+    "document": "AAP-BROKER-PROFILE.md",
+    "version": "0.4.1-draft"
+  },
+  "scope": "Behavioral subset of AAP broker Level 1 not covered by token-only aap-conformance.",
+  "requirements": [
+    {
+      "id": "AAPB-001",
+      "source": "§3.4 / §6 step 6",
+      "rule": "Absent a matching broker policy clause, grant resolution is denied."
+    },
+    {
+      "id": "AAPB-002",
+      "source": "§4.1 / §6.5",
+      "rule": "Credential material, backend addresses, and provider identity do not enter the agent-visible response."
+    },
+    {
+      "id": "AAPB-003",
+      "source": "§6.6",
+      "rule": "Unknown grant, policy denial, and provider failure are indistinguishable through the agent-visible denial surface."
+    },
+    {
+      "id": "AAPB-004",
+      "source": "§6.7",
+      "rule": "Success and denial paths produce broker-side signed audit evidence without credential material."
+    },
+    {
+      "id": "AAPB-005",
+      "source": "§6 step 8",
+      "rule": "On success, only the operation result crosses back to the agent-visible side."
+    }
+  ],
+  "non_goals": [
+    "AAP token/JWS verification already covered by aap-conformance",
+    "claiming official OpenA2A or IETF conformance",
+    "testing Level 2 or Level 3"
+  ]
+}
