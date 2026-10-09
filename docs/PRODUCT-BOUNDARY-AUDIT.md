@@ -144,12 +144,19 @@ The repository-owned P0 closure claim is now enforced by:
 
 The verifier treats P0-A/B/C/D/E as repository-owned closure gates and fails CI if their required evidence artifacts disappear.
 
-Current machine truth:
+Current claim boundary after the October 9 verifier correction:
 
 ```text
-repository_p0_closed = true
-external_adoption_gate = OPEN
+repository_p0_locally_verified = requires execution of all acceptance checks
+ci_run_attestation = NOT_VERIFIED_BY_LOCAL_CHECKER
+external_adoption_gate = OPEN until independent consumer evidence
 ```
+
+Previous `repository_p0_closed = true` reflected file-existence checks only and was
+**not sufficient acceptance evidence**. Commit `9c779a32f9b3b46b4d8b980ffcd4d83ba03a17c8`
+replaces that behavior with executable repository-owned acceptance checks.
+No local checker is allowed to assert a particular GitHub Actions run passed.
+Until an actual run is inspected, the CI-backed closure claim is unverified.
 
 The external adoption gate is not a P0 item. No amount of same-owner code, same-owner CI, analyst-authored mappings, or documentation may satisfy it.
 
