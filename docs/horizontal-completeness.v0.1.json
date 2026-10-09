@@ -1,0 +1,2676 @@
+{
+  "schema": "spatialruntime.horizontal-completeness.v0.1",
+  "status_date": "2026-10-09",
+  "dimensions": [
+    "functional_completeness",
+    "state_completeness",
+    "integration_completeness",
+    "security_correctness",
+    "performance_scalability",
+    "maintainability",
+    "observability_traceability",
+    "testability",
+    "user_value_completeness",
+    "external_compatibility"
+  ],
+  "dimension_statuses": [
+    "VERIFIED",
+    "PARTIAL",
+    "MISSING",
+    "N_A",
+    "BLOCKED"
+  ],
+  "closure_states": [
+    "VERIFIED_CLOSED",
+    "PARTIAL",
+    "OPEN",
+    "HOLD",
+    "BLOCKED_FIELD",
+    "BLOCKED_EXTERNAL",
+    "BLOCKED_UPSTREAM"
+  ],
+  "rules": [
+    "Vertical DONE is necessary but not sufficient for VERIFIED_CLOSED.",
+    "VERIFIED_CLOSED requires every applicable dimension VERIFIED; N_A is allowed only with a rationale; independent acceptance must be VERIFIED.",
+    "PARTIAL, MISSING, or BLOCKED in any applicable dimension forbids VERIFIED_CLOSED.",
+    "Dependencies must reference known stories and the dependency graph must be acyclic.",
+    "External, field, and upstream gates cannot be self-closed by repository mocks or same-owner evidence.",
+    "Latest-solution assessment may KEEP a stable implementation; novelty is not a closure requirement."
+  ],
+  "technology_baseline": {
+    "release_provenance": {
+      "decision": "ADAPT",
+      "references": [
+        "https://docs.github.com/en/actions/concepts/security/artifact-attestations",
+        "https://slsa.dev/spec/v1.2/"
+      ],
+      "note": "Use GitHub Artifact Attestations/Sigstore and SLSA provenance semantics rather than a private signing format."
+    },
+    "durable_execution": {
+      "decision": "KEEP_BOUNDARY",
+      "references": [
+        "https://docs.temporal.io/temporal",
+        "https://docs.temporal.io/nexus/operations"
+      ],
+      "note": "Temporal confirms durable event history plus idempotent external operations as mature practice; keep SpatialRuntime's narrower evidence/reconciliation boundary rather than reimplementing a general workflow engine."
+    },
+    "observability": {
+      "decision": "KEEP_SCOPE",
+      "references": [
+        "https://opentelemetry.io/docs/specs/semconv/"
+      ],
+      "note": "Use OpenTelemetry for telemetry naming/correlation; do not promote telemetry success into authoritative external-effect truth."
+    }
+  },
+  "stories": {
+    "SR-01": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:.github/workflows/ci.yml"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "SR-02": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "SR-01"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:.github/workflows/ci.yml"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "SR-03": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "SR-02"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:.github/workflows/ci.yml"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "SR-04": {
+      "vertical_status": "PARTIAL",
+      "horizontal_closure": "BLOCKED_FIELD",
+      "closure_owner": "field",
+      "dependencies": [
+        "SR-03"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "user_value_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "external_compatibility": {
+          "status": "BLOCKED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/AirTrajectory"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        }
+      },
+      "independent_acceptance": {
+        "status": "PARTIAL",
+        "evidence": [
+          "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+          "external:https://github.com/hippoley/AirTrajectory"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      },
+      "gate": "Durable public real ContamX execution evidence; do not duplicate owned downstream CI absent consumer need."
+    },
+    "SR-05": {
+      "vertical_status": "PARTIAL",
+      "horizontal_closure": "BLOCKED_FIELD",
+      "closure_owner": "field",
+      "dependencies": [
+        "SR-08"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "BLOCKED",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        },
+        "integration_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "BLOCKED",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        },
+        "testability": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "user_value_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "PARTIAL",
+        "evidence": [
+          "external:https://github.com/hippoley/WindowPilot"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      },
+      "gate": "Real command + ACK + authoritative physical convergence evidence."
+    },
+    "SR-06": {
+      "vertical_status": "PARTIAL",
+      "horizontal_closure": "BLOCKED_FIELD",
+      "closure_owner": "field",
+      "dependencies": [
+        "SR-05",
+        "SR-09"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "BLOCKED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        },
+        "integration_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "BLOCKED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        },
+        "testability": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "user_value_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+            "external:https://github.com/hippoley/WindowPilot"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "PARTIAL",
+        "evidence": [
+          "repo:docs/PRODUCT-BOUNDARY-AUDIT.md",
+          "external:https://github.com/hippoley/WindowPilot"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      },
+      "gate": "Restart while a real device effect is unresolved, then durable authoritative reconciliation."
+    },
+    "SR-07": {
+      "vertical_status": "PARTIAL",
+      "horizontal_closure": "BLOCKED_EXTERNAL",
+      "closure_owner": "external",
+      "dependencies": [
+        "SR-01"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "external_compatibility": {
+          "status": "PARTIAL",
+          "evidence": [
+            "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+            "external:https://github.com/hippoley/interior-kitchen-original"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        }
+      },
+      "independent_acceptance": {
+        "status": "PARTIAL",
+        "evidence": [
+          "repo:interop/owned-downstream-evidence/registry.v0.1.json",
+          "external:https://github.com/hippoley/interior-kitchen-original"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      },
+      "gate": "Unrelated BIM/CAD/SLAM consumer of the reviewed world boundary."
+    },
+    "SR-08": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "SR-01",
+        "SR-02"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_application_assembly.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_application_assembly.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_application_assembly.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_application_assembly.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_application_assembly.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_application_assembly.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_application_assembly.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_application_assembly.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:tests/test_runtime_application_assembly.py",
+          "repo:docs/P0-CLOSURE.v0.1.json"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "SR-09": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "SR-01",
+        "SR-08"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_session_resume.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_session_resume.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_session_resume.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_session_resume.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_session_resume.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_session_resume.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_session_resume.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:tests/test_runtime_session_resume.py",
+            "repo:docs/P0-CLOSURE.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:tests/test_runtime_session_resume.py",
+          "repo:docs/P0-CLOSURE.v0.1.json"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "CF-01": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/conformance/action.yml",
+          "repo:interop/conformance/manifest.v0.1.json",
+          "repo:.github/workflows/ci.yml"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "CF-02": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "CF-01"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/conformance/action.yml",
+          "repo:.github/workflows/ci.yml"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "CF-03": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "CF-01"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/manifest.v0.1.json",
+            "repo:interop/conformance/verify_catalog.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/conformance/manifest.v0.1.json",
+          "repo:interop/conformance/verify_catalog.py"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "CF-04": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "CF-01",
+        "CF-03"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/examples/github-action.yml",
+            "repo:interop/conformance/examples/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/conformance/examples/github-action.yml",
+          "repo:interop/conformance/examples/README.md"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "CF-05": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "CF-01"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/external-results/registry.v0.1.json",
+            "repo:interop/external-results/verify_registry.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/external-results/registry.v0.1.json",
+          "repo:interop/external-results/verify_registry.py"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "CF-06": {
+      "vertical_status": "OPEN",
+      "horizontal_closure": "BLOCKED_EXTERNAL",
+      "closure_owner": "external",
+      "dependencies": [
+        "CF-01",
+        "CF-03",
+        "CF-04",
+        "AD-03"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "BLOCKED",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        },
+        "user_value_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "external_compatibility": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        }
+      },
+      "independent_acceptance": {
+        "status": "BLOCKED",
+        "evidence": [
+          "external:https://github.com/hippoley/SpatialRuntime/issues/14"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      },
+      "gate": "Unrelated repository consumes or falsifies a released canonical conformance surface."
+    },
+    "CF-07": {
+      "vertical_status": "PARTIAL",
+      "horizontal_closure": "BLOCKED_UPSTREAM",
+      "closure_owner": "upstream",
+      "dependencies": [
+        "CF-02",
+        "CF-08"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "BLOCKED",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        },
+        "user_value_completeness": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        },
+        "external_compatibility": {
+          "status": "PARTIAL",
+          "evidence": [
+            "external:https://github.com/Rul1an/assay/issues/1840",
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+          ],
+          "note": "Partially covered; the remaining boundary is explicit and not self-closed."
+        }
+      },
+      "independent_acceptance": {
+        "status": "PARTIAL",
+        "evidence": [
+          "external:https://github.com/Rul1an/assay/issues/1840",
+          "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      },
+      "gate": "Assay maintainer accepts/rejects Stage-3 vector with concrete semantic feedback."
+    },
+    "CF-08": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "external",
+      "dependencies": [
+        "CF-02"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+            "repo:interop/external-results/registry.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/assay-privileged-mcp-action-v0/IMPLEMENTATION-REPORT.md",
+          "repo:interop/external-results/registry.v0.1.json"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "CF-09": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "upstream",
+      "dependencies": [],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588",
+          "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "CF-10": {
+      "vertical_status": "HOLD",
+      "horizontal_closure": "HOLD",
+      "closure_owner": "upstream",
+      "dependencies": [
+        "CF-05"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "BLOCKED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        },
+        "external_compatibility": {
+          "status": "BLOCKED",
+          "evidence": [
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        }
+      },
+      "independent_acceptance": {
+        "status": "BLOCKED",
+        "evidence": [
+          "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "HOLD",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      },
+      "gate": "Concrete standards consumer must request a reporting/provenance format not already owned upstream."
+    },
+    "CF-11": {
+      "vertical_status": "HOLD",
+      "horizontal_closure": "HOLD",
+      "closure_owner": "upstream",
+      "dependencies": [
+        "CF-09"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "BLOCKED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        },
+        "external_compatibility": {
+          "status": "BLOCKED",
+          "evidence": [
+            "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+          ],
+          "note": "Requires field, unrelated-consumer, or upstream evidence outside repository control."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "external:https://github.com/open-telemetry/semantic-conventions-genai/pull/588"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "HOLD",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      },
+      "gate": "Re-enter only with a capturable signal and concrete telemetry-consumer action."
+    },
+    "AD-01": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:README.md",
+          "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "AD-02": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "CF-01"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:interop/conformance/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:interop/conformance/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:interop/conformance/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:interop/conformance/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:interop/conformance/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:interop/conformance/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:interop/conformance/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:README.md",
+            "repo:interop/conformance/README.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:README.md",
+          "repo:interop/conformance/README.md"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "AD-03": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "AD-02",
+        "CF-03"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/RELEASE-POLICY.md",
+            "repo:interop/conformance/CHANGELOG.md",
+            "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/conformance/RELEASE-POLICY.md",
+          "repo:interop/conformance/CHANGELOG.md",
+          "external:https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.1.0"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "AD-04": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "CF-03"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance-maturity.v0.1.json",
+            "repo:interop/verify_maturity.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance-maturity.v0.1.json",
+            "repo:interop/verify_maturity.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance-maturity.v0.1.json",
+            "repo:interop/verify_maturity.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance-maturity.v0.1.json",
+            "repo:interop/verify_maturity.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance-maturity.v0.1.json",
+            "repo:interop/verify_maturity.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance-maturity.v0.1.json",
+            "repo:interop/verify_maturity.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance-maturity.v0.1.json",
+            "repo:interop/verify_maturity.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance-maturity.v0.1.json",
+            "repo:interop/verify_maturity.py"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/conformance-maturity.v0.1.json",
+          "repo:interop/verify_maturity.py"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "AD-05": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/ACTION-GUIDE.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/ACTION-GUIDE.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/ACTION-GUIDE.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/ACTION-GUIDE.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/ACTION-GUIDE.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/ACTION-GUIDE.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:docs/ACTION-GUIDE.md",
+            "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:docs/ACTION-GUIDE.md",
+          "repo:docs/PRODUCT-BOUNDARY-AUDIT.md"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "AD-06": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "CF-01"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/action.yml",
+            "repo:.github/workflows/ci.yml"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/conformance/action.yml",
+          "repo:.github/workflows/ci.yml"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    },
+    "AD-07": {
+      "vertical_status": "DONE",
+      "horizontal_closure": "VERIFIED_CLOSED",
+      "closure_owner": "repository",
+      "dependencies": [
+        "CF-01"
+      ],
+      "dimensions": {
+        "functional_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/README.md",
+            "repo:interop/conformance/manifest.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "state_completeness": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "integration_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/README.md",
+            "repo:interop/conformance/manifest.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "security_correctness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/README.md",
+            "repo:interop/conformance/manifest.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "performance_scalability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "maintainability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/README.md",
+            "repo:interop/conformance/manifest.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "observability_traceability": {
+          "status": "N_A",
+          "evidence": [],
+          "note": "Not material to this story's acceptance boundary."
+        },
+        "testability": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/README.md",
+            "repo:interop/conformance/manifest.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "user_value_completeness": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/README.md",
+            "repo:interop/conformance/manifest.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        },
+        "external_compatibility": {
+          "status": "VERIFIED",
+          "evidence": [
+            "repo:interop/conformance/README.md",
+            "repo:interop/conformance/manifest.v0.1.json"
+          ],
+          "note": "Covered by current implementation and acceptance evidence."
+        }
+      },
+      "independent_acceptance": {
+        "status": "VERIFIED",
+        "evidence": [
+          "repo:interop/conformance/README.md",
+          "repo:interop/conformance/manifest.v0.1.json"
+        ],
+        "note": "Independent, negative, or external evidence is kept separate from implementation assertions."
+      },
+      "solution_assessment": {
+        "decision": "KEEP",
+        "note": "Keep the current boundary unless external evidence demonstrates a materially better mature replacement."
+      }
+    }
+  }
+}
