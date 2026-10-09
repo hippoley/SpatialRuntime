@@ -69,8 +69,13 @@ def main() -> None:
                     )
 
         outputs = entry.get("outputs", [])
-        if entry.get("structured_action_result") is True and "conformance_result" not in outputs:
-            errors.append(f"{mode}: structured mode missing conformance_result output")
+        if entry.get("structured_action_result") is not True:
+            errors.append(
+                f"{mode}: canonical Action always exposes conformance_result; "
+                "structured_action_result must be true"
+            )
+        if "conformance_result" not in outputs:
+            errors.append(f"{mode}: catalog outputs missing conformance_result")
 
     action_path = ROOT / str(catalog.get("preferred_action", "")) / "action.yml"
     if action_path.is_file():
