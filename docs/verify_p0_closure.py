@@ -70,8 +70,25 @@ def verify() -> dict:
     registry = json.loads(EXTERNAL_REGISTRY.read_text(encoding="utf-8"))
     errors = []
     rows = []
+    declared = doc.get("p0")
+    if not isinstance(declared, list):
+        declared = []
+        errors.append("p0 manifest must be a list")
+    identifiers = [item.get("id") for item in declared if isinstance(item, dict)]
+    required = set(CHECKS)
+    if len(identifiers) != len(declared):
+        errors.append("p0 manifest contains invalid entries")
+    if len(identifiers) != len(set(identifiers)):
+        errors.append("p0 manifest contains duplicate ids")
+    if set(identifiers) != required:
+        errors.append(
+            f"p0 manifest coverage drift: missing={sorted(required - set(identifiers))}, "
+            f"unknown={sorted(set(identifiers) - required)}"
+        )
 
-    for item in doc.get("p0", []):
+    for item in declared:
+        if not isinstance(item, dict):
+            continue
         p0_id = item.get("id")
         if item.get("owner") != "repository":
             errors.append(f"{p0_id}: repository P0 manifest contains external-owned gate")
@@ -94,7 +111,7 @@ def verify() -> dict:
     external = doc.get("external_exit_gate", {})
     return {
         "schema": doc.get("schema"),
-        "repository_p0_locally_verified": bool(rows) and all(row["status"] == "VERIFIED_LOCAL" for row in rows),
+        "repository_p0_locally_verified": not errors and len(rows) == len(CHECKS) and all(row["status"] == "VERIFIED_LOCAL" for row in rows),
         "ci_run_attestation": "NOT_VERIFIED_BY_LOCAL_CHECKER",
         "external_adoption_gate": {
             "id": external.get("id"),
