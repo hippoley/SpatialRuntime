@@ -277,6 +277,34 @@ Root README now presents:
 
 The two product lanes and their separate maturity claims are explicit on the first screen.
 
+## Post-P1 closure classification
+
+After `conformance-v0.1.0` is published and the public quickstarts use it, there is no remaining repository-owned feature gap that should be promoted to P0/P1 merely to make the table greener.
+
+The remaining non-DONE stories are reality gates:
+
+| Story | Gate class | Current truth | Repository action ceiling |
+|---|---|---|---|
+| SR-04 | owned-downstream grounding / repo-local duplication | AirTrajectory already runs official `contamxpy==0.0.9` with real NIST/generated PRJ on Windows CI; SpatialRuntime CI itself remains fixture-only | do not duplicate the solver CI unless a consumer requires repo-local proof |
+| SR-05 | field gate | real gateway/identity/write-gate path exists; physical movement/convergence is not yet measured | only real device evidence can close it |
+| SR-06 | field gate | durable resume/reconciliation exists; no field restart during unresolved physical effect is frozen | only a real unresolved-effect restart/reconcile run can close it |
+| SR-07 | external-independence gate | owned scene source consumes WorldSnapshot and verifies handoff/source drift | unrelated BIM/CAD/SLAM consumption is required |
+| CF-06 | external-adoption gate | released neutral Action exists; no unrelated consumer yet | unrelated project-owned consumption/falsification only |
+| CF-07 | upstream-adoption gate | Assay Stage-3 proposal is submitted after official 14/14 scorer run | upstream maintainer acceptance/rejection with concrete semantics |
+| CF-10 | hold | parallel reporting standard would duplicate upstream ownership | no work without a concrete standards consumer |
+| CF-11 | closed/hold scope result | OpenTelemetry review did not find an instrumentation-consumer use | re-enter only with a new capturable signal + consumer action |
+
+This distinction is intentional:
+
+```text
+internal implementation gap
+!= field evidence gate
+!= unrelated adoption gate
+!= upstream governance gate
+```
+
+A field/external gate may remain open for months without justifying more private architecture. New internal work must be caused by evidence from one of those gates, not by discomfort with a non-DONE status.
+
 ## Stop / switch criteria
 
 A line is downgraded when two or more apply:
