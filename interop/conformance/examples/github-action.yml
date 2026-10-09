@@ -1,24 +1,14 @@
-name: agent-conformance
+# Copy into .github/workflows/agent-conformance.yml.
+# Smoke test only: exercises SpatialRuntime's bundled reference evaluator.
+# This does NOT validate your own verifier or establish independent adoption.
+name: agent-conformance-smoke
 
 on:
   pull_request:
   push:
 
 jobs:
-  decision-execution-binding:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - id: conformance
-        uses: hippoley/SpatialRuntime/interop/conformance@ce7cce687e623ed16f9c60db782bed05e9b117ba
-        with:
-          mode: decision-execution-binding
-          file: evidence/decision-execution-binding.json
-      - name: Require resolved conformance
-        run: |
-          test "${{ steps.conformance.outputs.conformance_result }}" = "PASS"
-
-  external-effect-verifier:
+  bundled-reference-smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,14 +19,17 @@ jobs:
         uses: hippoley/SpatialRuntime/interop/conformance@ce7cce687e623ed16f9c60db782bed05e9b117ba
         with:
           mode: effect-evidence-bundle
-          adapter_command: python scripts/effect_verifier_adapter.py
           report_path: artifacts/effect-evidence-conformance.json
-      - name: Require all hostile vectors to pass
+      - name: Require passing reference vectors
+        shell: bash
         run: |
           test "${{ steps.bundle.outputs.conformance_result }}" = "PASS"
           test "${{ steps.bundle.outputs.failed_count }}" = "0"
-      - name: Preserve machine-readable evidence
+          test -f "${{ steps.bundle.outputs.report_path }}"
+      - name: Preserve reference smoke evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: effect-evidence-conformance
-          path: ${{ steps.bundle.outputs.report_path }}
+          name: spatialruntime-bundled-reference-smoke
+          path: artifacts/effect-evidence-conformance.json
+          if-no-files-found: warn
