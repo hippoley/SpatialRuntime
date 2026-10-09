@@ -63,7 +63,7 @@ Legend:
 | CF-10 | As a standards community, I can reuse a SpatialRuntime reporting/provenance format | HOLD | do not invent a parallel standard; align to upstream communities |
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
-| AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | compatibility/deprecation contract is defined and CI-validated; consumers still pin immutable commit SHAs because no stable conformance release/tag is claimed yet |
+| AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | release/tag semantics, changelog, deprecation policy and machine checks are defined; no immutable `conformance-v*` tag exists yet |
 | AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | `interop/conformance-maturity.v0.1.json` added by this audit |
 | AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |
 
@@ -179,15 +179,20 @@ Do not close it for:
 
 ## P1 gaps
 
-### P1-A — Release lifecycle
+### P1-A — Release lifecycle — PARTIAL
 
-Conformance users should not be forced to pin arbitrary moving commits forever.
+Implemented:
+- `interop/conformance/RELEASE-POLICY.md`
+- `interop/conformance/CHANGELOG.md`
+- `interop/conformance/release-contract.v0.1.json`
+- `interop/conformance/verify_release_contract.py`
+- deterministic `prepare_release.py`
+- CI validation
 
-Needed:
-- versioned conformance manifest;
-- immutable Git tag/release for stable profiles;
-- changelog/migration note for semantic changes;
-- deprecation window for old modes.
+Remaining external gate:
+- create the first immutable `conformance-v*` Git tag/release at an exact green commit.
+
+Until that Git ref exists, consumers must continue pinning immutable commit SHAs.
 
 ### P1-B — External-results registry — COMPLETED
 
@@ -255,3 +260,21 @@ Machine-readable grounding evidence lives at:
 It is intentionally separate from `interop/external-results/registry.v0.1.json`.
 
 Owned repositories can prove real execution and reduce architecture-to-reality risk, but they do **not** satisfy the unrelated-adoption gate in issue #14.
+
+
+## External-only closure gates
+
+The stories below cannot be made DONE by adding more SpatialRuntime code.
+
+| Story | What closes it | What does not close it |
+|---|---|---|
+| SR-04 | durable public real ContamX execution evidence | parser/fake executable only |
+| SR-05 | real gateway/device command + ACK + authoritative convergence evidence | mock/fixture feedback |
+| SR-06 | restart while a real device effect is unresolved, with durable reconciliation evidence | deterministic journal-only replay |
+| SR-07 | unrelated BIM/CAD/SLAM consumer of the reviewed world boundary | owned downstream repo |
+| CF-06 | unrelated repo pins/consumes SpatialRuntime in its own process | stars, mentions, same-owner consumers |
+| CF-07 | upstream maintainer accepts the vector/test/finding | our proposal alone |
+| CF-09 | substantive upstream observability review/merge/citation | our own comments |
+| AD-03 | real immutable `conformance-v*` tag/release | policy/docs/branch names |
+
+Internal work on these stories is limited to making the external experiment reproducible, preserving evidence, fixing discovered bugs, and reducing integration friction.
