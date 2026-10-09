@@ -4,7 +4,7 @@ This file is execution order, not a backlog.
 
 ## 1. Stop creating new public profile brands
 
-Until AD-01, AD-02, AD-03 and CF-06 are closed:
+Until AD-03 and CF-06 are closed:
 - new adversarial cases may extend existing profiles;
 - external standards probes are allowed when they target a measured external gap;
 - no new top-level public conformance vocabulary.
