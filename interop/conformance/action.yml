@@ -1,0 +1,145 @@
+name: "SpatialRuntime interop conformance"
+description: "Run model-independent conformance checks for agent decision, execution, effect, and cross-runtime evidence."
+inputs:
+  mode:
+    description: "Verification mode: claim, mapping, mapping-v0.2, tool-decision-lifecycle, decision-execution-binding, effect-evidence-bundle, or effect-evidence-v0.2"
+    required: true
+  file:
+    description: "Path to the claim, mapping, OTLP evidence, or observation JSON in the caller workspace; not used by effect-evidence-bundle"
+    required: false
+    default: ""
+  policy:
+    description: "Path to the trusted evidence registry/policy JSON for effect-evidence-v0.2"
+    required: false
+    default: ""
+  adapter_command:
+    description: "External verifier command for effect-evidence-bundle mode; omit to run the built-in reference evaluator"
+    required: false
+    default: ""
+  report_path:
+    description: "Optional durable JSON report path for effect-evidence-bundle mode"
+    required: false
+    default: ""
+outputs:
+  conformance_result:
+    description: "PASS, UNRESOLVED, or FAIL"
+    value: ${{ steps.verify.outputs.conformance_result }}
+  lifecycle_result:
+    description: "Backward-compatible lifecycle result for tool-decision-lifecycle mode"
+    value: ${{ steps.verify.outputs.lifecycle_result }}
+  unresolved_count:
+    description: "Number of unresolved evidence conditions"
+    value: ${{ steps.verify.outputs.unresolved_count }}
+  error_count:
+    description: "Number of conformance contradictions/errors"
+    value: ${{ steps.verify.outputs.error_count }}
+  passed_count:
+    description: "Passed vector count for effect-evidence-bundle mode"
+    value: ${{ steps.verify.outputs.passed_count }}
+  failed_count:
+    description: "Failed vector count for effect-evidence-bundle mode"
+    value: ${{ steps.verify.outputs.failed_count }}
+  total_count:
+    description: "Total vector count for effect-evidence-bundle mode"
+    value: ${{ steps.verify.outputs.total_count }}
+  report_path:
+    description: "Durable JSON report path when requested"
+    value: ${{ steps.verify.outputs.report_path }}
+runs:
+  using: "composite"
+  steps:
+    - name: Verify interop artifact
+      id: verify
+      shell: bash
+      env:
+        CONFORMANCE_MODE: ${{ inputs.mode }}
+        CONFORMANCE_FILE: ${{ inputs.file }}
+        CONFORMANCE_POLICY: ${{ inputs.policy }}
+        CONFORMANCE_ADAPTER_COMMAND: ${{ inputs.adapter_command }}
+        CONFORMANCE_REPORT_PATH: ${{ inputs.report_path }}
+      run: |
+        set -euo pipefail
+        ROOT="$GITHUB_ACTION_PATH/.."
+        require_file() {
+          if [[ -z "$CONFORMANCE_FILE" ]]; then
+            echo "file input is required for mode: $CONFORMANCE_MODE" >&2
+            exit 2
+          fi
+        }
+        run_pass_fail() {
+          if "$@"; then
+            echo "conformance_result=PASS" >> "$GITHUB_OUTPUT"
+          else
+            rc=$?
+            echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+            return "$rc"
+          fi
+        }
+        case "$CONFORMANCE_MODE" in
+          claim)
+            require_file
+            run_pass_fail python "$ROOT/agent-effect-authority/verify_claim.py"               "$CONFORMANCE_FILE"               --manifest "$ROOT/agent-effect-authority/manifest.json"
+            ;;
+          mapping)
+            require_file
+            run_pass_fail python "$ROOT/agent-effect-authority/verify_semantic_mapping.py" "$CONFORMANCE_FILE"
+            ;;
+          mapping-v0.2)
+            require_file
+            run_pass_fail python "$ROOT/agent-effect-authority/verify_semantic_mapping_v02.py" "$CONFORMANCE_FILE"
+            ;;
+          tool-decision-lifecycle)
+            require_file
+            python "$ROOT/otel-tool-decision-lifecycle/verify.py"               "$CONFORMANCE_FILE"               --github-output "$GITHUB_OUTPUT"
+            ;;
+          decision-execution-binding)
+            require_file
+            python "$ROOT/decision-execution-binding/verify.py"               "$CONFORMANCE_FILE"               --github-output "$GITHUB_OUTPUT"
+            ;;
+          effect-evidence-bundle)
+            args=(--github-output "$GITHUB_OUTPUT")
+            if [[ -n "$CONFORMANCE_ADAPTER_COMMAND" ]]; then
+              args+=(--adapter-command "$CONFORMANCE_ADAPTER_COMMAND")
+            fi
+            if [[ -n "$CONFORMANCE_REPORT_PATH" ]]; then
+              args+=(--report "$CONFORMANCE_REPORT_PATH")
+            fi
+            python "$ROOT/agent-effect-authority/run_conformance.py" "${args[@]}"
+            ;;
+          effect-evidence-v0.2)
+            require_file
+            if [[ -z "$CONFORMANCE_POLICY" ]]; then
+              echo "policy input is required for effect-evidence-v0.2" >&2
+              exit 2
+            fi
+            if result="$(python "$ROOT/agent-effect-authority/verify_effect_observation_v02.py"               "$CONFORMANCE_FILE" "$CONFORMANCE_POLICY")"; then
+              echo "$result"
+            else
+              rc=$?
+              echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+              exit "$rc"
+            fi
+            status="$(printf '%s' "$result" | python -c 'import json,sys; print(json.load(sys.stdin).get("status",""))')"
+            case "$status" in
+              CONFIRMED)
+                echo "conformance_result=PASS" >> "$GITHUB_OUTPUT"
+                ;;
+              UNRESOLVED)
+                echo "conformance_result=UNRESOLVED" >> "$GITHUB_OUTPUT"
+                ;;
+              CONTRADICTED)
+                echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+                exit 1
+                ;;
+              *)
+                echo "conformance_result=FAIL" >> "$GITHUB_OUTPUT"
+                echo "unsupported effect-evidence status: $status" >&2
+                exit 2
+                ;;
+            esac
+            ;;
+          *)
+            echo "unsupported mode: $CONFORMANCE_MODE" >&2
+            exit 2
+            ;;
+        esac

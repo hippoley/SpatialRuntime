@@ -1,0 +1,10 @@
+{
+  "logical_effect_id": "effect-demo-contradicted",
+  "attempt_id": "attempt-demo-contradicted",
+  "evidence_id": "evidence-demo-contradicted",
+  "evidence_digest": "sha256:demo-contradicted",
+  "effect_domain": "durable-record",
+  "source_id": "primary-store-readback",
+  "observation_kind": "durable_state",
+  "verdict": "CONTRADICTED"
+}
