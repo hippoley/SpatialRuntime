@@ -113,3 +113,36 @@ Before creating a tag:
 7. create the immutable tag/release.
 
 A branch name or package version is not a conformance release.
+
+
+## 8. Do not compete with generic protocol formalization
+
+Adjacent work has already established a strong spec-to-formal-analysis lane:
+
+- AgentRFC / AgentConform (arXiv:2603.23801): normative-clause extraction, typed Protocol IR, TLA+ compilation/model checking, and counterexample replay against live SDKs;
+- AgentThread (arXiv:2606.28690): source-linked protocol/responsibility analysis across multiple protocols and composed deployments.
+
+SpatialRuntime should **not** build a parallel generic Protocol IR, TLA+ compiler, or broad protocol-security taxonomy unless an external consumer explicitly requires integration with those artifacts.
+
+Our differentiating layer is narrower and closer to consequential execution:
+
+- logical effect identity across retries/replay;
+- decision/authorization versus execution binding;
+- ambiguous external outcomes as first-class state;
+- authoritative readback/effect evidence;
+- physical and other external side effects;
+- durable evidence lineage and reproducible hostile vectors;
+- cross-runtime consumer-facing CI that preserves claim ceilings.
+
+Use formal-protocol projects as upstream/adjacent sources of counterexamples and responsibility boundaries; contribute executable reality evidence where it is missing rather than cloning their formal-analysis stack.
+
+### Current external node
+
+ANP's protocol repository already publishes ANP-02 scenario vectors whose status is explicitly design-only and asks SDK/product runners to retain actual execution evidence separately. Issue #105 proposes the first bounded Python SDK runner over that canonical corpus.
+
+Investment rule for this node:
+- wait for ANP maintainer direction before writing implementation code;
+- if accepted, contribute the smallest runner/report contract that consumes their vectors;
+- do not introduce SpatialRuntime vocabulary into ANP;
+- do not call illustrative implementation-policy scenarios protocol conformance;
+- stop if maintainers prefer another testing path or if an equivalent runner lands first.
