@@ -1,7 +1,7 @@
 {
   "schema": "spatialruntime.p0-closure.v0.1",
   "generated_for": "2026-10-09 repository truth audit",
-  "rule": "Repository-owned P0s may close by code+test+CI evidence. External-adoption P0-D may close only from unrelated externally-consumed evidence in the canonical external-results registry.",
+  "rule": "Repository-owned P0s may close only from code+test+CI evidence. Unrelated adoption is tracked separately as an external exit gate and cannot be self-completed by this repository.",
   "p0": [
     {
       "id": "P0-A",
@@ -38,14 +38,6 @@
     },
     {
       "id": "P0-D",
-      "name": "First unrelated consumer",
-      "owner": "external",
-      "expected": "OPEN_UNTIL_EXTERNAL_EVIDENCE",
-      "evidence_source": "interop/external-results/registry.v0.1.json",
-      "closure_rule": "At least one entry must be evidence_maturity=externally-consumed, external_consumption=true, and contain consumer.project_owned_evidence=true for a repository not owned by hippoley."
-    },
-    {
-      "id": "P0-E",
       "name": "Explicit application assembly",
       "owner": "repository",
       "expected": "CLOSED",
@@ -55,7 +47,7 @@
       ]
     },
     {
-      "id": "P0-F",
+      "id": "P0-E",
       "name": "Safe live RuntimeSession resume",
       "owner": "repository",
       "expected": "CLOSED",
@@ -64,5 +56,12 @@
         "tests/test_runtime_session_resume.py"
       ]
     }
-  ]
+  ],
+  "external_exit_gate": {
+    "id": "CF-06",
+    "name": "First unrelated conformance consumer or falsifying contributor",
+    "evidence_source": "interop/external-results/registry.v0.1.json",
+    "expected": "OPEN_UNTIL_EXTERNAL_EVIDENCE",
+    "closure_rule": "At least one entry must be evidence_maturity=externally-consumed, external_consumption=true, consumer.project_owned_evidence=true, and reference a repository not owned by hippoley."
+  }
 }
