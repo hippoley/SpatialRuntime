@@ -37,5 +37,21 @@
   "nonclaims": [
     "This policy does not claim the conformance surface is stable or widely adopted.",
     "A candidate compatibility contract is not a substitute for unrelated consumer evidence."
+  ],
+  "correctness_corrections": [
+    {
+      "id": "CORR-2026-10-09-ENVELOPE-PASS",
+      "affected_modes": [
+        "claim",
+        "mapping",
+        "mapping-v0.2"
+      ],
+      "previous_behavior": "A successful envelope validator exit was promoted to conformance_result=PASS by the neutral Action.",
+      "corrected_behavior": "Envelope validity is reported as validation_result=PASS with assessment_scope=envelope_only while conformance_result remains UNRESOLVED.",
+      "rationale": "The underlying verifiers explicitly do not verify downstream evidence truth or semantic truth.",
+      "release_state": "pre-stable-release candidate correction",
+      "migration": "Consumers that used conformance_result=PASS as an envelope-validity signal must use validation_result=PASS instead.",
+      "nonclaim": "This correction does not retroactively invalidate the underlying declaration files; it narrows the assurance represented by the Action output."
+    }
   ]
 }
