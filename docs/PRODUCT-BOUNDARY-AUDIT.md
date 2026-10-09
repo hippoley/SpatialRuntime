@@ -1,6 +1,6 @@
 # SpatialRuntime Product Boundary and User-Story Audit
 
-Status date: 2026-10-08
+Status date: 2026-10-09
 
 ## Executive decision
 
@@ -51,21 +51,21 @@ Legend:
 | SR-05 | As a hardware user, I can dispatch through a real gateway/device fleet and prove physical convergence | PARTIAL | gateway/ledger contracts exist; repository examples remain fixture/mock-oriented |
 | SR-06 | As an operator, I can prove durable restart/recovery behavior against real device-side uncertainty | PARTIAL | durable ledger/reconciliation logic exists; no unrelated production deployment evidence |
 | SR-07 | As a scene-source consumer, I can use the same reviewed world model from an unrelated BIM/CAD/SLAM integration | OPEN | architecture supports adapters, but no unrelated scene-source integration is recorded |
-| CF-01 | As a runtime author, I can run stable conformance checks without adopting SpatialRuntime internals | PARTIAL | reusable Action exists under legacy AEA path; neutral entry point is PR #41 |
+| CF-01 | As a runtime author, I can run stable conformance checks without adopting SpatialRuntime internals | DONE | neutral `interop/conformance` Action merged via PR #49; legacy AEA path retained for compatibility |
 | CF-02 | As a runtime author, I can plug my own verifier into hostile effect-evidence vectors | DONE | external adapter protocol and bundle are on main |
-| CF-03 | As a consumer, I can discover available conformance modes and versions machine-readably | PARTIAL | catalog is in PR #41, not main |
-| CF-04 | As a consumer, I can copy one minimal workflow and get a safe default that cannot manufacture PASS | PARTIAL | quickstart exists in PR #41, not main |
-| CF-05 | As a maintainer, I can distinguish source review from executed/reproduced evidence | PARTIAL | provenance work exists but external execution/reproduction remains incomplete |
+| CF-03 | As a consumer, I can discover available conformance modes and versions machine-readably | DONE | machine-readable catalog merged via PR #49 |
+| CF-04 | As a consumer, I can copy one minimal workflow and get a safe default that cannot manufacture PASS | DONE | quickstart merged via PR #49; adapter stub defaults to UNRESOLVED |
+| CF-05 | As a maintainer, I can distinguish source review from executed/reproduced evidence | PARTIAL | OpenAdapt and AgentX probes are now executed; Assay was officially scored, but unrelated reproduction/consumption still remains open |
 | CF-06 | As an unrelated project, I can pin SpatialRuntime and use it in my CI/release process | OPEN | issue #14 remains the adoption gate |
 | CF-07 | As a standards/profile author, I can use SpatialRuntime hostile vectors to increase my own corpus discrimination | PARTIAL | Assay Stage-3 proposal published; not yet adopted upstream |
-| CF-08 | As an external profile author, I can run a SpatialRuntime candidate against my official scorer | PARTIAL | Assay PR #43 workflow queued; no scorer result yet |
+| CF-08 | As an external profile author, I can run a SpatialRuntime candidate against my official scorer | DONE | Assay official scorer completed 14/14 with method `other_disclosed`; claim ceiling excludes blind independence |
 | CF-09 | As an observability maintainer, I can review a precise tool-execution vs external-effect boundary upstream | PARTIAL | OpenTelemetry #588 open; no human review yet |
 | CF-10 | As a standards community, I can reuse a SpatialRuntime reporting/provenance format | HOLD | do not invent a parallel standard; align to upstream communities |
-| AD-01 | As a new visitor, I can understand within one screen what this repo is for today | OPEN | root README still leads with spatial runtime while active external-growth lane is conformance |
-| AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | PARTIAL | PR #41 resolves this; not main |
+| AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
+| AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical on main; AEA path is compatibility surface |
 | AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | OPEN | package version exists, but no conformance release/tag lifecycle is defined |
-| AD-04 | As a reviewer, I can see maturity level per conformance surface | OPEN | no single canonical maturity matrix on main |
-| AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | OPEN | no explicit stop/kill criteria existed before this audit |
+| AD-04 | As a reviewer, I can see maturity level per conformance surface | DONE | `interop/conformance-maturity.v0.1.json` added by this audit |
+| AD-05 | As a maintainer, I know when to stop expanding a profile and switch nodes | DONE | explicit stop/switch criteria now govern investment decisions |
 
 ## What is actually finished
 
@@ -126,7 +126,7 @@ Action:
 
 ### P0-A — Canonical external entry point
 
-Close PR #41 or equivalent:
+Completed via PR #49:
 - `interop/conformance/action.yml`
 - machine-readable manifest
 - copy-paste quickstart
@@ -146,7 +146,7 @@ Every external compatibility workflow must produce:
 - evidence method;
 - immutable artifact reference when available.
 
-Queued workflow is not executed evidence.
+Queued workflow is not executed evidence. OpenAdapt #38 and AgentX #39 now have completed successful executed probes; Assay #43 has a completed official scored run under `other_disclosed`.
 
 ### P0-C — Maturity matrix
 
