@@ -1,0 +1,41 @@
+{
+  "schema": "spatialruntime.interop.compatibility.v0.1",
+  "scope": "interop/conformance",
+  "status": "candidate",
+  "rules": [
+    {
+      "id": "COMPAT-001",
+      "rule": "Every canonical Action mode must expose conformance_result with PASS, UNRESOLVED, or FAIL semantics."
+    },
+    {
+      "id": "COMPAT-002",
+      "rule": "A mode MUST NOT silently change the meaning of PASS, UNRESOLVED, or FAIL within the same profile/mode version."
+    },
+    {
+      "id": "COMPAT-003",
+      "rule": "A breaking semantic change requires a new profile version and, when Action invocation meaning changes, a new mode name or explicitly versioned mode."
+    },
+    {
+      "id": "COMPAT-004",
+      "rule": "Deprecated modes remain explicitly listed during their support window and MUST NOT be repurposed for incompatible semantics."
+    },
+    {
+      "id": "COMPAT-005",
+      "rule": "New optional fields or outputs may be additive only when existing callers that ignore them retain the same result semantics."
+    },
+    {
+      "id": "COMPAT-006",
+      "rule": "Historical durable reports remain interpretable against the pinned profile/vector revision and are never retroactively upgraded to a stronger evidence claim."
+    }
+  ],
+  "consumer_guidance": {
+    "pin": "immutable commit SHA",
+    "current_release_channel": "commit-pinned candidate; no stable conformance release tag is claimed yet",
+    "breaking_change_policy": "new version/mode; no silent semantic rewrite",
+    "deprecation_policy": "explicit catalog status before removal"
+  },
+  "nonclaims": [
+    "This policy does not claim the conformance surface is stable or widely adopted.",
+    "A candidate compatibility contract is not a substitute for unrelated consumer evidence."
+  ]
+}
