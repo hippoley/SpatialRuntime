@@ -88,6 +88,12 @@ jobs:
         with:
           mode: decision-execution-binding
           file: interop/decision-execution-binding/fixtures/standing-not-checked.json
+      - name: Verify temporal decision binding via local action
+        id: binding_v02
+        uses: ./interop/agent-effect-authority
+        with:
+          mode: decision-execution-binding-v0.2
+          file: interop/decision-execution-binding/fixtures/aap-approval-pass.json
       - name: Assert decision-execution binding Action outputs
         run: |
           test "${{ steps.binding_per_call.outputs.conformance_result }}" = "PASS"
@@ -97,6 +103,9 @@ jobs:
           test "${{ steps.binding_unresolved.outputs.conformance_result }}" = "UNRESOLVED"
           test "${{ steps.binding_unresolved.outputs.unresolved_count }}" = "1"
           test "${{ steps.binding_unresolved.outputs.error_count }}" = "0"
+          test "${{ steps.binding_v02.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.binding_v02.outputs.unresolved_count }}" = "0"
+          test "${{ steps.binding_v02.outputs.error_count }}" = "0"
           test "${{ steps.lifecycle_positive.outputs.conformance_result }}" = "PASS"
           test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
       - name: Verify authoritative evidence v0.2 via local action
