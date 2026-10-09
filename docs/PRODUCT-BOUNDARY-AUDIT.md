@@ -59,7 +59,7 @@ Legend:
 | CF-06 | As an unrelated project, I can pin SpatialRuntime and use it in my CI/release process | OPEN | issue #14 remains the adoption gate |
 | CF-07 | As a standards/profile author, I can use SpatialRuntime hostile vectors to increase my own corpus discrimination | PARTIAL | Assay Stage-3 proposal published; not yet adopted upstream |
 | CF-08 | As an external profile author, I can run a SpatialRuntime candidate against my official scorer | DONE | Assay official scorer completed 14/14 with method `other_disclosed`; claim ceiling excludes blind independence |
-| CF-09 | As an observability maintainer, I can review a precise tool-execution vs external-effect boundary upstream | PARTIAL | OpenTelemetry #588 open; no human review yet |
+| CF-09 | As an observability maintainer, I can review a precise tool-execution vs external-effect boundary upstream | PARTIAL | OpenTelemetry maintainer `lmolkova` requested wording changes on #588; the note was narrowed in response at fork commit `38a2ecf7...`; upstream acceptance/merge is still open |
 | CF-10 | As a standards community, I can reuse a SpatialRuntime reporting/provenance format | HOLD | do not invent a parallel standard; align to upstream communities |
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
