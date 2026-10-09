@@ -28,6 +28,20 @@
   ],
   "surfaces": [
     {
+      "id": "effect-authority-declarations",
+      "semantic_maturity": "candidate",
+      "evidence_maturity": "self-tested",
+      "catalog_modes": [
+        "claim",
+        "mapping",
+        "mapping-v0.2"
+      ],
+      "notes": [
+        "claim/mapping modes validate declaration envelopes and do not independently verify evidence or semantic truth",
+        "valid envelope-only runs remain conformance UNRESOLVED"
+      ]
+    },
+    {
       "id": "effect-evidence",
       "semantic_maturity": "candidate",
       "evidence_maturity": "externally-executed",
@@ -36,6 +50,10 @@
         "OpenAdapt #38 and AgentX #39 executed successfully in GitHub Actions against pinned external implementations",
         "this is external implementation execution, not unrelated consumption",
         "OpenAdapt and AgentX executed evidence is frozen in the external-results registry with run/artifact digests."
+      ],
+      "catalog_modes": [
+        "effect-evidence-bundle",
+        "effect-evidence-v0.2"
       ]
     },
     {
@@ -44,6 +62,9 @@
       "evidence_maturity": "external-source-reviewed",
       "notes": [
         "repository CI exercises positive and unresolved cases"
+      ],
+      "catalog_modes": [
+        "tool-decision-lifecycle"
       ]
     },
     {
@@ -53,6 +74,10 @@
       "notes": [
         "profile is on main; external consumer not yet recorded",
         "v0.2 temporal binding is exposed through the canonical interop/conformance Action and catalog."
+      ],
+      "catalog_modes": [
+        "decision-execution-binding",
+        "decision-execution-binding-v0.2"
       ]
     },
     {
@@ -62,7 +87,8 @@
       "notes": [
         "neutral interop/conformance Action merged via PR #49",
         "catalog, safe quickstart, unified PASS/UNRESOLVED/FAIL semantics, and durable report_path are on main"
-      ]
+      ],
+      "catalog_modes": []
     },
     {
       "id": "assay-privileged-mcp-action-candidate",
@@ -73,7 +99,8 @@
         "reproduction mode is other_disclosed because generator/canonical material was read before implementation",
         "successful scored run is durable public evidence but does not establish blind independence",
         "Official scorer lineage and 14/14 result are frozen in the external-results registry."
-      ]
+      ],
+      "catalog_modes": []
     },
     {
       "id": "aap-broker-behavior",
@@ -83,7 +110,8 @@
         "independent AAP broker behavior harness merged via PR #44",
         "signed-audit gap is pinned to external spec/reference sources",
         "not official AAP/IETF conformance and not yet externally consumed"
-      ]
+      ],
+      "catalog_modes": []
     }
   ],
   "adoption_gate": {

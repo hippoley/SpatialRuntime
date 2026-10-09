@@ -22,6 +22,15 @@ def main() -> None:
         if not path.is_file():
             errors.append(f"legacy action missing action.yml: {path.relative_to(ROOT)}")
 
+    runtime = catalog.get("runtime_requirements")
+    if not isinstance(runtime, dict):
+        errors.append("catalog missing runtime_requirements")
+    else:
+        if runtime.get("python") != ">=3.10":
+            errors.append("runtime_requirements.python must be >=3.10")
+        if runtime.get("shell") != "bash":
+            errors.append("runtime_requirements.shell must be bash")
+
     seen_modes: set[str] = set()
     for index, entry in enumerate(catalog.get("profiles", [])):
         mode = entry.get("mode")
@@ -73,6 +82,10 @@ def main() -> None:
             errors.append(f"{mode}: every canonical mode must declare structured_action_result=true")
         if "conformance_result" not in outputs:
             errors.append(f"{mode}: canonical mode missing conformance_result output")
+        if entry.get("result_scope") == "envelope_only":
+            for required_output in ("validation_result", "assessment_scope"):
+                if required_output not in outputs:
+                    errors.append(f"{mode}: envelope-only mode missing {required_output} output")
 
     compatibility = ROOT / str(catalog.get("compatibility_policy", ""))
     if not compatibility.is_file():
