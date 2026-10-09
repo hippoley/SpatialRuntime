@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass
 from hashlib import sha256
 import json
@@ -11,7 +12,7 @@ from spatialruntime.runtime.manifest import (
     fingerprint,
     validate_execution_manifest,
 )
-from spatialruntime.runtime.session import TRACE_SCHEMA, trace_hash, state_hash
+from spatialruntime.runtime.session import TRACE_SCHEMA, RuntimeSession, trace_hash, state_hash
 
 BUNDLE_SCHEMA = "runtime_episode_bundle_v0.4"
 
@@ -236,3 +237,60 @@ def save_bundle(bundle: Mapping[str, Any], path: str | Path) -> Path:
     p.write_text(json.dumps(bundle, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
                  encoding="utf-8")
     return p
+
+
+def resume_session_from_bundle(
+    bundle: Mapping[str, Any],
+    *,
+    entity_catalog: Mapping[str, Mapping[str, Any]],
+    compiled_safety_graph: Any,
+) -> RuntimeSession:
+    """Rebuild a live RuntimeSession from a validated episode bundle.
+
+    Safe resume requires an execution manifest so the caller-supplied entity
+    catalog and compiled safety graph can be bound back to the historical run.
+    A hardware-incomplete trace is resumable because its next runtime state
+    preserves committed_target_unconfirmed; the next control step will remain
+    blocked until fresh device feedback reconciles that state.
+    """
+
+    report = validate_bundle(bundle)
+    manifest = bundle.get("execution_manifest")
+    if not isinstance(manifest, Mapping):
+        raise ReplayValidationError(
+            "safe session resume requires execution_manifest"
+        )
+
+    expected_catalog_fp = manifest.get("entity_catalog_fingerprint")
+    actual_catalog_fp = fingerprint(entity_catalog)
+    if expected_catalog_fp != actual_catalog_fp:
+        raise ReplayValidationError(
+            "resume entity_catalog fingerprint mismatch"
+        )
+
+    expected_graph_fp = manifest.get("safety_graph_fingerprint")
+    actual_graph_fp = getattr(compiled_safety_graph, "fingerprint", None)
+    if not isinstance(actual_graph_fp, str) or actual_graph_fp != expected_graph_fp:
+        raise ReplayValidationError(
+            "resume safety graph fingerprint mismatch"
+        )
+
+    traces = bundle.get("traces") or []
+    if not traces:
+        raise ReplayValidationError("cannot resume bundle without traces")
+    last = traces[-1]
+    status = last.get("status")
+    if status not in {"completed", "hardware_incomplete"}:
+        raise ReplayValidationError(
+            f"cannot resume terminal trace with status={status}"
+        )
+
+    return RuntimeSession(
+        case_id=report.case_id,
+        step=int(last["step"]) + 1,
+        revision=int(last["revision"]) + 1,
+        runtime_state=deepcopy(dict(last["next_runtime_state"])),
+        entity_catalog=deepcopy(dict(entity_catalog)),
+        compiled_safety_graph=compiled_safety_graph,
+        history=[deepcopy(dict(trace)) for trace in traces],
+    )
