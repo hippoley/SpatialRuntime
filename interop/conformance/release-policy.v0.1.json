@@ -1,0 +1,28 @@
+{
+  "schema": "spatialruntime.conformance-release-policy.v0.1",
+  "status": "candidate",
+  "tag_format": "conformance-vMAJOR.MINOR.PATCH",
+  "immutable_tags": true,
+  "release_unit": "interop/conformance public contract plus referenced profile/verifier revisions",
+  "compatibility": {
+    "patch": "No intentional semantic changes to existing modes or result meanings; fixes may tighten false-positive behavior when the previous behavior violated documented semantics.",
+    "minor": "Additive modes, outputs, vectors, or profile versions; existing documented modes remain available.",
+    "major": "Breaking mode removal, incompatible input/output contract changes, or intentional result-semantic changes."
+  },
+  "deprecation": {
+    "requirement": "Deprecated modes must remain declared in the catalog with migration guidance before removal.",
+    "minimum_window": "one published minor release"
+  },
+  "pinning": {
+    "preferred": "immutable release tag after a release exists",
+    "strongest_reproducibility": "immutable commit SHA",
+    "forbidden_for_historical_evidence": [
+      "main",
+      "moving branches"
+    ]
+  },
+  "current_state": {
+    "released_tag": null,
+    "note": "No conformance release has been published yet; consumers must pin an immutable commit SHA."
+  }
+}
