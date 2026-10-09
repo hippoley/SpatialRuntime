@@ -134,6 +134,34 @@ Action:
   - real solver deployment;
   - a concrete bug blocking AirTrajectory/HomeAI usage.
 
+## Machine-verifiable P0 state
+
+The repository-owned P0 closure claim is now enforced by:
+
+- `docs/P0-CLOSURE.v0.1.json`
+- `docs/verify_p0_closure.py`
+- repository CI
+
+The verifier treats P0-A/B/C/E/F as repository-owned closure gates and fails CI if their required evidence artifacts disappear.
+
+P0-D is deliberately different: it is an **external-only gate**. The verifier will only report it CLOSED when `interop/external-results/registry.v0.1.json` contains unrelated, project-owned `externally-consumed` evidence satisfying the canonical adoption rule.
+
+Therefore:
+
+```text
+repository-owned P0s closed  !=  all P0s closed
+```
+
+Until P0-D receives qualifying external evidence, the correct project state is:
+
+```text
+repository_owned_p0_closed = true
+external_gate_open = true
+all_p0_closed = false
+```
+
+No amount of additional same-owner code, same-owner CI, analyst-authored mappings, or documentation may change that external gate.
+
 ## P0 gaps to close before adding new profiles
 
 ### P0-A — Canonical external entry point
