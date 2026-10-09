@@ -51,7 +51,8 @@
       "semantic_maturity": "experimental",
       "evidence_maturity": "external-source-reviewed",
       "notes": [
-        "profile is on main; external consumer not yet recorded"
+        "profile is on main; external consumer not yet recorded",
+        "v0.2 temporal binding is exposed through the canonical interop/conformance Action and catalog."
       ]
     },
     {
