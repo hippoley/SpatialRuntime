@@ -9,17 +9,18 @@ Until AD-01, AD-02, AD-03 and CF-06 are closed:
 - external standards probes are allowed when they target a measured external gap;
 - no new top-level public conformance vocabulary.
 
-## 2. Make one external entry point canonical
+## 2. One external entry point is canonical — COMPLETED
 
-Target: PR #41.
+Merged via PR #49:
 
-Required before merge:
-- neutral Action path;
-- manifest;
+- neutral `interop/conformance` Action path;
+- machine-readable manifest;
 - safe copy-paste example;
 - external adapter mode;
 - structured outputs;
-- README points to neutral path first.
+- README points to the neutral path first.
+
+Do not reopen this design unless an unrelated consumer demonstrates a concrete incompatibility.
 
 ## 3. Preserve external-result evidence
 
