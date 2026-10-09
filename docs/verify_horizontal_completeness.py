@@ -179,6 +179,10 @@ def verify() -> dict:
             _validate_evidence(story_id, dim, evidence, errors)
             if dstatus == "VERIFIED" and not evidence:
                 errors.append(f"{story_id} {dim}: VERIFIED requires evidence")
+            if dstatus == "VERIFIED" and evidence == ["repo:.github/workflows/ci.yml"]:
+                errors.append(
+                    f"{story_id} {dim}: generic CI is execution plumbing, not sufficient story-specific evidence"
+                )
             if dstatus == "N_A" and evidence:
                 errors.append(f"{story_id} {dim}: N_A must not carry acceptance evidence")
             if dstatus in {"PARTIAL", "MISSING", "BLOCKED"}:
