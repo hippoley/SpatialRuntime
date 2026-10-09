@@ -101,7 +101,7 @@
       },
       "spatialruntime": {
         "probe": "assay-official-scorer",
-        "probe_revision": "536bc2f781f4a68b8f15e6c3f808133d04e3d2f8"
+        "probe_revision": "75bd675be8d97710f92fccfdff508a74d4a4cc68"
       },
       "evidence_method": "official_external_scorer",
       "reproduction_mode": "other_disclosed",
@@ -109,7 +109,7 @@
         "workflow_run_id": 37869812018,
         "workflow_url": "https://github.com/hippoley/SpatialRuntime/actions/runs/37869812018",
         "artifact_id": 11589459426,
-        "artifact_name": "assay-conformance-result",
+        "artifact_name": "assay-pmav0-conformance",
         "artifact_digest": "sha256:bbb536f94f807ee688ca828448f8de7c116d2f917a2eb78fdd05ccff9b8a46b3"
       },
       "observed_result": {
