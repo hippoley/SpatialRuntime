@@ -61,8 +61,9 @@ Legend:
 | CF-06 | As an unrelated project, I can pin SpatialRuntime and use it in my CI/release process | OPEN | issue #14 remains the adoption gate |
 | CF-07 | As a standards/profile author, I can use SpatialRuntime hostile vectors to increase my own corpus discrimination | PARTIAL | Assay Stage-3 proposal published; not yet adopted upstream |
 | CF-08 | As an external profile author, I can run a SpatialRuntime candidate against my official scorer | DONE | Assay official scorer completed 14/14 with method `other_disclosed`; claim ceiling excludes blind independence |
-| CF-09 | As an observability maintainer, I can review a precise tool-execution vs external-effect boundary upstream | PARTIAL | OpenTelemetry #588 open; no human review yet |
+| CF-09 | As an observability maintainer, I can review a precise tool-execution vs external-effect boundary upstream | DONE | OpenTelemetry maintainer `lmolkova` gave substantive `CHANGES_REQUESTED` review on #588; the proposal was narrowed in direct response at fork commit `38a2ecf7...` |
 | CF-10 | As a standards community, I can reuse a SpatialRuntime reporting/provenance format | HOLD | do not invent a parallel standard; align to upstream communities |
+| CF-11 | As an upstream observability project, I can accept/merge a clarified tool-result vs external-observation boundary | PARTIAL | OpenTelemetry #588 has substantive maintainer review and an author revision; maintainer acceptance/merge after the revision is still pending |
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
 | AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | release/tag semantics, changelog, deprecation policy and machine checks are defined; no immutable `conformance-v*` tag exists yet |
@@ -308,7 +309,7 @@ The stories below cannot be made DONE by adding more SpatialRuntime code.
 | SR-07 | unrelated BIM/CAD/SLAM consumer of the reviewed world boundary | owned downstream repo |
 | CF-06 | unrelated repo pins/consumes SpatialRuntime in its own process | stars, mentions, same-owner consumers |
 | CF-07 | upstream maintainer accepts the vector/test/finding | our proposal alone |
-| CF-09 | substantive upstream observability review/merge/citation | our own comments |
+| CF-11 | maintainer acceptance/merge/citation after substantive review | our own comments or author-only revision |
 | AD-03 | real immutable `conformance-v*` tag/release | policy/docs/branch names |
 
 Internal work on these stories is limited to making the external experiment reproducible, preserving evidence, fixing discovered bugs, and reducing integration friction.
