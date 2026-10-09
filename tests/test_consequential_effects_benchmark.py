@@ -58,3 +58,25 @@ def test_pressure_only_cases_never_inflate_executable_coverage():
     report = module.score()
     assert report["pressure_requirement_coverage"]["covered"] > report["executable_requirement_coverage"]["covered"]
     assert report["executable_requirement_coverage"]["full_profile_executable_coverage"] is False
+
+
+def test_growth_priorities_target_pressure_backed_coverage_gaps():
+    report = module.score()
+    priorities = report["dataset_growth_priorities"]
+    assert [row["id"] for row in priorities] == [
+        "AEA-007",
+        "AEA-003",
+        "AEA-004",
+        "AEA-008",
+        "AEA-001",
+    ]
+    assert priorities[0]["executable_cases"] == 0
+    assert priorities[0]["pressure_cases"] == 10
+
+
+def test_requirement_distribution_exposes_existing_skew():
+    report = module.score()
+    distribution = {row["id"]: row for row in report["requirement_distribution"]}
+    assert distribution["AEA-006"]["executable_cases"] == 10
+    assert distribution["AEA-009"]["executable_cases"] == 9
+    assert distribution["AEA-007"]["executable_cases"] == 0
