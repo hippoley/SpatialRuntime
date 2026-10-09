@@ -1,0 +1,50 @@
+{
+  "schema": "spatialruntime.consequential-effects.requirements.v0.1",
+  "benchmark": "consequential-effects-v0.1",
+  "profile": "agent-effect-authority.v0.1",
+  "scoring_rule": "Only executable cases marked scored=true affect conformance and discrimination metrics. Pressure-only cases inform requirement motivation but never count as executable coverage.",
+  "requirements": [
+    {
+      "id": "AEA-001",
+      "title": "Proposal is not authority"
+    },
+    {
+      "id": "AEA-002",
+      "title": "Logical effect identity is runtime-owned"
+    },
+    {
+      "id": "AEA-003",
+      "title": "Effect class is known before execution"
+    },
+    {
+      "id": "AEA-004",
+      "title": "Authorization is explicit and separate"
+    },
+    {
+      "id": "AEA-005",
+      "title": "Transport evidence is not effect evidence"
+    },
+    {
+      "id": "AEA-006",
+      "title": "Unresolved outcome is first-class"
+    },
+    {
+      "id": "AEA-007",
+      "title": "Retry identity prevents duplicate intent"
+    },
+    {
+      "id": "AEA-008",
+      "title": "Compensation is a distinct linked effect when supported",
+      "conditional": true
+    },
+    {
+      "id": "AEA-009",
+      "title": "Fresh authoritative state closes the loop"
+    }
+  ],
+  "nonclaims": [
+    "A requirement motivated by a pressure case is not executable benchmark coverage.",
+    "Passing this benchmark does not establish full AEA conformance unless every required AEA requirement has executable scored coverage.",
+    "External projects referenced by pressure evidence are not adopters or endorsers."
+  ]
+}

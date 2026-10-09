@@ -1,0 +1,174 @@
+{
+  "schema": "spatialruntime.consequential-effects.cases.v0.1",
+  "benchmark": "consequential-effects-v0.1",
+  "scored_cases": [
+    {
+      "suite": "iev-adversarial-v0.1",
+      "case_id": "physical-authoritative-positive",
+      "requirements": [
+        "AEA-009"
+      ],
+      "outcome_class": "confirmed_authoritative",
+      "polarity": "positive",
+      "tags": [
+        "fresh",
+        "authoritative-readback",
+        "post-attempt"
+      ]
+    },
+    {
+      "suite": "iev-adversarial-v0.1",
+      "case_id": "self-declared-authority-rejected",
+      "requirements": [
+        "AEA-006",
+        "AEA-009"
+      ],
+      "outcome_class": "unresolved_unauthorized_source",
+      "polarity": "negative",
+      "tags": [
+        "self-report",
+        "source-authority"
+      ]
+    },
+    {
+      "suite": "iev-adversarial-v0.1",
+      "case_id": "wrong-predicate-source-rejected",
+      "requirements": [
+        "AEA-006",
+        "AEA-009"
+      ],
+      "outcome_class": "unresolved_wrong_authority",
+      "polarity": "negative",
+      "tags": [
+        "predicate-authority",
+        "cross-domain"
+      ]
+    },
+    {
+      "suite": "iev-adversarial-v0.1",
+      "case_id": "stale-authoritative-source-still-unresolved",
+      "requirements": [
+        "AEA-006",
+        "AEA-009"
+      ],
+      "outcome_class": "unresolved_stale",
+      "polarity": "negative",
+      "tags": [
+        "freshness",
+        "authoritative-source"
+      ]
+    },
+    {
+      "suite": "iev-adversarial-v0.1",
+      "case_id": "transport-ack-cannot-prove-effect",
+      "requirements": [
+        "AEA-005",
+        "AEA-006"
+      ],
+      "outcome_class": "unresolved_transport_only",
+      "polarity": "negative",
+      "tags": [
+        "transport-ack",
+        "proof-sufficiency"
+      ]
+    },
+    {
+      "suite": "iev-adversarial-v0.1",
+      "case_id": "pre-attempt-observation-cannot-resolve",
+      "requirements": [
+        "AEA-006",
+        "AEA-009"
+      ],
+      "outcome_class": "unresolved_pre_attempt",
+      "polarity": "negative",
+      "tags": [
+        "temporal-order",
+        "post-attempt"
+      ]
+    },
+    {
+      "suite": "iev-adversarial-v0.1",
+      "case_id": "structured-response-without-postcondition-proof",
+      "requirements": [
+        "AEA-005",
+        "AEA-006",
+        "AEA-009"
+      ],
+      "outcome_class": "unresolved_structured_response",
+      "polarity": "negative",
+      "tags": [
+        "structured-response",
+        "proof-sufficiency"
+      ]
+    },
+    {
+      "suite": "iev-adversarial-v0.1",
+      "case_id": "missing-field-without-completeness-guarantee",
+      "requirements": [
+        "AEA-006",
+        "AEA-009"
+      ],
+      "outcome_class": "unresolved_missing_field",
+      "polarity": "negative",
+      "tags": [
+        "field-absence",
+        "completeness"
+      ]
+    },
+    {
+      "suite": "authentic-evidence-conflict-v0.1",
+      "case_id": "two-authoritative-sources-agree-confirmed",
+      "requirements": [
+        "AEA-006",
+        "AEA-009"
+      ],
+      "outcome_class": "confirmed_consistent_multi_source",
+      "polarity": "positive",
+      "tags": [
+        "multi-source",
+        "agreement"
+      ]
+    },
+    {
+      "suite": "authentic-evidence-conflict-v0.1",
+      "case_id": "two-authoritative-sources-conflict",
+      "requirements": [
+        "AEA-006",
+        "AEA-009"
+      ],
+      "outcome_class": "conflict_authoritative",
+      "polarity": "adversarial",
+      "tags": [
+        "multi-source",
+        "conflict",
+        "fail-closed"
+      ]
+    },
+    {
+      "suite": "authentic-evidence-conflict-v0.1",
+      "case_id": "different-effect-ids-cannot-be-combined",
+      "requirements": [
+        "AEA-002",
+        "AEA-006"
+      ],
+      "outcome_class": "indeterminate_identity_mismatch",
+      "polarity": "adversarial",
+      "tags": [
+        "logical-effect-id",
+        "identity-mismatch"
+      ]
+    }
+  ],
+  "pressure_only_policy": {
+    "source": "interop/agent-effect-authority/case-matrix-v0.1.json",
+    "scoring": "not_scored",
+    "rule": "Pressure cases motivate requirements and dataset growth but do not count as executable coverage until an implementation-neutral executable vector exists."
+  },
+  "balance_targets": {
+    "note": "Targets are guardrails, not a leaderboard objective.",
+    "minimum_positive": 2,
+    "minimum_negative": 4,
+    "minimum_adversarial": 2,
+    "minimum_outcome_classes": 8
+  }
+}
