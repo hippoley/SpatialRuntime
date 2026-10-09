@@ -104,6 +104,7 @@ def score(adapter_command: str | None = None) -> dict:
 
     pressure_requirements = set()
     pressure_case_count = 0
+    pressure_counts = Counter()
     for domain in pressure_doc["domains"]:
         for case in domain["pressure_cases"]:
             pressure_case_count += 1
@@ -113,6 +114,7 @@ def score(adapter_command: str | None = None) -> dict:
                     f"pressure case {domain['id']}/{case['case']}: unknown requirements {sorted(unknown)}"
                 )
             pressure_requirements.update(case["requirements"])
+            pressure_counts.update(case["requirements"])
 
     runner = _load_runner()
     run = runner.run(adapter_command=adapter_command)
@@ -187,6 +189,25 @@ def score(adapter_command: str | None = None) -> dict:
 
     executable_missing = [rid for rid in requirement_ids if rid not in executable_requirements]
     pressure_missing = [rid for rid in requirement_ids if rid not in pressure_requirements]
+    executable_counts = Counter()
+    for row in scored_cases:
+        executable_counts.update(row["requirements"])
+    requirement_distribution = [
+        {
+            "id": rid,
+            "executable_cases": executable_counts[rid],
+            "pressure_cases": pressure_counts[rid],
+            "gap": pressure_counts[rid] - executable_counts[rid],
+        }
+        for rid in requirement_ids
+    ]
+    growth_priorities = sorted(
+        [
+            row for row in requirement_distribution
+            if row["executable_cases"] == 0 and row["pressure_cases"] > 0
+        ],
+        key=lambda row: (-row["pressure_cases"], row["id"]),
+    )
 
     return {
         "benchmark": req["benchmark"],
@@ -216,6 +237,8 @@ def score(adapter_command: str | None = None) -> dict:
             "pressure_cases": pressure_case_count,
             "missing_ids": pressure_missing,
         },
+        "requirement_distribution": requirement_distribution,
+        "dataset_growth_priorities": growth_priorities,
         "case_balance": {
             "positive": balance["positive"],
             "negative": balance["negative"],
