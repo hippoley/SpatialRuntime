@@ -63,7 +63,7 @@ Legend:
 | CF-08 | As an external profile author, I can run a SpatialRuntime candidate against my official scorer | DONE | Assay official scorer completed 14/14 with method `other_disclosed`; claim ceiling excludes blind independence |
 | CF-09 | As an observability maintainer, I can review a precise tool-execution vs external-effect boundary upstream | DONE | OpenTelemetry maintainer `lmolkova` gave substantive `CHANGES_REQUESTED` review on #588; the proposal was narrowed in direct response at fork commit `38a2ecf7...` |
 | CF-10 | As a standards community, I can reuse a SpatialRuntime reporting/provenance format | HOLD | do not invent a parallel standard; align to upstream communities |
-| CF-11 | As an upstream observability project, I can accept/merge a clarified tool-result vs external-observation boundary | PARTIAL | OpenTelemetry #588 has substantive maintainer review and an author revision; maintainer acceptance/merge after the revision is still pending |
+| CF-11 | As an upstream observability project, I can accept/merge a clarified tool-result vs external-observation boundary | HOLD | OpenTelemetry #588 received two rounds of substantive maintainer review; the maintainer did not see a concrete instrumentation/telemetry-consumer use for the distinction, so the PR was closed rather than forcing execution-reconciliation semantics into the span convention |
 | AD-01 | As a new visitor, I can understand within one screen what this repo is for today | DONE | root README now presents the two product lanes and current external-adoption priority |
 | AD-02 | As a consumer, I know which entry point is canonical and which are compatibility aliases | DONE | `interop/conformance` is canonical and now exposes the current v0.2 binding mode; AEA path remains a compatibility surface |
 | AD-03 | As a consumer, I can pin a released version/tag rather than an arbitrary commit | PARTIAL | release/tag semantics, changelog, deprecation policy and machine checks are defined; no immutable `conformance-v*` tag exists yet |
@@ -309,7 +309,24 @@ The stories below cannot be made DONE by adding more SpatialRuntime code.
 | SR-07 | unrelated BIM/CAD/SLAM consumer of the reviewed world boundary | owned downstream repo |
 | CF-06 | unrelated repo pins/consumes SpatialRuntime in its own process | stars, mentions, same-owner consumers |
 | CF-07 | upstream maintainer accepts the vector/test/finding | our proposal alone |
-| CF-11 | maintainer acceptance/merge/citation after substantive review | our own comments or author-only revision |
+| CF-11 | HOLD unless a future instrumentation consumer supplies a concrete use case that changes the usefulness test | another wording-only attempt |
 | AD-03 | real immutable `conformance-v*` tag/release | policy/docs/branch names |
 
 Internal work on these stories is limited to making the external experiment reproducible, preserving evidence, fixing discovered bugs, and reducing integration friction.
+
+
+## 2026-10-09 OpenTelemetry scope result
+
+OpenTelemetry GenAI PR #588 is a useful negative result rather than an adoption failure to hide.
+
+The maintainer review established a boundary:
+
+- `gen_ai.tool.call.result` plus existing error/span-status semantics already cover the instrumented tool call;
+- the proposed distinction about authoritative external-effect confirmation did not give instrumentation authors or telemetry consumers a concrete additional action;
+- after two review rounds, the PR was closed instead of adding execution-reconciliation terminology to an observability convention.
+
+Implication:
+
+> External-effect truth, reconciliation, and ambiguous-outcome handling remain a runtime/execution-evidence concern unless a future observability use case demonstrates a capturable signal and a concrete telemetry-consumer action.
+
+Do not reopen this OpenTelemetry line for wording alone.
