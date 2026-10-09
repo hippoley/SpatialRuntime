@@ -88,10 +88,11 @@ Closure evidence required:
 ## 3. Runtime assembly
 
 ### US-07 — Assemble real solver/gateway dependencies into the same closed loop without making scenario JSON executable
-**Status: IN_REVIEW — PR #63**
+**Status: CLOSED**
 
-PR:
-- https://github.com/hippoley/SpatialRuntime/pull/63
+Evidence:
+- PR #63 merged
+- merge commit `10b5c2e81a8ea3565ed801e522f2ca06acb2c6d8`
 
 The new application assembly layer injects runtime dependencies from application code while keeping scenario JSON inert.
 
@@ -329,11 +330,10 @@ The repository does **not** need another large internal profile before these are
 
 Priority order:
 
-1. merge/validate PR #63 — explicit real-adapter application assembly;
-2. merge/validate PR #64 — restartable live runtime;
-3. produce one real ContamX evidence bundle;
-4. produce one real device/gateway evidence bundle;
-5. obtain one unrelated conformance consumer or falsification contribution.
+1. merge/validate PR #64 — restartable live runtime;
+2. produce one real ContamX evidence bundle;
+3. produce one real device/gateway evidence bundle;
+4. obtain one unrelated conformance consumer or falsification contribution.
 
 Items 3–5 are external evidence gates. More internal abstractions have sharply lower marginal value until one of those gates moves.
 
