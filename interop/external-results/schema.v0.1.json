@@ -11,7 +11,8 @@
     "source_project_acknowledgment",
     "external_consumption",
     "adoption_claim",
-    "nonclaims"
+    "nonclaims",
+    "retained_report"
   ],
   "evidence_maturity": [
     "self-tested",
@@ -26,5 +27,21 @@
     "explicit"
   ],
   "digest_format": "sha256:<64 lowercase hex>",
-  "adoption_rule": "adoption_claim=true requires evidence_maturity=externally-consumed, external_consumption=true, and project-owned unrelated consumer evidence"
+  "adoption_rule": "adoption_claim=true requires evidence_maturity=externally-consumed, external_consumption=true, and project-owned unrelated consumer evidence",
+  "retained_report": {
+    "required_for": [
+      "externally-executed",
+      "externally-reproduced",
+      "externally-consumed"
+    ],
+    "required_fields": [
+      "path",
+      "git_blob_sha",
+      "retention",
+      "source_artifact_digest"
+    ],
+    "retention": "git_history",
+    "integrity": "git blob SHA-1 is recomputed by verify_registry.py",
+    "purpose": "keep machine-readable evidence available after temporary CI artifacts expire"
+  }
 }
