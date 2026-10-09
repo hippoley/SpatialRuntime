@@ -50,7 +50,7 @@ def compiled_for(spec):
 
 
 def test_valid_bundle_resumes_live_session_and_can_continue():
-    spec = base_spec()
+    spec = base_spec(hardware=True, offline=False)
     bundle = run_scenario_spec(spec)
     assert validate_bundle(bundle).valid is True
 
