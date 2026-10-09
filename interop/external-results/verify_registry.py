@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 HERE = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = HERE / "registry.v0.1.json"
 SCHEMA = HERE / "schema.v0.1.json"
 
