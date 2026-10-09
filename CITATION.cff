@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If SpatialRuntime or its conformance artifacts materially support your work, please cite this software and pin the exact revision or release used."
+title: "SpatialRuntime"
+type: software
+authors:
+  - name: "hippoley"
+repository-code: "https://github.com/hippoley/SpatialRuntime"
+url: "https://github.com/hippoley/SpatialRuntime"
+license: MIT
+abstract: "Evidence-preserving runtime and conformance infrastructure for consequential agent execution, including decision/execution binding, effect-evidence reconciliation, and reproducible cross-runtime conformance probes."
