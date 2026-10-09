@@ -136,33 +136,24 @@ Action:
 
 ## Machine-verifiable P0 state
 
-The repository-owned P0 closure claim is now enforced by:
+The repository-owned P0 closure claim is enforced by:
 
 - `docs/P0-CLOSURE.v0.1.json`
 - `docs/verify_p0_closure.py`
 - repository CI
 
-The verifier treats P0-A/B/C/E/F as repository-owned closure gates and fails CI if their required evidence artifacts disappear.
+The verifier treats P0-A/B/C/D/E as repository-owned closure gates and fails CI if their required evidence artifacts disappear.
 
-P0-D is deliberately different: it is an **external-only gate**. The verifier will only report it CLOSED when `interop/external-results/registry.v0.1.json` contains unrelated, project-owned `externally-consumed` evidence satisfying the canonical adoption rule.
-
-Therefore:
+Current machine truth:
 
 ```text
-repository-owned P0s closed  !=  all P0s closed
+repository_p0_closed = true
+external_adoption_gate = OPEN
 ```
 
-Until P0-D receives qualifying external evidence, the correct project state is:
+The external adoption gate is not a P0 item. No amount of same-owner code, same-owner CI, analyst-authored mappings, or documentation may satisfy it.
 
-```text
-repository_owned_p0_closed = true
-external_gate_open = true
-all_p0_closed = false
-```
-
-No amount of additional same-owner code, same-owner CI, analyst-authored mappings, or documentation may change that external gate.
-
-## P0 gaps to close before adding new profiles
+## Repository-owned P0 closure — COMPLETE
 
 ### P0-A — Canonical external entry point
 
@@ -207,9 +198,9 @@ and independently:
 
 These axes must not be conflated.
 
-### P0-D — First unrelated consumer
+### External Exit Gate — First unrelated consumer
 
-Issue #14 remains the only adoption gate that matters.
+Issue #14 remains the only unrelated-adoption gate that matters. It is deliberately outside P0 because it requires an independent project to consume or falsify a canonical SpatialRuntime surface.
 
 Do not close it for:
 - our own second repository;
@@ -217,7 +208,9 @@ Do not close it for:
 - analyst-authored mappings;
 - upstream discussions that do not consume SpatialRuntime.
 
-### P0-E — Explicit application assembly — COMPLETED
+Profile-specific adoption issue #47 is closed as superseded by #14.
+
+### P0-D — Explicit application assembly — COMPLETED
 
 Closed by PR #63.
 
@@ -225,7 +218,7 @@ The runtime can now inject solver/gateway/ledger/device bindings from applicatio
 
 This closes a genuine runtime product gap without reopening arbitrary executable configuration.
 
-### P0-F — Live RuntimeSession resume — COMPLETED
+### P0-E — Live RuntimeSession resume — COMPLETED
 
 Closed by PR #64, merge commit:
 
