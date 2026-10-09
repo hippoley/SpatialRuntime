@@ -23,7 +23,8 @@
     "Queued workflows do not count as externally-executed.",
     "Our own repositories do not count as externally-consumed.",
     "Externally-reproduced requires an unrelated reproducer and durable public evidence.",
-    "Externally-consumed requires an unrelated project to make the profile/verifier part of its own CI, release, evidence, or review process."
+    "Externally-consumed requires an unrelated project to make the profile/verifier part of its own CI, release, evidence, or review process.",
+    "External execution/adoption claims must be traceable to the external-results registry."
   ],
   "surfaces": [
     {
@@ -33,7 +34,8 @@
       "notes": [
         "hostile vectors and external adapter are on main",
         "OpenAdapt #38 and AgentX #39 executed successfully in GitHub Actions against pinned external implementations",
-        "this is external implementation execution, not unrelated consumption"
+        "this is external implementation execution, not unrelated consumption",
+        "OpenAdapt and AgentX executed evidence is frozen in the external-results registry with run/artifact digests."
       ]
     },
     {
@@ -68,7 +70,8 @@
       "notes": [
         "Assay official scorer completed 14/14 normative matches",
         "reproduction mode is other_disclosed because generator/canonical material was read before implementation",
-        "successful scored run is durable public evidence but does not establish blind independence"
+        "successful scored run is durable public evidence but does not establish blind independence",
+        "Official scorer lineage and 14/14 result are frozen in the external-results registry."
       ]
     },
     {
@@ -85,5 +88,6 @@
   "adoption_gate": {
     "issue": 14,
     "required_evidence_maturity": "externally-consumed"
-  }
+  },
+  "registry": "interop/external-results/registry.v0.1.json"
 }
