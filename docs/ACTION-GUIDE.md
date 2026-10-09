@@ -2,6 +2,39 @@
 
 This file is execution order, not a backlog.
 
+## 0. Re-audit decision — internal runtime closure is complete
+
+The 2026-10-09 end-to-end re-audit found two repository-owned runtime closure gaps and both are now closed:
+
+- PR #63: explicit application assembly for injected solver/gateway dependencies;
+- PR #64: live RuntimeSession resume from validated episode bundles.
+
+Do **not** treat this as permission to restart spatial architecture expansion.
+
+The spatial lane now returns to maintenance/grounding mode.
+
+Current investment order:
+
+1. **CF-06 unrelated consumer / falsification contribution**
+   - highest identity transition;
+   - closes the gap between “we built a verifier” and “another project depends on the boundary”.
+
+2. **SR-05/SR-06 real device convergence + unresolved-effect restart evidence**
+   - highest reality grounding if physical access exists;
+   - one measured window/device movement with ACK + authoritative feedback + restart/reconcile evidence is worth more than another internal profile.
+
+3. **SR-04 durable real ContamX evidence**
+   - owned downstream AirTrajectory already supplies real Windows/ContamX grounding;
+   - improve retention/public reproducibility only when it adds evidence quality, not architecture.
+
+4. **AD-03 immutable conformance release tag**
+   - reduces adoption friction;
+   - useful only after an exact green commit is selected;
+   - does not count as external adoption.
+
+Switch away from any line when two high-quality external attempts produce no maintainer response, consumer run, counterexample, citation, or upstream path.
+
+
 ## 1. Stop creating new public profile brands
 
 Until AD-03 and CF-06 are closed:
@@ -54,6 +87,8 @@ Spatial runtime receives only:
 - regression tests;
 - integration work required by a real downstream;
 - real ContamX/hardware evidence when available.
+
+The explicit application assembly and live-session resume closure work is complete. No further repository-owned spatial P0 remains from the 2026-10-09 re-audit.
 
 No architecture expansion for hypothetical future scene sources.
 
