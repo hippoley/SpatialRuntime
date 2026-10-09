@@ -22,6 +22,10 @@ CHECKS = {
     "P0-C": [[sys.executable, "interop/verify_maturity.py"]],
     "P0-D": [[sys.executable, "-m", "pytest", "-q", "tests/test_runtime_application_assembly.py"]],
     "P0-E": [[sys.executable, "-m", "pytest", "-q", "tests/test_runtime_session_resume.py"]],
+    "P0-F": [
+        [sys.executable, "-m", "unittest", "discover", "-s", "docs", "-p", "test_verify_horizontal_completeness.py", "-v"],
+        [sys.executable, "docs/verify_horizontal_completeness.py"],
+    ],
 }
 
 
