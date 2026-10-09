@@ -99,6 +99,8 @@ jobs:
           test "${{ steps.lifecycle_positive.outputs.lifecycle_result }}" = "PASS"
       - name: Validate neutral conformance catalog
         run: python interop/conformance/verify_catalog.py
+      - name: Verify external-results evidence registry
+        run: python interop/external-results/verify_registry.py
       - name: Verify neutral conformance Action entry point
         id: neutral_binding
         uses: ./interop/conformance
