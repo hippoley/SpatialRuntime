@@ -1,0 +1,71 @@
+{
+  "schema": "spatialruntime.owned-downstream-grounding.v0.1",
+  "claim_rules": [
+    "Owned downstream execution can strengthen grounding evidence but does not count as unrelated adoption.",
+    "A downstream repository may prove real solver/runtime execution while SpatialRuntime repository-local CI still remains fixture-only.",
+    "Hardware-path code, configuration, and fixture tests do not prove a real physical movement unless field evidence explicitly records it."
+  ],
+  "entries": [
+    {
+      "id": "airtrajectory-real-contam-spatialruntime-2026-10-09",
+      "repository": "hippoley/AirTrajectory",
+      "revision": "25e4956d97b295c273653165401aa660243eab0a",
+      "relationship": "owned downstream consumer",
+      "spatialruntime_pin": "d123ab9a5310cb9ce15d9e82630828a0d32211f4",
+      "evidence": {
+        "workflow": ".github/workflows/test.yml",
+        "job": "contam-real",
+        "platform": "windows-latest",
+        "contam_runtime": "contamxpy==0.0.9",
+        "real_nist_prj_execution": true,
+        "generated_multispace_prj_execution": true,
+        "receding_horizon_joint_execution": true,
+        "spatialruntime_consumer_verification": true
+      },
+      "claim_ceiling": [
+        "Proves owned-downstream real ContamX execution against a pinned SpatialRuntime revision.",
+        "Does not prove SpatialRuntime repository-local CI executes ContamX.",
+        "Does not count as unrelated adoption."
+      ]
+    },
+    {
+      "id": "windowpilot-physical-path-claim-ceiling-2026-10-09",
+      "repository": "hippoley/WindowPilot",
+      "revision": "41abfce9526e9a1926bb24cf6af034d601c7c827",
+      "relationship": "owned downstream physical-runtime peer",
+      "evidence": {
+        "thingmodel_lock": true,
+        "hardware_identity_binding": true,
+        "physical_write_gate": true,
+        "measured_position_contract": true,
+        "read_only_reality_contact_path": true,
+        "real_physical_tau0_claimed": false
+      },
+      "claim_ceiling": [
+        "The repository has an explicit real-hardware path and fail-closed commissioning/readiness contracts.",
+        "The repository itself states that physical tau0 is not claimed until a real window moves and the measured evidence chain is complete.",
+        "Fixture tests and hardware-shaped configuration are not field execution evidence."
+      ]
+    },
+    {
+      "id": "interior-kitchen-spatialruntime-world-consumer-2026-10-09",
+      "repository": "hippoley/interior-kitchen-original",
+      "revision": "dc75cb427786477dae69cbd21451c5e54ba7c514",
+      "relationship": "owned downstream scene-source consumer",
+      "evidence": {
+        "workflow": ".github/workflows/spatialruntime-consumer.yml",
+        "world_schema": "spatialruntime_world_snapshot_v1",
+        "exports_authored_spatial_scene": true,
+        "imports_spatialruntime_worldsnapshot": true,
+        "builds_relation_graph": true,
+        "stale_source_drift_negative_test": true,
+        "handoff_hash_binding": true
+      },
+      "claim_ceiling": [
+        "Proves an owned scene-source repository can export and validate SpatialRuntime WorldSnapshot/handoff artifacts.",
+        "Proves stale source drift is rejected in downstream CI.",
+        "Does not establish an unrelated BIM/CAD/SLAM consumer or external adoption."
+      ]
+    }
+  ]
+}
