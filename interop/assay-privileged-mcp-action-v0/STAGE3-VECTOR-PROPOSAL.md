@@ -106,3 +106,17 @@ Discriminates implementations that treat origin alone as sufficient for the mark
 ## Claim ceiling
 
 This proposal does not claim the two vectors are sufficient to raise measured corpus rule coverage until the upstream coverage measurement is rerun. They are designed specifically to discriminate two rules that the current issue body names as undiscriminated.
+
+## Maintainer review and proposed source patch — 2026-11-09
+
+The Assay maintainer reviewed the semantics in [issue #1840](https://github.com/Rul1an/assay/issues/1840) and confirmed that both proposed observations should be profile-valid but inert. The one required correction is to build the JSON-RPC response body using the *same* `code` argument as `caller_visible_error.code`; otherwise the response digest would commit to a different error from the one the proxy supposedly sent.
+
+A source-level patch against `Rul1an/assay` generator blob `c316735689833015ec3750174b7a6471001291a1` is now published as [stage3-marker-vectors-upstream.patch](stage3-marker-vectors-upstream.patch). It contains only:
+
+- optional `code` and `origin` parameters for `observation_record`;
+- response-body digest consistency for the altered code;
+- two additional Stage 3 rule-discrimination vectors for wrong origin and wrong code.
+
+This is a **patch candidate**, not an upstream merged PR or a regenerated official corpus. Applying it requires regenerating the corpus/manifest, running Assay's canonical verifier and mutation-discrimination measurement, and publishing a new candidate digest. The previous candidate.4 14/14 result remains unchanged and cannot be reassigned to these vectors.
+
+The GitHub integration currently has no upstream branch-write access (403), so the patch is preserved here for review and application without claiming direct write access to `Rul1an/assay`.
