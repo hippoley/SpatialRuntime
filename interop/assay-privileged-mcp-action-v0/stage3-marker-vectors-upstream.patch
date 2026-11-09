@@ -1,0 +1,53 @@
+--- a/conformance/privileged-mcp-action-v0/gen_vectors.py
++++ b/conformance/privileged-mcp-action-v0/gen_vectors.py
+@@ -95,12 +95,14 @@
+     }
+ 
+ 
++def observation_record(*, tool=TOOL, digest=DIGEST, reason="no_declared_allowance",
++                       code=-32042, origin="assay-proxy"):
++    # The response committed by the digest must match the structured error code.
++    body = f'{{"jsonrpc":"2.0","id":9,"error":{{"code":{code},"message":"denied by policy: {reason}"}}}}'
+-def observation_record(*, tool=TOOL, digest=DIGEST, reason="no_declared_allowance"):
+-    body = f'{{"jsonrpc":"2.0","id":9,"error":{{"code":-32042,"message":"denied by policy: {reason}"}}}}'
+     return {
+         "schema": OBSERVATION_SCHEMA,
+         "call": {"tool_name": tool, "target_digest": digest},
++        "caller_visible_error": {"code": code, "origin": origin, "reason": reason},
+-        "caller_visible_error": {"code": -32042, "origin": "assay-proxy", "reason": reason},
+         "caller_visible_response_digest": sha256_hex(body.encode("utf-8")),
+         "non_claims": list(OBSERVATION_NON_CLAIMS),
+     }
+@@ -282,6 +284,32 @@
+         },
+         "description": "An allow decision beside a digest-bound denial observation for the same (tool, target): the caller-visible outcome is refuted, and the contradiction is the finding.",
+     },
++    {
++        "id": "ok-006-deny-observation-wrong-origin-inert",
++        "payloads": lambda: [
++            decision_record("deny", "no_declared_allowance"),
++            observation_record(reason="no_declared_allowance", origin="other-proxy"),
++        ],
++        "expected": {
++            "bundle_integrity": "pass",
++            "verdict": "valid",
++            "claims": claims("confirmed", "incomplete"),
++        },
++        "description": "A valid denial observation with a non-Assay origin is inert, not an Assay caller-denial marker.",
++    },
++    {
++        "id": "ok-007-deny-observation-wrong-code-inert",
++        "payloads": lambda: [
++            decision_record("deny", "no_declared_allowance"),
++            observation_record(reason="no_declared_allowance", code=-32041),
++        ],
++        "expected": {
++            "bundle_integrity": "pass",
++            "verdict": "valid",
++            "claims": claims("confirmed", "incomplete"),
++        },
++        "description": "A valid denial observation with a non-marker code is inert, not an Assay caller-denial marker.",
++    },
+     # ---- reject side ----------------------------------------------------------
+     {
+         "id": "bad-101-tampered-bundle",
