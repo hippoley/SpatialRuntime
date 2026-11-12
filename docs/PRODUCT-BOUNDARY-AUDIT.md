@@ -72,6 +72,21 @@ Legend:
 | AD-06 | As a consumer, I can distinguish declaration validity from independently verified conformance | DONE | envelope-only modes expose `validation_result` + `assessment_scope=envelope_only` and remain conformance UNRESOLVED |
 | AD-07 | As a consumer, I know neutral Action runner prerequisites before adoption | DONE | catalog + README declare bash and Python >=3.10 requirements |
 
+## Horizontal completeness gate
+
+Longitudinal `DONE/PARTIAL/OPEN/HOLD` is no longer sufficient by itself to assert system closure.
+
+The second-layer audit is defined by:
+
+- `docs/horizontal-completeness.v0.1.json`
+- `docs/verify_horizontal_completeness.py`
+- `docs/test_verify_horizontal_completeness.py`
+- `docs/HORIZONTAL-COMPLETENESS-AUDIT.md`
+
+Only a User Story that is longitudinally `DONE`, has every applicable horizontal dimension verified, has independent acceptance evidence, and has no unresolved field/external/upstream gate may be called **Verified Closed**.
+
+This is repository P0-F and is transitively executed by `docs/verify_p0_closure.py`.
+
 ## What is actually finished
 
 The repository is already strong in:
