@@ -7,6 +7,9 @@ on:
 
 permissions:
   contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
 
 jobs:
   tag-first-release:
@@ -79,6 +82,54 @@ jobs:
           assert doc["tag"] == os.environ["TAG"]
           assert doc["commit"] == os.environ["RELEASE_SHA"]
           PY
+
+      - name: Check whether this exact manifest is already attested
+        id: attestation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          digest="sha256:$(sha256sum /tmp/conformance-release.json | awk '{print $1}')"
+          echo "subject_digest=$digest" >> "$GITHUB_OUTPUT"
+
+          status="$(curl --silent --show-error \
+            --output /tmp/attestations.json \
+            --write-out '%{http_code}' \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/attestations/$digest?predicate_type=provenance")"
+
+          if [ "$status" = "404" ]; then
+            echo '{"attestations":[]}' >/tmp/attestations.json
+          elif [ "$status" != "200" ]; then
+            cat /tmp/attestations.json
+            echo "unexpected attestation API status: $status" >&2
+            exit 1
+          fi
+
+          count="$(python - <<'PY'
+          import json
+          doc=json.load(open('/tmp/attestations.json', encoding='utf-8'))
+          print(len(doc.get('attestations', [])))
+          PY
+          )"
+
+          if [ "$count" -gt 0 ]; then
+            echo "needs_attestation=false" >> "$GITHUB_OUTPUT"
+            echo "exact manifest digest already has provenance attestation; leaving it unchanged."
+          else
+            echo "needs_attestation=true" >> "$GITHUB_OUTPUT"
+            echo "no provenance attestation exists for the exact manifest digest."
+          fi
+
+      - name: Attest exact release-manifest reconstruction
+        id: attest
+        if: steps.attestation.outputs.needs_attestation == 'true'
+        uses: actions/attest@v4
+        with:
+          subject-path: /tmp/conformance-release.json
 
       - name: Create immutable annotated tag once
         if: steps.target.outputs.tag_exists == 'false'
