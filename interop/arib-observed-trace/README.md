@@ -10,13 +10,14 @@ In [ARIB issue #1](https://github.com/tonydzi/agent-runtime-integrity-bench/issu
 
 1. `verify_upstream.py`: checks a Git-blob-pinned historical report; **report-level only**.
 2. `arib-live-sdk-replay.yml`: runs ARIB's pinned original harness against a **real** installed `openai-agents` SDK and uses this consumer on the newly produced JSON. This is **not an independently implemented SDK observer**.
-3. `arib-cross-version-replay.yml`: executes two SDK versions using the **same benchmark source**, then compares consumer receipts. It detects changed recorded behavior but does **not** establish an SDK breach of contract, cryptographic identity, or a physical outcome.
+3. `arib-cross-version-replay.yml`: executes two SDK versions using the **same benchmark source**, then re-verifies **both original raw JSON reports**, their SHA-256 binding to the consumer receipts, and compares independently rejudged findings. It detects changed recorded behavior but does **not** establish an SDK breach of contract, cryptographic identity, or a physical outcome.
 
 ## Public reproducibility
 
 - [Initial successful real SDK replay on 0.23.1](https://github.com/hippoley/SpatialRuntime/actions/runs/45777104529)
 - [Independent published-report read](https://github.com/hippoley/SpatialRuntime/actions/runs/45775723936)
 - [Two-version 0.19.4 vs 0.23.1 SDK run](https://github.com/hippoley/SpatialRuntime/actions/runs/45779215233)
+- [Automatic version-difference comparison](https://github.com/hippoley/SpatialRuntime/actions/runs/45779493914)
 
 The two-version run showed **two reported durable effects against a budget of one** in all four backends for both tested versions. Those results come from the actual ARIB SDK benchmark, under its configured fault and tested dependencies. This is **not** an independent proof that `openai-agents` promises exactly-once delivery.
 
@@ -37,7 +38,7 @@ Neither is a finding about the runtime; both were harness failures repaired with
 | ARIB-01 | Independently evaluate reported replay cardinality and order | **Done**, local mutations and CI |
 | ARIB-02 | Bind to an exact published ARIB report object | **Done**, pinned Git blob |
 | ARIB-03 | Run actual SDK adapters rather than read historical files | **Done on Ubuntu/Python 3.12**, four adapters |
-| ARIB-04 | Compare two real SDK releases without assuming improvement | **Implemented; acceptance requires green comparison CI** |
+| ARIB-04 | Compare two real SDK releases without assuming improvement | **Done for 0.19.4 vs 0.23.1**, real replay and comparison CI green |
 | ARIB-05 | Independently observe the durable storage layer | **Open**: ARIB test itself remains the observer |
 | ARIB-06 | Authenticate a producer/signer independently | **Open** |
 | ARIB-07 | Cross-platform field confidence | **Open** beyond current Ubuntu CI |
@@ -49,3 +50,7 @@ Neither is a finding about the runtime; both were harness failures repaired with
 Do not create a new top-level conformance brand or claim product adoption from this PR. If no unrelated team uses this probe or supplies a falsifying counterexample after substantive review, keep it as a completed evidence-bearing experiment and redirect engineering investment to the upstream maintainer’s next specific defect or an unrelated consumer's requirements.
 
 **The public negative evidence is as important as a green job:** two versions did not exhibit a replay-dedup improvement in the tested setup. Preserve old artifacts; never rewrite historical reports to match the latest SDK.
+
+## Release-blocking evidence rule
+
+A `consumer.json` by itself is not accepted as durable evidence for cross-version comparisons. The comparison must receive the exact `benchmark.json` for both versions and verify each `input_sha256`, then rerun `consumer.audit()` on the original bytes and compare the resulting cardinalities and verdicts with the receipt. Self-declared `sdk_execution` remains a **CI context claim**, not authenticated proof of execution by an unrelated signer. The CI success and retained raw report are the external audit handles. This prevents accidental mixing of a prior consumer receipt with a new or edited benchmark report; it does not authenticate a malicious artifact producer.
