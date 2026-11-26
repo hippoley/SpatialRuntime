@@ -1,0 +1,43 @@
+name: Kiri durable decision-to-effect binding pressure
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'interop/decision-execution-binding/pressure/**'
+      - '.github/workflows/kiri-binding-pressure.yml'
+permissions:
+  contents: read
+jobs:
+  real-sqlite-pressure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Retrieve fixed unrelated Kiri Gate implementation
+        shell: bash
+        env:
+          KIRI_SHA: ea32ed25d59204139cac40984f3c28f570bc2cb5
+        run: |
+          set -euo pipefail
+          git init --quiet "$RUNNER_TEMP/kiri"
+          cd "$RUNNER_TEMP/kiri"
+          git remote add origin https://github.com/aryan597/kiri-gate.git
+          GIT_TERMINAL_PROMPT=0 git fetch --quiet --depth 1 origin "$KIRI_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$KIRI_SHA"
+          git checkout --quiet --detach FETCH_HEAD
+          echo "PYTHONPATH=$RUNNER_TEMP/kiri" >> "$GITHUB_ENV"
+      - name: Exercise actual Kiri sqlite records and mutation tests
+        working-directory: interop/decision-execution-binding/pressure
+        run: python -m unittest discover -v -p 'test_*.py'
+      - name: Independently assess approval-to-effect binding
+        working-directory: interop/decision-execution-binding/pressure
+        run: python kiri_gate_real_sqlite.py --receipt "${{ runner.temp }}/kiri-binding-pressure.json"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: kiri-unrelated-source-pressure-receipt
+          path: ${{ runner.temp }}/kiri-binding-pressure.json
+          if-no-files-found: error
