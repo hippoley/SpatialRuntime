@@ -45,7 +45,8 @@ class RegistryAdoptionTests(unittest.TestCase):
         self.assertFalse(verifier.verify(doc)["valid"])
 
     def test_candidate_can_be_structurally_valid_but_not_remotely_proven(self):
-        self.assertTrue(verifier.verify(self.candidate())["valid"])
+        result = verifier.verify(self.candidate())
+        self.assertTrue(result["valid"], result["errors"])
         # A different, remote-authenticated gate is needed to CLOSE CF-06.
         # Merely syntactically valid registry data does not count as adoption.
 
