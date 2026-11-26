@@ -32,7 +32,7 @@ jobs:
           echo "ARIB_ROOT=$RUNNER_TEMP/arib-runtime" >> "$GITHUB_ENV"
       - name: Install measured SDK versions and all four backends
         run: |
-          python -m pip install 'openai-agents==0.23.1' 'aiosqlite==0.22.1' 'sqlalchemy==2.1.4'
+          python -m pip install 'openai-agents==0.23.1' 'aiosqlite==0.22.1' 'sqlalchemy[asyncio]==2.1.4'
           python -m pip freeze > "$RUNNER_TEMP/arib-installed-versions.txt"
       - name: Verify upstream harness mutants
         shell: bash
