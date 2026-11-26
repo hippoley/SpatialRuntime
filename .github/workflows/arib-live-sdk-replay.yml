@@ -1,0 +1,85 @@
+name: ARIB independent real SDK replay
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'interop/arib-observed-trace/**'
+      - '.github/workflows/arib-live-sdk-replay.yml'
+permissions:
+  contents: read
+jobs:
+  real-sdk-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch fixed ARIB source commit
+        env:
+          SOURCE_SHA: c7b9ba15c3cde310a25b9d4249fcc8e3ff0d63d9
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/arib-runtime"
+          cd "$RUNNER_TEMP/arib-runtime"
+          git init --quiet
+          git remote add origin https://github.com/tonydzi/agent-runtime-integrity-bench.git
+          GIT_TERMINAL_PROMPT=0 git fetch --quiet --depth 1 origin "$SOURCE_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE_SHA"
+          git checkout --quiet --detach FETCH_HEAD
+          echo "ARIB_ROOT=$RUNNER_TEMP/arib-runtime" >> "$GITHUB_ENV"
+      - name: Install measured SDK versions and all four backends
+        run: |
+          python -m pip install 'openai-agents==0.23.1' 'aiosqlite==0.22.1' 'sqlalchemy[asyncio]==2.1.4'
+          python -m pip freeze > "$RUNNER_TEMP/arib-installed-versions.txt"
+      - name: Verify upstream harness mutants
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$ARIB_ROOT"
+          python selftest.py
+      - name: Re-run actual SDK replay check
+        shell: bash
+        run: |
+          set -uo pipefail
+          cd "$ARIB_ROOT"
+          if python run_bench.py --scenario s2 --adapter all --json "$RUNNER_TEMP/arib-fresh-sdk-report.json"; then
+            code=0
+          else
+            code=$?
+          fi
+          printf '%s\n' "$code" > "$RUNNER_TEMP/arib-bench-exit-code.txt"
+          case "$code" in
+            0|1) echo "Benchmark reported outcome with exit code $code" ;;
+            *) echo "::error::ARIB execution/harness failure: $code"; exit 1 ;;
+          esac
+          test -s "$RUNNER_TEMP/arib-fresh-sdk-report.json" || exit 1
+      - name: Independently read fresh report with SpatialRuntime consumer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python interop/arib-observed-trace/consumer.py "$RUNNER_TEMP/arib-fresh-sdk-report.json" --receipt "$RUNNER_TEMP/arib-fresh-consumer.json"
+          python - "$RUNNER_TEMP/arib-fresh-consumer.json" "$RUNNER_TEMP/arib-bench-exit-code.txt" <<'PY'
+          import json, pathlib, sys
+          receipt=pathlib.Path(sys.argv[1]); code=int(pathlib.Path(sys.argv[2]).read_text().strip())
+          obj=json.loads(receipt.read_text())
+          obj.update({"ci_real_sdk_benchmark_executed": True,
+                      "arib_source_commit": "c7b9ba15c3cde310a25b9d4249fcc8e3ff0d63d9",
+                      "bench_exit_code": code,
+                      "execution_scope": "live_SDK_replay_on_ephemeral_GitHub_runner",
+                      "independent_sdk_implementation": False,
+                      "evidence_claim_ceiling": "report_consistency_after_real_sdk_benchmark"})
+          receipt.write_text(json.dumps(obj, sort_keys=True, indent=2)+"\n")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: arib-actual-sdk-replay-py312-ubuntu
+          path: |
+            ${{ runner.temp }}/arib-fresh-sdk-report.json
+            ${{ runner.temp }}/arib-fresh-consumer.json
+            ${{ runner.temp }}/arib-bench-exit-code.txt
+            ${{ runner.temp }}/arib-installed-versions.txt
+          if-no-files-found: error

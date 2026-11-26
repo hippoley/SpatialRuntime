@@ -1,0 +1,30 @@
+name: ARIB observed effect trace consumer
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'interop/arib-observed-trace/**'
+      - '.github/workflows/arib-observed-trace.yml'
+permissions:
+  contents: read
+jobs:
+  independent-report-consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Regression and mutation tests
+        working-directory: interop/arib-observed-trace
+        run: python -m unittest discover -v -p 'test_*.py'
+      - name: Verify pinned real upstream ARIB report
+        working-directory: interop/arib-observed-trace
+        run: python verify_upstream.py --receipt "${{ runner.temp }}/arib-external-report.json"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: arib-observed-trace-report-only
+          path: ${{ runner.temp }}/arib-external-report.json
+          if-no-files-found: error
