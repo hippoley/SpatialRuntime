@@ -117,7 +117,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python interop/arib-observed-trace/compare_versions.py             "$RUNNER_TEMP/arib-old/consumer.json"             "$RUNNER_TEMP/arib-new/consumer.json"             --out "$RUNNER_TEMP/arib-version-difference.json"
+          python interop/arib-observed-trace/compare_versions.py             "$RUNNER_TEMP/arib-old/consumer.json"             "$RUNNER_TEMP/arib-new/consumer.json"             --baseline-report "$RUNNER_TEMP/arib-old/benchmark.json"             --candidate-report "$RUNNER_TEMP/arib-new/benchmark.json"             --out "$RUNNER_TEMP/arib-version-difference.json"
       - uses: actions/upload-artifact@v4
         with:
           name: arib-sdk-0194-vs-0231-comparison
