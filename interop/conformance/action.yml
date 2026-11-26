@@ -16,6 +16,10 @@ inputs:
     description: "External verifier command for effect-evidence-bundle mode; omit to run the built-in reference evaluator"
     required: false
     default: ""
+  require_result:
+    description: "Optional release gate: set PASS to fail this Action when evidence remains UNRESOLVED; omitted preserves historical tri-state reporting"
+    required: false
+    default: ""
   report_path:
     description: "Optional durable JSON report path for effect-evidence-bundle mode"
     required: false
@@ -59,6 +63,7 @@ runs:
       shell: bash
       env:
         CONFORMANCE_MODE: ${{ inputs.mode }}
+        CONFORMANCE_REQUIRE_RESULT: ${{ inputs.require_result }}
         CONFORMANCE_FILE: ${{ inputs.file }}
         CONFORMANCE_POLICY: ${{ inputs.policy }}
         CONFORMANCE_ADAPTER_COMMAND: ${{ inputs.adapter_command }}
@@ -66,6 +71,10 @@ runs:
       run: |
         set -euo pipefail
         ROOT="$GITHUB_ACTION_PATH/.."
+        case "$CONFORMANCE_REQUIRE_RESULT" in
+          ""|PASS) ;;
+          *) echo "require_result must be PASS or omitted" >&2; exit 2 ;;
+        esac
         require_file() {
           if [[ -z "$CONFORMANCE_FILE" ]]; then
             echo "file input is required for mode: $CONFORMANCE_MODE" >&2
@@ -165,3 +174,9 @@ runs:
             exit 2
             ;;
         esac
+        if [[ "$CONFORMANCE_REQUIRE_RESULT" == "PASS" ]]; then
+          if ! grep -Fxq 'conformance_result=PASS' "$GITHUB_OUTPUT"; then
+            echo "conformance release gate: expected PASS; evidence is UNRESOLVED or FAIL" >&2
+            exit 1
+          fi
+        fi
