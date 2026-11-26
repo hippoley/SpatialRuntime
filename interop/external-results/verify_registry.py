@@ -174,14 +174,25 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
                 errors,
             )
 
-        if maturity == "externally-consumed" or entry.get("external_consumption") is True:
+        if maturity == "externally-consumed" or entry.get("external_consumption") is True or entry.get("adoption_claim") is True:
             consumer = entry.get("consumer")
             _require(
                 isinstance(consumer, dict)
                 and consumer.get("project_owned_evidence") is True
                 and isinstance(consumer.get("repository"), str)
-                and not consumer.get("repository", "").startswith("hippoley/"),
-                f"{prefix}: external consumption requires unrelated project-owned evidence",
+                and consumer.get("repository", "").count("/") == 1
+                and consumer.get("repository", "").split("/")[0].casefold() != "hippoley"
+                and type(consumer.get("workflow_run_id")) is int
+                and consumer.get("workflow_run_id") > 0
+                and isinstance(consumer.get("workflow_commit"), str)
+                and bool(SHA40.fullmatch(consumer.get("workflow_commit", "")))
+                and isinstance(consumer.get("spatialruntime_commit"), str)
+                and bool(SHA40.fullmatch(consumer.get("spatialruntime_commit", "")))
+                and isinstance(consumer.get("workflow_path"), str)
+                and bool(re.fullmatch(r"\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml", consumer.get("workflow_path", "")))
+                and consumer.get("workflow_run_url")
+                    == f"https://github.com/{consumer.get('repository')}/actions/runs/{consumer.get('workflow_run_id')}",
+                f"{prefix}: external consumption requires unrelated project-owned CI run, pinned workflow file, and pinned SpatialRuntime Action",
                 errors,
             )
 

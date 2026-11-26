@@ -12,6 +12,9 @@ from pathlib import Path
 import subprocess
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'interop' / 'external-results'))
+from verify_external_adoption import check_registry_entry
+
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = Path(__file__).with_name("P0-CLOSURE.v0.1.json")
 EXTERNAL_REGISTRY = ROOT / "interop" / "external-results" / "registry.v0.1.json"
@@ -39,14 +42,13 @@ def _external_gate(registry: dict) -> tuple[bool, list[dict]]:
     for entry in registry.get("entries", []):
         if not isinstance(entry, dict):
             continue
-        if entry.get("evidence_maturity") != "externally-consumed" or entry.get("external_consumption") is not True:
+        verified, reason = check_registry_entry(entry)
+        if not verified:
             continue
-        consumer = entry.get("consumer")
-        if not isinstance(consumer, dict):
-            continue
-        if consumer.get("project_owned_evidence") is not True or not _is_unrelated(consumer.get("repository")):
-            continue
-        qualifying.append({"id": entry.get("id"), "repository": consumer.get("repository")})
+        consumer = entry["consumer"]
+        qualifying.append({"id": entry.get("id"), "repository": consumer["repository"],
+                           "workflow_run_url": consumer["workflow_run_url"],
+                           "verification": reason})
     return bool(qualifying), qualifying
 
 

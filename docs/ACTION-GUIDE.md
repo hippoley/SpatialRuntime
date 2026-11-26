@@ -70,6 +70,22 @@ For each external probe:
 
 CI runs `interop/external-results/verify_registry.py`.
 
+## 3.5. External adoption is a live evidence gate, not a JSON badge
+
+CF-06 remains open until an unrelated repository has **project-owned evidence** of consuming the published conformance Action.
+
+A candidate registry entry must provide:
+- `evidence_maturity=externally-consumed`, `external_consumption=true`, `adoption_claim=true`;
+- `consumer.project_owned_evidence=true` and an unrelated `owner/repo`;
+- an actual successful `consumer.workflow_run_id` and canonical `workflow_run_url`;
+- `workflow_path`, exact `workflow_commit` and pinned `spatialruntime_commit` (full 40-character hashes).
+
+`verify_registry.py` checks the claim's *structure*. `docs/verify_p0_closure.py` additionally retrieves the public GitHub Actions run and the exact workflow file from the unrelated commit. Missing permissions, network errors, mismatched commits, failed runs, or an unpinned Action mean **OPEN**, not accepted adoption.
+
+**Assurance ceiling:** a successful external workflow that contains a pinned `uses:` reference establishes strong evidence of consumption intent and a project-owned successful run, but does not automatically prove that a conformance verdict changed a release decision or that a conditional workflow step ran. Check the actual job/report and obtain maintainer confirmation before claiming sustained reliance, endorsement, or commercial adoption.
+
+No current entry closes CF-06. The ARIB and Kiri experiments were run in hippoley-owned CI and stay `externally-executed` regardless of how many times they pass.
+
 ## 4. Drive only demand-side external work
 
 Priority order:
