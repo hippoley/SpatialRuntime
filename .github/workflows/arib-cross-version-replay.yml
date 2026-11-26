@@ -93,3 +93,33 @@ jobs:
             ${{ runner.temp }}/exit-code.txt
             ${{ runner.temp }}/versions.txt
           if-no-files-found: warn
+
+  compare:
+    needs: replay
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run comparator mutation tests
+        working-directory: interop/arib-observed-trace
+        run: python -m unittest -v test_compare_versions.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: arib-real-replay-sdk-0.19.4
+          path: ${{ runner.temp }}/arib-old
+      - uses: actions/download-artifact@v4
+        with:
+          name: arib-real-replay-sdk-0.23.1
+          path: ${{ runner.temp }}/arib-new
+      - name: Compare validated receipts without forcing improvement
+        shell: bash
+        run: |
+          set -euo pipefail
+          python interop/arib-observed-trace/compare_versions.py             "$RUNNER_TEMP/arib-old/consumer.json"             "$RUNNER_TEMP/arib-new/consumer.json"             --out "$RUNNER_TEMP/arib-version-difference.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arib-sdk-0194-vs-0231-comparison
+          path: ${{ runner.temp }}/arib-version-difference.json
+          if-no-files-found: error
