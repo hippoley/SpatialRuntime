@@ -45,8 +45,11 @@ jobs:
         run: |
           set -uo pipefail
           cd "$ARIB_ROOT"
-          python run_bench.py --scenario s2 --adapter all --json "$RUNNER_TEMP/arib-fresh-sdk-report.json"
-          code=$?
+          if python run_bench.py --scenario s2 --adapter all --json "$RUNNER_TEMP/arib-fresh-sdk-report.json"; then
+            code=0
+          else
+            code=$?
+          fi
           printf '%s\n' "$code" > "$RUNNER_TEMP/arib-bench-exit-code.txt"
           case "$code" in
             0|1) echo "Benchmark reported outcome with exit code $code" ;;
