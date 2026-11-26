@@ -155,6 +155,99 @@
         "observed_claim": "Maintainer explicitly acknowledged the candidate attempt, corrected the reproduction-mode classification, froze the profile/corpus until the first run record, and stated that the Stage 3 origin/code proposal would be reviewed after the first result.",
         "claim_ceiling": "Acknowledgment of the attempt/review process only; not adoption, endorsement, or consumption of SpatialRuntime."
       }
+    },
+    {
+      "id": "arib-sdk-version-comparison-2026-11-26",
+      "implementation": {
+        "repository": "tonydzi/agent-runtime-integrity-bench",
+        "locator_kind": "git_commit",
+        "revision": "c7b9ba15c3cde310a25b9d4249fcc8e3ff0d63d9",
+        "role": "upstream benchmark producer"
+      },
+      "spatialruntime": {
+        "probe": "arib-observed-trace-cross-version",
+        "probe_revision": "e1745a9798618d30f7028dce3acd4ee9e4329660"
+      },
+      "evidence_method": "github_actions_real_sdk_replay_and_receipt_comparison",
+      "execution": {
+        "workflow_run_id": 45782551878,
+        "workflow_url": "https://github.com/hippoley/SpatialRuntime/actions/runs/45782551878",
+        "artifact_id": 15097899745,
+        "artifact_name": "arib-sdk-0194-vs-0231-comparison",
+        "artifact_digest": "sha256:8d5eedbc99d266c2bf14985948ae67d857dc3022d1213cf44c3b033cc6929ff6"
+      },
+      "observed_result": {
+        "status": "completed",
+        "sdk_versions": [
+          "0.19.4",
+          "0.23.1"
+        ],
+        "backends": 4,
+        "changes_detected": 0,
+        "observation": "In upstream S2 replay, 2 visible effects versus 1 authorized effect on all four backends in both tested SDK versions."
+      },
+      "evidence_maturity": "externally-executed",
+      "source_project_acknowledgment": "explicit",
+      "external_consumption": false,
+      "adoption_claim": false,
+      "nonclaims": [
+        "Upstream acknowledgment describes an earlier independently created trace consumer; this SpatialRuntime CI is not an unrelated project-owned consumption.",
+        "A producer benchmark run in our own CI is not a separately implemented storage oracle or evidence of an SDK's promised exactly-once contract.",
+        "Negative result applies only to pinned benchmark version, selected SDK releases and four tested backends."
+      ],
+      "retained_report": {
+        "path": "interop/external-results/runs/arib-cross-version-2026-11-26.json",
+        "git_blob_sha": "fc1e0f468906065b3b7b4188ff9554616ae82785",
+        "retention": "git_history",
+        "source_artifact_digest": "sha256:8d5eedbc99d266c2bf14985948ae67d857dc3022d1213cf44c3b033cc6929ff6"
+      }
+    },
+    {
+      "id": "kiri-durable-binding-2026-11-26",
+      "implementation": {
+        "repository": "aryan597/kiri-gate",
+        "locator_kind": "git_commit",
+        "revision": "ea32ed25d59204139cac40984f3c28f570bc2cb5"
+      },
+      "spatialruntime": {
+        "probe": "kiri-durable-decision-effect-pressure",
+        "probe_revision": "cf6476cee621546b4d608968332182450910e04f"
+      },
+      "evidence_method": "github_actions_real_kiri_sqlite_and_existing_verifier",
+      "execution": {
+        "workflow_run_id": 45783372790,
+        "workflow_url": "https://github.com/hippoley/SpatialRuntime/actions/runs/45783372790",
+        "artifact_id": 15099546335,
+        "artifact_name": "kiri-unrelated-source-pressure-receipt",
+        "artifact_digest": "sha256:284f26a807c37d2ce34b392e59059da3ba578f076edb88568cde5128cca3c729"
+      },
+      "observed_result": {
+        "status": "completed",
+        "external_tool_invocations": 1,
+        "persisted_decision_rows": 1,
+        "persisted_effect_rows": 1,
+        "conformance_result": "UNRESOLVED",
+        "unresolved_codes": [
+          "UNRESOLVED_DECISION_BINDING",
+          "UNRESOLVED_TOOL_CALL_ID"
+        ]
+      },
+      "evidence_maturity": "externally-executed",
+      "source_project_acknowledgment": "none",
+      "external_consumption": false,
+      "adoption_claim": false,
+      "nonclaims": [
+        "A Kiri Gate policy or tool-safety defect has not been demonstrated.",
+        "Separate persistent approval and effect rows cannot establish a historical authoritative join in this tested schema.",
+        "Kiri Gate maintainers have not reviewed, adopted, or endorsed the SpatialRuntime probe.",
+        "A locally executed inert callback is not an independently observed physical or remote effect."
+      ],
+      "retained_report": {
+        "path": "interop/external-results/runs/kiri-durable-binding-2026-11-26.json",
+        "git_blob_sha": "addcc8aeef4f42c35642b4409413c6322bad28f1",
+        "retention": "git_history",
+        "source_artifact_digest": "sha256:284f26a807c37d2ce34b392e59059da3ba578f076edb88568cde5128cca3c729"
+      }
     }
   ]
 }

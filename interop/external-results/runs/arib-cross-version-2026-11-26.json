@@ -1,0 +1,69 @@
+{
+  "arib_source_commit": "c7b9ba15c3cde310a25b9d4249fcc8e3ff0d63d9",
+  "baseline_version": "0.19.4",
+  "candidate_version": "0.23.1",
+  "changes_detected": 0,
+  "claim_ceiling": "difference_between_two_real_arib_sdk_test_reports",
+  "comparisons": [
+    {
+      "adapter": "advanced-sqlite",
+      "baseline": {
+        "budget": 1,
+        "observed": 2,
+        "verdict": "violated"
+      },
+      "behavior_changed": false,
+      "candidate": {
+        "budget": 1,
+        "observed": 2,
+        "verdict": "violated"
+      }
+    },
+    {
+      "adapter": "async-sqlite",
+      "baseline": {
+        "budget": 1,
+        "observed": 2,
+        "verdict": "violated"
+      },
+      "behavior_changed": false,
+      "candidate": {
+        "budget": 1,
+        "observed": 2,
+        "verdict": "violated"
+      }
+    },
+    {
+      "adapter": "sqlalchemy",
+      "baseline": {
+        "budget": 1,
+        "observed": 2,
+        "verdict": "violated"
+      },
+      "behavior_changed": false,
+      "candidate": {
+        "budget": 1,
+        "observed": 2,
+        "verdict": "violated"
+      }
+    },
+    {
+      "adapter": "sqlite",
+      "baseline": {
+        "budget": 1,
+        "observed": 2,
+        "verdict": "violated"
+      },
+      "behavior_changed": false,
+      "candidate": {
+        "budget": 1,
+        "observed": 2,
+        "verdict": "violated"
+      }
+    }
+  ],
+  "contractual_exactly_once": "NOT_EVALUATED",
+  "independent_storage_observation": false,
+  "scenario": "ARIB-REPLAY-001",
+  "third_party_adoption": "NOT_EVIDENCED"
+}

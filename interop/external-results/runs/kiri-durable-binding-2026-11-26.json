@@ -1,0 +1,18 @@
+{
+  "actual_external_function_invocations": 1,
+  "case_type": "actual_Kiri_SQLite_records",
+  "claim_ceiling": "posthoc_decision_effect_identity_binding_unresolved",
+  "conformance_result": "UNRESOLVED",
+  "effect_confirmed_by_test_local_callback": true,
+  "external_project_adoption": false,
+  "independent_target_oracle": false,
+  "missing_join_key_in_durable_schema": true,
+  "persisted_decision_rows": 1,
+  "persisted_effect_rows": 1,
+  "source_commit": "ea32ed25d59204139cac40984f3c28f570bc2cb5",
+  "source_repo": "aryan597/kiri-gate",
+  "unresolved_codes": [
+    "UNRESOLVED_DECISION_BINDING",
+    "UNRESOLVED_TOOL_CALL_ID"
+  ]
+}
