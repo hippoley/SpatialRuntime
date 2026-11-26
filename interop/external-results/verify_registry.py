@@ -189,7 +189,7 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
                 and isinstance(consumer.get("spatialruntime_commit"), str)
                 and bool(SHA40.fullmatch(consumer.get("spatialruntime_commit", "")))
                 and isinstance(consumer.get("workflow_path"), str)
-                and bool(re.fullmatch(r"\\.github/workflows/[A-Za-z0-9_.-]+\\.ya?ml", consumer.get("workflow_path", "")))
+                and bool(re.fullmatch(r"\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml", consumer.get("workflow_path", "")))
                 and consumer.get("workflow_run_url")
                     == f"https://github.com/{consumer.get('repository')}/actions/runs/{consumer.get('workflow_run_id')}",
                 f"{prefix}: external consumption requires unrelated project-owned CI run, pinned workflow file, and pinned SpatialRuntime Action",
