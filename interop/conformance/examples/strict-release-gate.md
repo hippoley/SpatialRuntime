@@ -6,7 +6,7 @@ A conformance decision has three states: **PASS**, **UNRESOLVED** and **FAIL**. 
 
 ## Minimal blocking check
 
-Paste this in your **own repository**, replace `<40_HEX_SPATIALRUNTIME_COMMIT>` with a commit that includes the `require_result` input (for example the merged commit of PR #91 when available), and supply actual evidence under your ownership:
+Paste this in your **own repository**, use the immutable merged commit of PR #91 (`d1951faad027fc55264759376980272788d4f874`) as shown below, and supply actual evidence under your ownership:
 
 ```yaml
 name: Verify agent decision-to-execution binding
@@ -23,7 +23,7 @@ jobs:
           python-version: '3.12'
       - name: Require grounded decision-to-execution proof
         id: verify
-        uses: hippoley/SpatialRuntime/interop/conformance@<40_HEX_SPATIALRUNTIME_COMMIT>
+        uses: hippoley/SpatialRuntime/interop/conformance@d1951faad027fc55264759376980272788d4f874
         with:
           mode: decision-execution-binding
           file: evidence/decision-execution.json
