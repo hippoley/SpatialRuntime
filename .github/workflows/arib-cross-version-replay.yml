@@ -1,0 +1,95 @@
+name: ARIB real SDK cross-version replay
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'interop/arib-observed-trace/**'
+      - '.github/workflows/arib-cross-version-replay.yml'
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        agents-version: ['0.19.4', '0.23.1']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch pinned external benchmark
+        shell: bash
+        env:
+          SOURCE_SHA: c7b9ba15c3cde310a25b9d4249fcc8e3ff0d63d9
+        run: |
+          set -euo pipefail
+          git init --quiet "$RUNNER_TEMP/arib"
+          cd "$RUNNER_TEMP/arib"
+          git remote add origin https://github.com/tonydzi/agent-runtime-integrity-bench.git
+          GIT_TERMINAL_PROMPT=0 git fetch --quiet --depth 1 origin "$SOURCE_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE_SHA"
+          git checkout --quiet --detach FETCH_HEAD
+          echo "ARIB_ROOT=$RUNNER_TEMP/arib" >> "$GITHUB_ENV"
+      - name: Install exact SDK and storage requirements
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "openai-agents==${{ matrix.agents-version }}" 'aiosqlite==0.22.1' 'sqlalchemy[asyncio]==2.1.4'
+          python -m pip freeze > "$RUNNER_TEMP/versions.txt"
+      - name: Upstream harness mutation selftest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$ARIB_ROOT"
+          python selftest.py
+      - name: Run real SDK replay (violations are valid measurements)
+        shell: bash
+        run: |
+          set -uo pipefail
+          cd "$ARIB_ROOT"
+          if python run_bench.py --scenario s2 --adapter all --json "$RUNNER_TEMP/benchmark.json"; then
+            code=0
+          else
+            code=$?
+          fi
+          printf '%s\n' "$code" > "$RUNNER_TEMP/exit-code.txt"
+          case "$code" in
+            0|1) echo "Measured benchmark exit code: $code" ;;
+            *) echo "::error::HARNESS_ERROR: $code"; exit 1 ;;
+          esac
+          test -s "$RUNNER_TEMP/benchmark.json"
+      - name: Run independent consumer on FRESH result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python interop/arib-observed-trace/consumer.py "$RUNNER_TEMP/benchmark.json" --receipt "$RUNNER_TEMP/consumer.json"
+          python - "$RUNNER_TEMP/benchmark.json" "$RUNNER_TEMP/consumer.json" "$RUNNER_TEMP/exit-code.txt" <<'PY'
+          import json,pathlib,sys
+          report=json.loads(pathlib.Path(sys.argv[1]).read_text())
+          receipt=json.loads(pathlib.Path(sys.argv[2]).read_text())
+          code=int(pathlib.Path(sys.argv[3]).read_text().strip())
+          assert report["environment"]["openai-agents"]=="${{ matrix.agents-version }}", "measured SDK version drift"
+          assert code in (0,1)
+          verdicts=[x["reported_verdict"] for x in receipt["adapters"]]
+          assert (code==1)==any(v=="violated" for v in verdicts), "benchmark exit/consumer verdict mismatch"
+          receipt.update({"arib_source_commit":"c7b9ba15c3cde310a25b9d4249fcc8e3ff0d63d9",
+                          "sdk_execution":"real_sdk_using_upstream_benchmark",
+                          "independent_storage_observer":False,
+                          "expected_replay_behavior_assumed":False,
+                          "benchmark_exit_code":code})
+          pathlib.Path(sys.argv[2]).write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n")
+          PY
+      - name: Preserve run and full provenance
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arib-real-replay-sdk-${{ matrix.agents-version }}
+          path: |
+            ${{ runner.temp }}/benchmark.json
+            ${{ runner.temp }}/consumer.json
+            ${{ runner.temp }}/exit-code.txt
+            ${{ runner.temp }}/versions.txt
+          if-no-files-found: warn
