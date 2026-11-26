@@ -1,0 +1,78 @@
+name: Conformance Action consumer strict-gate contract
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'interop/conformance/action.yml'
+      - 'interop/conformance/examples/**'
+      - '.github/workflows/conformance-consumer-gate.yml'
+permissions:
+  contents: read
+jobs:
+  actual-composite-action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Existing default preserves an unresolved observation
+        id: default_unresolved
+        uses: ./interop/conformance
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/standing-not-checked.json
+      - name: Require default is a reported unresolved, not verified PASS
+        shell: bash
+        run: |
+          test "${{ steps.default_unresolved.outputs.conformance_result }}" = "UNRESOLVED"
+      - name: PASS-only gate accepts valid binding evidence
+        id: strict_pass
+        uses: ./interop/conformance
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/per-call-pass.json
+          require_result: PASS
+      - name: Verify strict PASS
+        shell: bash
+        run: |
+          test "${{ steps.strict_pass.outcome }}" = "success"
+          test "${{ steps.strict_pass.outputs.conformance_result }}" = "PASS"
+      - name: PASS-only gate rejects incomplete evidence
+        id: strict_unresolved
+        continue-on-error: true
+        uses: ./interop/conformance
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/standing-not-checked.json
+          require_result: PASS
+      - name: Verify unresolved never counts as success
+        shell: bash
+        run: |
+          test "${{ steps.strict_unresolved.outcome }}" = "failure"
+          test "${{ steps.strict_unresolved.outputs.conformance_result }}" = "UNRESOLVED"
+      - name: PASS-only gate rejects contradictory evidence
+        id: strict_fail
+        continue-on-error: true
+        uses: ./interop/conformance
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/deny-with-execution.json
+          require_result: PASS
+      - name: Verify contradictions are not treated as incomplete evidence
+        shell: bash
+        run: |
+          test "${{ steps.strict_fail.outcome }}" = "failure"
+          test "${{ steps.strict_fail.outputs.conformance_result }}" = "FAIL"
+      - name: Invalid gate configuration must fail closed
+        id: invalid
+        continue-on-error: true
+        uses: ./interop/conformance
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/per-call-pass.json
+          require_result: NOT_A_VALID_RESULT
+      - name: Verify config error is not quietly ignored
+        shell: bash
+        run: |
+          test "${{ steps.invalid.outcome }}" = "failure"
