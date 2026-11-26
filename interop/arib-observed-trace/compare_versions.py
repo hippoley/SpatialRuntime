@@ -4,8 +4,11 @@ Inputs must be receipts from our ARIB consumer. This checks reported evidence
 differences only; it neither replays SDK nor proves contractual obligations.
 """
 import argparse
+import hashlib
 import json
 from pathlib import Path
+
+from consumer import audit as audit_report, load_strict as load_report, EvidenceError
 
 BACKENDS = {"sqlite", "async-sqlite", "advanced-sqlite", "sqlalchemy"}
 SOURCE = "c7b9ba15c3cde310a25b9d4249fcc8e3ff0d63d9"
@@ -16,6 +19,8 @@ class ComparisonError(ValueError):
 def review(receipt):
     if not isinstance(receipt, dict):
         raise ComparisonError("receipt must be object")
+    if not isinstance(receipt.get("input_sha256"), str) or len(receipt["input_sha256"]) != 64:
+        raise ComparisonError("report SHA-256 absent")
     if receipt.get("arib_source_commit") != SOURCE:
         raise ComparisonError("upstream benchmark source not pinned")
     if receipt.get("sdk_execution") != "real_sdk_using_upstream_benchmark":
@@ -52,7 +57,27 @@ def review(receipt):
         raise ComparisonError("missing backend")
     return version,byname
 
-def compare(left,right):
+def bind_report(receipt, raw):
+    """Rejudge fresh/raw producer bytes; don't trust receipt self-assertions."""
+    if not isinstance(raw, bytes):
+        raise ComparisonError("raw report is required")
+    digest = hashlib.sha256(raw).hexdigest()
+    if receipt.get("input_sha256") != digest:
+        raise ComparisonError("receipt/report SHA-256 binding mismatch")
+    try:
+        independently_checked = audit_report(load_report(raw))
+    except (EvidenceError, ValueError) as exc:
+        raise ComparisonError("raw report independent replay failed") from exc
+    if independently_checked.get("runtime_version") != receipt.get("runtime_version"):
+        raise ComparisonError("runtime version contradicts original report")
+    if independently_checked.get("adapters") != receipt.get("adapters"):
+        raise ComparisonError("consumer verdict contradicts original report")
+
+def compare(left,right,left_raw=None,right_raw=None):
+    if left_raw is None or right_raw is None:
+        raise ComparisonError("both original benchmark reports required")
+    bind_report(left,left_raw)
+    bind_report(right,right_raw)
     ver_l,old=review(left);ver_r,new=review(right)
     if ver_l==ver_r:
         raise ComparisonError("same SDK version")
@@ -80,11 +105,16 @@ def read(path):
 
 if __name__ == "__main__":
     cli=argparse.ArgumentParser()
-    cli.add_argument("baseline");cli.add_argument("candidate");cli.add_argument("--out",required=True)
+    cli.add_argument("baseline");cli.add_argument("candidate")
+    cli.add_argument("--baseline-report", required=True)
+    cli.add_argument("--candidate-report", required=True)
+    cli.add_argument("--out",required=True)
     args=cli.parse_args()
     try:
-        output=compare(read(args.baseline),read(args.candidate))
+        output=compare(read(args.baseline),read(args.candidate),
+                       Path(args.baseline_report).read_bytes(),
+                       Path(args.candidate_report).read_bytes())
         Path(args.out).write_text(json.dumps(output,sort_keys=True,indent=2)+"\n")
         print(json.dumps(output,sort_keys=True))
-    except ComparisonError as exc:
+    except (ComparisonError, OSError) as exc:
         cli.exit(2,f"UNRESOLVED: {exc}\n")
