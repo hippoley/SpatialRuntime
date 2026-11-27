@@ -163,6 +163,47 @@ class AdoptionGateTests(unittest.TestCase):
         with patch.object(gate, "_fetch_json", side_effect=wrong_step_source):
             self.assertEqual(p0._external_gate({"entries": [entry()]}), (False, []))
 
+    def test_successful_shell_step_printing_pinned_uses_is_not_adoption(self):
+        """A green shell command containing Action-looking text is NOT an Action."""
+        def disguised(url):
+            value = fake_api(url)
+            if "/contents/" in url:
+                source = ("jobs:\n  evidence:\n    steps:\n"
+                          "      - name: Check SpatialRuntime evidence\n"
+                          "        run: |\n"
+                          "          echo hello\n"
+                          "          uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n")
+                value["content"] = base64.b64encode(source.encode()).decode()
+            return value
+        with patch.object(gate, "_fetch_json", side_effect=disguised):
+            self.assertEqual(p0._external_gate({"entries": [entry()]}), (False, []))
+
+    def test_nested_fake_name_and_use_inside_shell_literal_is_not_adoption(self):
+        """Both the step name and its uses key can be text within run: |."""
+        source = ("jobs:\n  evidence:\n    steps:\n"
+                  "      - name: actual shell task\n"
+                  "        run: |\n"
+                  "          echo never-use-fake-action\n"
+                  "          - name: Check SpatialRuntime evidence\n"
+                  "            uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n")
+        self.assertFalse(gate._source_has_named_action(source, "Check SpatialRuntime evidence", REV))
+
+    def test_real_action_after_unrelated_multiline_shell_is_accepted(self):
+        source = ("jobs:\n  evidence:\n    steps:\n"
+                  "      - name: unrelated shell\n"
+                  "        run: |\n"
+                  "          uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n"
+                  "      - name: Check SpatialRuntime evidence\n"
+                  "        uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n")
+        self.assertTrue(gate._source_has_named_action(source, "Check SpatialRuntime evidence", REV))
+
+    def test_named_shell_step_with_scalar_action_reference_is_rejected(self):
+        source = ("steps:\n"
+                  "  - name: Check SpatialRuntime evidence\n"
+                  "    run: >\n"
+                  "      uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n")
+        self.assertFalse(gate._source_has_named_action(source, "Check SpatialRuntime evidence", REV))
+
     def test_wrong_run_commit_stays_open(self):
         def changed(url):
             value = fake_api(url)
