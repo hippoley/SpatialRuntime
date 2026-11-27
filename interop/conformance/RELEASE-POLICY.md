@@ -70,9 +70,9 @@ The first release is published:
 
 The annotated tag contains the exact release manifest. The public Release page carries the same manifest as an asset. This closes AD-03 at the distribution/pinning layer; it does not promote profile semantic maturity or prove unrelated adoption.
 
-## Next candidate (not yet published)
+## Current published v0.2.0 distribution
 
-The additive public Action gate/receipt features and correctness hardening since the first release are documented under `CHANGELOG.md#unreleased` as a potential `conformance-v0.2.0` MINOR release. A green main branch or changelog entry does **not** create a release. Any published tag needs a new immutable release target, a generated manifest from that **exact** target and the required release checks. Until publication, consumers needing the new strict gate and durable binding receipts must use the already verified immutable commit `76407b7a29e552dd4d5d2ede8c29b6065d4fb0d1` rather than the older `conformance-v0.1.0` tag.
+`conformance-v0.2.0` is now an [actual public Release](https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.2.0) with immutable annotated tag pointing to `8668ba93ad689fea5957de46d98cd138d8ac7865`. The released manifest has SHA-256 `25ed96cb44c66d2d62f3372ac663ffd3e6d3f41fb21a4024e31f169eac047e13`. The explicit issue-comment publication run [45967018782](https://github.com/hippoley/SpatialRuntime/actions/runs/45967018782) and published-tag three-state Action consumer run [45967304233](https://github.com/hippoley/SpatialRuntime/actions/runs/45967304233) succeeded. Existing `conformance-v0.1.0` remains an immutable historical distribution. New consumers should pin `conformance-v0.2.0`, not floating `main`. No release result establishes physical effects or unrelated adoption.
 
 ## Read-only v0.2.0 candidate evidence (automatic after green main CI or manual)
 
@@ -86,4 +86,4 @@ The separate [publication workflow](../../.github/workflows/publish-conformance-
 
 It is deliberately pinned to the real successful candidate at `8668ba93ad689fea5957de46d98cd138d8ac7865`, the manifest SHA-256 `25ed96cb44c66d2d62f3372ac663ffd3e6d3f41fb21a4024e31f169eac047e13`, candidate run `45965585857`, artifact `15181404876`, and same SHA main CI `45965514662`. It rechecks the GitHub API evidence and reproducible manifest before attempting non-force tag creation. An already existing tag is accepted only if it points to the exact approved SHA. Any preexisting Release must contain identical manifest bytes. This mechanism **is not automatically activated by merging the code**.
 
-The issue command grants one public release publication, an irreversible distribution step requiring a separate explicit owner action. The current tag and Release remain v0.1.0 until the owner command has actually succeeded, and a successful workflow run and matching public asset have been checked.
+The owner issued the explicit command in [Issue #104](https://github.com/hippoley/SpatialRuntime/issues/104#issuecomment-7213724002). The [publish run](https://github.com/hippoley/SpatialRuntime/actions/runs/45967018782) succeeded and the public tag points to the fixed candidate SHA, while the release asset's SHA-256 matches the candidate manifest. A future invocation must not move the immutable tag, and any future version must have its own separately authorized source and evidence. This public release has been verified, but must not be recorded as unrelated Action adoption.
