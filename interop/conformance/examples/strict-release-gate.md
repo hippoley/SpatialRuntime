@@ -49,7 +49,7 @@ When `require_result: PASS` is selected, the Action now fails closed if `mode: e
 
 For actual customer evidence, either use `decision-execution-binding` with your runtime-owned evidence file, or supply a genuine, runtime-owned adapter using the established `effect-evidence-adapter.v0.1` protocol. The Action cannot authenticate the adapter solely from a command string; inspect and review its actual provenance separately.
 
-**Pinning:** the earlier PR #91 commit (`a62e595314f83cd359bbf6a8923b585d0449a41e`) has the initial strict release gate but **not** this reference-only guard. Use the merged revision of this fix for the stronger behavior after its CI is successful.
+**Pinning:** the example above pins PR #93's merged commit (`a62e595314f83cd359bbf6a8923b585d0449a41e`), which includes both the opt-in PASS-only gate and the reference-only bundle guard. The earlier PR #91 commit (`d1951faad027fc55264759376980272788d4f874`) lacks the reference-only guard; do not confuse the two revisions.
 
 ## Assurance limits
 
