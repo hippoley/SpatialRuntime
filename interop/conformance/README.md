@@ -82,6 +82,24 @@ For `effect-evidence-bundle`, the Action exposes:
 
 A green check without a retained run report is useful for CI gating but weaker historical evidence. For durable compatibility claims, retain the JSON report together with the pinned SpatialRuntime commit and implementation revision.
 
+## Durable decision-binding assessment receipts
+
+For `decision-execution-binding` (v0.1) and `decision-execution-binding-v0.2`, the opt-in `report_path` input now retains the complete JSON assessment, including unresolved conditions, contradiction codes, execution references and the explicit `external_effect_confirmation: false` limitation. The file is written **before** the verifier exits, so a FAIL still leaves a reviewable report.
+
+External consumers should pin the immutable commit containing this change (not the historical `conformance-v0.1.0` tag). Example inputs:
+
+```yaml
+with:
+  mode: decision-execution-binding
+  file: evidence/decision-execution-binding.json
+  require_result: PASS
+  report_path: artifacts/binding-assessment.json
+```
+
+Retain the report in the **calling** repository's CI with `actions/upload-artifact@v4`, using `if: always()` and the fixed path `artifacts/binding-assessment.json`. Failures are evidence, not missing reports. A `PASS` proves internal consistency of supplied records, **not** independent physical or provider effect confirmation. A report does not authenticate the submitting producer.
+
+The [actual Action regression workflow](../../.github/workflows/conformance-consumer-gate.yml) exercises and uploads v0.1 PASS, UNRESOLVED, FAIL and v0.2 PASS cases. This is same-owner reference execution, not an unrelated adopter.
+
 ## Consumer quickstart
 
 Copy-oriented examples live under `interop/conformance/examples/`:
