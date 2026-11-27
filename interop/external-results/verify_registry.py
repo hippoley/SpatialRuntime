@@ -184,6 +184,10 @@ def verify(doc: dict[str, Any]) -> dict[str, Any]:
                 and consumer.get("repository", "").split("/")[0].casefold() != "hippoley"
                 and type(consumer.get("workflow_run_id")) is int
                 and consumer.get("workflow_run_id") > 0
+                and type(consumer.get("workflow_job_id")) is int
+                and consumer.get("workflow_job_id") > 0
+                and isinstance(consumer.get("action_step_name"), str)
+                and bool(consumer.get("action_step_name", "").strip())
                 and isinstance(consumer.get("workflow_commit"), str)
                 and bool(SHA40.fullmatch(consumer.get("workflow_commit", "")))
                 and isinstance(consumer.get("spatialruntime_commit"), str)

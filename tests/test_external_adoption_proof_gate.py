@@ -28,6 +28,8 @@ def entry():
             "project_owned_evidence": True,
             "repository": REPO,
             "workflow_run_id": 42,
+            "workflow_job_id": 99,
+            "action_step_name": "Check SpatialRuntime evidence",
             "workflow_run_url": "https://github.com/example-org/consumer/actions/runs/42",
             "workflow_path": ".github/workflows/verify.yml",
             "workflow_commit": WORKFLOW_COMMIT,
@@ -36,13 +38,19 @@ def entry():
     }
 
 def fake_api(url):
+    if "/actions/runs/" in url and "/jobs?" in url:
+        return {"total_count": 1, "jobs": [{
+            "id": 99, "status": "completed", "conclusion": "success",
+            "head_sha": WORKFLOW_COMMIT,
+            "steps": [{"name": "Check SpatialRuntime evidence",
+                       "status": "completed", "conclusion": "success"}]}]}
     if "/actions/runs/" in url:
         return {"conclusion": "success", "head_sha": WORKFLOW_COMMIT, "event": "push",
                 "repository": {"full_name": REPO}, "path": ".github/workflows/verify.yml"}
     if "/contents/" in url:
         return {"encoding": "base64", "type": "file",
                 "content": base64.b64encode(
-                    ("steps:\n  - uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n").encode()
+                    ("steps:\n  - name: Check SpatialRuntime evidence\n    uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n").encode()
                 ).decode()}
     raise AssertionError("unexpected API request")
 
@@ -105,6 +113,54 @@ class AdoptionGateTests(unittest.TestCase):
                 value["path"] = ".github/workflows/other.yml"
             return value
         with patch.object(gate, "_fetch_json", side_effect=unrelated_path):
+            self.assertEqual(p0._external_gate({"entries": [entry()]}), (False, []))
+
+    def test_skipped_action_step_is_not_adoption(self):
+        def skipped(url):
+            value = fake_api(url)
+            if "/jobs?" in url:
+                value["jobs"][0]["steps"][0]["conclusion"] = "skipped"
+            return value
+        with patch.object(gate, "_fetch_json", side_effect=skipped):
+            self.assertEqual(p0._external_gate({"entries": [entry()]}), (False, []))
+
+    def test_successful_workflow_with_no_action_step_is_not_adoption(self):
+        def omitted(url):
+            value = fake_api(url)
+            if "/jobs?" in url:
+                value["jobs"][0]["steps"] = [{"name": "Other task", "status": "completed", "conclusion": "success"}]
+            return value
+        with patch.object(gate, "_fetch_json", side_effect=omitted):
+            self.assertEqual(p0._external_gate({"entries": [entry()]}), (False, []))
+
+    def test_unrelated_job_is_not_adoption(self):
+        def other_job(url):
+            value = fake_api(url)
+            if "/jobs?" in url:
+                value["jobs"][0]["id"] = 100
+            return value
+        with patch.object(gate, "_fetch_json", side_effect=other_job):
+            self.assertEqual(p0._external_gate({"entries": [entry()]}), (False, []))
+
+    def test_incomplete_job_page_is_not_adoption(self):
+        def truncated(url):
+            value = fake_api(url)
+            if "/jobs?" in url:
+                value["total_count"] = 101
+            return value
+        with patch.object(gate, "_fetch_json", side_effect=truncated):
+            self.assertEqual(p0._external_gate({"entries": [entry()]}), (False, []))
+
+    def test_other_step_has_action_but_named_step_does_not(self):
+        def wrong_step_source(url):
+            value = fake_api(url)
+            if "/contents/" in url:
+                value["content"] = base64.b64encode((
+                    "steps:\\n  - name: Check SpatialRuntime evidence\\n    run: echo done\\n"
+                    "  - name: Other skipped action\\n    uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\\n"
+                ).encode()).decode()
+            return value
+        with patch.object(gate, "_fetch_json", side_effect=wrong_step_source):
             self.assertEqual(p0._external_gate({"entries": [entry()]}), (False, []))
 
     def test_wrong_run_commit_stays_open(self):

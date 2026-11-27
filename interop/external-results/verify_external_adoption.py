@@ -48,10 +48,16 @@ def check(consumer: object) -> tuple[bool, str]:
     repo = consumer.get("repository")
     run_id = consumer.get("workflow_run_id")
     path = consumer.get("workflow_path")
+    job_id = consumer.get("workflow_job_id")
+    step_name = consumer.get("action_step_name")
     sha = consumer.get("workflow_commit")
     ref = consumer.get("spatialruntime_commit")
     if not _repo(repo) or type(run_id) is not int or run_id <= 0:
         return False, "unrelated repository / run identifier missing"
+    if type(job_id) is not int or job_id <= 0:
+        return False, "external action job id missing"
+    if not isinstance(step_name, str) or not step_name.strip() or len(step_name) > 180:
+        return False, "external action step identity missing"
     if not isinstance(path, str) or not WORKFLOW.fullmatch(path):
         return False, "workflow path invalid"
     if not isinstance(sha, str) or not REVISION.fullmatch(sha):
@@ -83,6 +89,40 @@ def check(consumer: object) -> tuple[bool, str]:
         matches = set(USE.findall(raw.decode("utf-8")))
         if ref not in matches:
             return False, "external workflow does not pin declared SpatialRuntime Action revision"
+        jobs = _fetch_json(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/jobs?per_page=100")
+        if not isinstance(jobs, dict) or not isinstance(jobs.get("jobs"), list):
+            return False, "external job execution metadata missing"
+        if type(jobs.get("total_count")) is not int or jobs["total_count"] > len(jobs["jobs"]):
+            return False, "incomplete external job list"
+        target = [j for j in jobs["jobs"] if isinstance(j, dict) and j.get("id") == job_id]
+        if len(target) != 1:
+            return False, "claimed job missing"
+        job = target[0]
+        if job.get("conclusion") != "success" or job.get("status") != "completed" or job.get("head_sha") != sha:
+            return False, "claimed job was not completed successfully at the checked commit"
+        steps = job.get("steps")
+        if not isinstance(steps, list):
+            return False, "action step execution metadata missing"
+        selected = [step for step in steps if isinstance(step, dict) and step.get("name") == step_name]
+        if len(selected) != 1 or selected[0].get("conclusion") != "success" or selected[0].get("status") != "completed":
+            return False, "named action step was skipped, failed or ambiguous"
+        # Bind named execution step to its own uses line, not an unused
+        # reference elsewhere in the workflow. Restrict to documented YAML syntax.
+        lines = raw.decode("utf-8").splitlines()
+        blocks = []
+        for index, line in enumerate(lines):
+            match = re.fullmatch(r"(\s*)-\s*name:\s*['\"]?(.+?)['\"]?\s*", line)
+            if not match or match.group(2).strip("'\" ") != step_name:
+                continue
+            indent = len(match.group(1))
+            block = []
+            for following in lines[index + 1:]:
+                if following.strip() and len(following) - len(following.lstrip(" ")) <= indent:
+                    break
+                block.append(following)
+            blocks.append("\n".join(block))
+        if len(blocks) != 1 or ref not in set(USE.findall(blocks[0])):
+            return False, "executed named step not bound to pinned Action source"
     except (Unverified, TypeError, ValueError, UnicodeError) as error:
         return False, f"external evidence could not be independently verified: {error}"
     return True, "externally verified GitHub Actions consumer"
