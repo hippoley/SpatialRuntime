@@ -1,0 +1,95 @@
+name: Conformance v0.2.0 Release Candidate (read only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: conformance-v0.2.0-candidate
+  cancel-in-progress: false
+
+jobs:
+  verify-candidate:
+    runs-on: ubuntu-latest
+    env:
+      TAG: conformance-v0.2.0
+      EXPECTED_SHA: ${{ github.sha }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout the immutable dispatch commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require exact current main target and unpublished tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/main"
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "$EXPECTED_SHA"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Refusing to prepare an already tagged release $TAG" >&2
+            exit 1
+          fi
+      - name: Require successful main CI on exact commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --paginate \
+            "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=main&head_sha=$EXPECTED_SHA&status=completed&per_page=100" \
+            --jq '.workflow_runs[] | select(.event == "push" and .head_sha == env.EXPECTED_SHA and .conclusion == "success") | .id' \
+            > /tmp/release-ci-runs.txt
+          test -s /tmp/release-ci-runs.txt || {
+            echo "No successful main push CI found for exact candidate commit" >&2
+            exit 1
+          }
+          cat /tmp/release-ci-runs.txt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate catalog, registry, maturity, P0 and release policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          python interop/conformance/verify_catalog.py
+          python interop/external-results/verify_registry.py
+          python interop/verify_maturity.py
+          python docs/verify_p0_closure.py
+          python interop/conformance/verify_release_contract.py
+      - name: Generate candidate manifest bound to immutable commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-candidate
+          python interop/conformance/prepare_release.py \
+            --tag "$TAG" \
+            --commit "$EXPECTED_SHA" \
+            --output release-candidate/conformance-release.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path("release-candidate/conformance-release.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          assert data["tag"] == os.environ["TAG"]
+          assert data["commit"] == os.environ["EXPECTED_SHA"]
+          assert data["preferred_action"] == "interop/conformance"
+          assert "decision-execution-binding-v0.2" in data["included_modes"]
+          PY
+          sha256sum release-candidate/conformance-release.json \
+            > release-candidate/conformance-release.sha256
+          printf 'SOURCE_COMMIT=%s\nRELEASE_TAG=%s\nSTATUS=UNPUBLISHED_CANDIDATE\n' \
+            "$EXPECTED_SHA" "$TAG" > release-candidate/STATUS.txt
+      - name: Upload candidate evidence (not a published release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-v0.2.0-UNPUBLISHED-candidate-${{ github.sha }}
+          path: release-candidate/
+          if-no-files-found: error
+          retention-days: 90
