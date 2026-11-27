@@ -3,10 +3,16 @@ from pathlib import Path
 WORKFLOW = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "conformance-v02-candidate.yml"
 
 
-def test_v02_candidate_is_explicitly_manual_and_read_only():
+def test_v02_candidate_auto_records_only_read_only_evidence():
     text = WORKFLOW.read_text(encoding="utf-8")
     assert "workflow_dispatch:" in text
-    assert "workflow_run:" not in text
+    assert "workflow_run:" in text
+    assert 'workflows: ["CI"]' in text
+    assert "types: [completed]" in text
+    assert "github.event.workflow_run.event == 'push'" in text
+    assert "github.event.workflow_run.head_branch == 'main'" in text
+    assert "github.event.workflow_run.head_repository.full_name == github.repository" in text
+    assert "github.event.workflow_run.conclusion == 'success'" in text
     assert "push:" not in text
     assert "contents: read" in text
     assert "actions: read" in text
@@ -28,6 +34,9 @@ def test_candidate_is_exact_current_green_main_and_new_tag():
         'select(.event == "push" and .head_sha == env.EXPECTED_SHA and .conclusion == "success")',
         'test -s /tmp/release-ci-runs.txt',
         "TAG: conformance-v0.2.0",
+        "github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha",
+        "ref: ${{ env.EXPECTED_SHA }}",
+        "conformance-v0.2.0-UNPUBLISHED-candidate-${{ env.EXPECTED_SHA }}",
     ):
         assert required in text
 
