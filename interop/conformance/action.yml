@@ -21,7 +21,7 @@ inputs:
     required: false
     default: ""
   report_path:
-    description: "Optional durable JSON report path for effect-evidence-bundle mode"
+    description: "Optional durable JSON report path for effect-evidence-bundle or decision-execution-binding v0.1/v0.2"
     required: false
     default: ""
 outputs:
@@ -121,11 +121,21 @@ runs:
             ;;
           decision-execution-binding)
             require_file
-            python "$ROOT/decision-execution-binding/verify.py"               "$CONFORMANCE_FILE"               --github-output "$GITHUB_OUTPUT"
+            binding_args=("$CONFORMANCE_FILE" --github-output "$GITHUB_OUTPUT")
+            if [[ -n "$CONFORMANCE_REPORT_PATH" ]]; then
+              binding_args+=(--report "$CONFORMANCE_REPORT_PATH")
+              echo "report_path=$CONFORMANCE_REPORT_PATH" >> "$GITHUB_OUTPUT"
+            fi
+            python "$ROOT/decision-execution-binding/verify.py" "${binding_args[@]}"
             ;;
           decision-execution-binding-v0.2)
             require_file
-            python "$ROOT/decision-execution-binding/verify_v0_2.py"            "$CONFORMANCE_FILE"               --github-output "$GITHUB_OUTPUT"
+            binding_args=("$CONFORMANCE_FILE" --github-output "$GITHUB_OUTPUT")
+            if [[ -n "$CONFORMANCE_REPORT_PATH" ]]; then
+              binding_args+=(--report "$CONFORMANCE_REPORT_PATH")
+              echo "report_path=$CONFORMANCE_REPORT_PATH" >> "$GITHUB_OUTPUT"
+            fi
+            python "$ROOT/decision-execution-binding/verify_v0_2.py" "${binding_args[@]}"
             ;;
           effect-evidence-bundle)
             if [[ "$CONFORMANCE_REQUIRE_RESULT" == "PASS" && -z "$CONFORMANCE_ADAPTER_COMMAND" ]]; then

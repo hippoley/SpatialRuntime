@@ -33,6 +33,7 @@ jobs:
           mode: decision-execution-binding
           file: interop/decision-execution-binding/fixtures/per-call-pass.json
           require_result: PASS
+          report_path: artifacts/binding-pass.json
       - name: Verify strict PASS
         shell: bash
         run: |
@@ -46,6 +47,7 @@ jobs:
           mode: decision-execution-binding
           file: interop/decision-execution-binding/fixtures/standing-not-checked.json
           require_result: PASS
+          report_path: artifacts/binding-unresolved.json
       - name: Verify unresolved never counts as success
         shell: bash
         run: |
@@ -59,11 +61,50 @@ jobs:
           mode: decision-execution-binding
           file: interop/decision-execution-binding/fixtures/deny-with-execution.json
           require_result: PASS
+          report_path: artifacts/binding-fail.json
       - name: Verify contradictions are not treated as incomplete evidence
         shell: bash
         run: |
           test "${{ steps.strict_fail.outcome }}" = "failure"
           test "${{ steps.strict_fail.outputs.conformance_result }}" = "FAIL"
+      - name: Retain temporal v0.2 PASS assessment
+        id: temporal_report
+        uses: ./interop/conformance
+        with:
+          mode: decision-execution-binding-v0.2
+          file: interop/decision-execution-binding/fixtures/aap-approval-pass.json
+          require_result: PASS
+          report_path: artifacts/binding-temporal-v02.json
+      - name: Verify all binding reports contain exact findings even for failing checks
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          reports = {
+              "binding-pass.json": ("PASS", "decision-execution-binding.v0.1"),
+              "binding-unresolved.json": ("UNRESOLVED", "decision-execution-binding.v0.1"),
+              "binding-fail.json": ("FAIL", "decision-execution-binding.v0.1"),
+              "binding-temporal-v02.json": ("PASS", "decision-execution-binding.v0.2"),
+          }
+          for file, (result, profile) in reports.items():
+              doc = json.loads((Path("artifacts") / file).read_text())
+              assert doc["result"] == result, (file, doc.get("result"))
+              assert doc["profile"] == profile, (file, doc.get("profile"))
+              assert "external_effect_confirmation" in doc
+              assert isinstance(doc["errors"], list)
+              assert isinstance(doc["unresolved"], list)
+              assert isinstance(doc["executions"], list)
+              print(file, result, len(doc["errors"]), len(doc["unresolved"]))
+          PY
+      - name: Preserve durable binding assessment receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: binding-assessment-pass-unresolved-fail-v01-v02
+          path: artifacts/binding-*.json
+          if-no-files-found: error
       - name: Default reference bundle may run as a diagnostic smoke test
         id: reference_smoke
         uses: ./interop/conformance
