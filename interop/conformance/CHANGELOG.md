@@ -2,6 +2,10 @@
 
 This changelog tracks the public `interop/conformance` consumption surface, not the Python package as a whole.
 
+## Unreleased
+
+No new public conformance contract changes since the v0.2.0 release. New changes must be recorded here before the next version is published.
+
 ## conformance-v0.2.0 — 2026-11-27 (PUBLISHED)
 
 This MINOR release was published as an [annotated Git tag and public GitHub Release](https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.2.0) at immutable source commit `8668ba93ad689fea5957de46d98cd138d8ac7865`. The published `conformance-release.json` asset has SHA-256 `25ed96cb44c66d2d62f3372ac663ffd3e6d3f41fb21a4024e31f169eac047e13`. [Explicit owner-authorized publication](https://github.com/hippoley/SpatialRuntime/actions/runs/45967018782) and a [real published-tag three-state consumer test](https://github.com/hippoley/SpatialRuntime/actions/runs/45967304233) succeeded. These are owner-controlled runs, not evidence of an unrelated adopter.
