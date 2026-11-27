@@ -6,7 +6,7 @@ A conformance decision has three states: **PASS**, **UNRESOLVED** and **FAIL**. 
 
 ## Minimal blocking check
 
-Paste this in your **own repository**, use the immutable merged commit of PR #98 (`76407b7a29e552dd4d5d2ede8c29b6065d4fb0d1`) as shown below, and supply actual evidence under your ownership:
+Paste this into your **own repository**, pin the actual public stable `conformance-v0.2.0` release (verified annotated tag target `8668ba93ad689fea5957de46d98cd138d8ac7865`), and supply evidence under your ownership:
 
 ```yaml
 name: Verify agent decision-to-execution binding
@@ -23,7 +23,7 @@ jobs:
           python-version: '3.12'
       - name: Require grounded decision-to-execution proof
         id: verify
-        uses: hippoley/SpatialRuntime/interop/conformance@76407b7a29e552dd4d5d2ede8c29b6065d4fb0d1
+        uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.2.0
         with:
           mode: decision-execution-binding
           file: evidence/decision-execution.json
@@ -57,11 +57,11 @@ When `require_result: PASS` is selected, the Action now fails closed if `mode: e
 
 For actual customer evidence, either use `decision-execution-binding` with your runtime-owned evidence file, or supply a genuine, runtime-owned adapter using the established `effect-evidence-adapter.v0.1` protocol. The Action cannot authenticate the adapter solely from a command string; inspect and review its actual provenance separately.
 
-**Pinning:** the example above pins PR #98's merged commit (`76407b7a29e552dd4d5d2ede8c29b6065d4fb0d1`), which includes the opt-in PASS-only gate, reference-only bundle guard and durable decision-binding JSON output. PR #93 (`a62e595314f83cd359bbf6a8923b585d0449a41e`) has the first two features but not durable binding receipts. The earlier PR #91 (`d1951faad027fc55264759376980272788d4f874`) lacks the reference-only guard.
+**Pinning:** `conformance-v0.2.0` is an [actual GitHub Release](https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.2.0) whose annotated tag points to `8668ba93ad689fea5957de46d98cd138d8ac7865`. The published release manifest is independently SHA-256 verifiable (`25ed96cb44c66d2d62f3372ac663ffd3e6d3f41fb21a4024e31f169eac047e13`). The [real tagged-Action three-state consumer run](https://github.com/hippoley/SpatialRuntime/actions/runs/45967304233) verifies PASS, UNRESOLVED and FAIL with reviewable JSON outputs. This is repository-owned verification, not unrelated adoption.
 
 ## Assurance limits
 
 - PASS is a consistency check **over the supplied evidence**, not independently observed real-world effects.
 - A successful GitHub job in your repo does not by itself imply independent signoff of underlying runtime claims.
-- Pin to an immutable SHA. The older `conformance-v0.1.0` tag does **not** include this added input.
+- Pin to the published immutable `conformance-v0.2.0` tag or its verified commit SHA. The older `conformance-v0.1.0` tag does **not** include the strict gate and durable binding receipt additions.
 - Using this in a third-party repository should be separately recorded as externally consumed **only after** independently inspecting its real run and production of evidence. An example in this repository, including this one, is never an adoption event.

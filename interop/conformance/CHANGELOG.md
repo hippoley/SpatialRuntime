@@ -2,9 +2,13 @@
 
 This changelog tracks the public `interop/conformance` consumption surface, not the Python package as a whole.
 
-## Unreleased — candidate scope for conformance-v0.2.0 (NOT TAGGED OR PUBLISHED)
+## Unreleased
 
-The next MINOR release candidate includes the following already merged functionality. This changelog is **release preparation**, not a new Git tag, GitHub Release, or external adoption claim.
+No new public conformance contract changes since the v0.2.0 release. New changes must be recorded here before the next version is published.
+
+## conformance-v0.2.0 — 2026-11-27 (PUBLISHED)
+
+This MINOR release was published as an [annotated Git tag and public GitHub Release](https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.2.0) at immutable source commit `8668ba93ad689fea5957de46d98cd138d8ac7865`. The published `conformance-release.json` asset has SHA-256 `25ed96cb44c66d2d62f3372ac663ffd3e6d3f41fb21a4024e31f169eac047e13`. [Explicit owner-authorized publication](https://github.com/hippoley/SpatialRuntime/actions/runs/45967018782) and a [real published-tag three-state consumer test](https://github.com/hippoley/SpatialRuntime/actions/runs/45967304233) succeeded. These are owner-controlled runs, not evidence of an unrelated adopter.
 
 ### Added
 
@@ -25,7 +29,7 @@ The next MINOR release candidate includes the following already merged functiona
 - `interop/agent-effect-authority` remains a compatibility entrypoint.
 - Correctness-hardening may reject previously unsafe self-attested adoption claims; this is intentional and documented.
 - `PASS` is an assessment of supplied records, **not** producer authentication, independent physical effect confirmation, or proof of external adoption.
-- **Release blocker:** publish a `conformance-v0.2.0` tag and manifest only after validating catalog, registry, maturity, supported Python CI, versioned CHANGELOG and current immutable release SHA. No tag is created by this changelog edit.
+- **Post-release status:** the immutable annotated tag, public manifest asset and digest have been checked. The published Action independently passed a self-owned three-state consumer test. Unrelated third-party adoption remains open in Issue #14; release packaging does not certify external physical effects.
 
 
 ## conformance-v0.1.0 — 2026-10-09

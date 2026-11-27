@@ -21,7 +21,7 @@ Progress in one lane does **not** prove maturity in the other.
 
 The preferred third-party entry point is now `interop/conformance`, merged via PR #49. Existing consumers can continue using `interop/agent-effect-authority` as a compatibility path.
 
-The first stable distribution snapshot is `conformance-v0.1.0`. It freezes the neutral Action/catalog/compatibility set at one green commit; individual profile maturity remains independent.
+The current published distribution for new consumers is [`conformance-v0.2.0`](https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.2.0), pinned to immutable source commit `8668ba93ad689fea5957de46d98cd138d8ac7865` with a SHA-256-verified release manifest. The earlier `conformance-v0.1.0` remains an immutable historical snapshot; release packaging does not promote individual profile maturity.
 
 - effect-evidence hostile vectors and external-verifier adapter protocol;
 - decision→execution binding checks;
@@ -33,7 +33,7 @@ The first stable distribution snapshot is `conformance-v0.1.0`. It freezes the n
 
 #### First integration: real evidence and a reviewable CI receipt
 
-The historical `conformance-v0.1.0` release is still useful for its published baseline, but **it does not implement** the later opt-in `require_result: PASS` strict gate or durable binding `report_path`. For a new *blocking* consumer, pin the tested PR #98 commit below (never use a floating `main` reference):
+For new *blocking* consumers, use the **public released** `conformance-v0.2.0` tag. It includes the tested opt-in `require_result: PASS` gate and durable binding `report_path`. The historical `conformance-v0.1.0` release lacks these additions. Never use a floating `main` reference:
 
 ```yaml
 name: Verify execution binding
@@ -51,7 +51,7 @@ jobs:
           python-version: '3.12'
       - name: Conformance over project-owned evidence
         id: spatialruntime
-        uses: hippoley/SpatialRuntime/interop/conformance@76407b7a29e552dd4d5d2ede8c29b6065d4fb0d1
+        uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.2.0
         with:
           mode: decision-execution-binding
           file: evidence/decision-execution.json
@@ -467,7 +467,7 @@ Reusable GitHub Action:
   run: exit 1
 ```
 
-Consumers SHOULD pin `conformance-v0.1.0` for the published snapshot, or an exact commit SHA for historical evidence. `PASS` means only that the supplied evidence satisfies the selected conformance profile; it does not establish real-world effect completion. External projects cited in profile evidence are pressure sources, not adopters or endorsers of SpatialRuntime.
+New consumers SHOULD pin the published `conformance-v0.2.0` tag (or its verified immutable source SHA `8668ba93ad689fea5957de46d98cd138d8ac7865`); the older `conformance-v0.1.0` is maintained only for historical compatibility. `PASS` means only that the supplied evidence satisfies the selected conformance profile; it does not establish real-world effect completion. External projects cited in profile evidence are pressure sources, not adopters or endorsers of SpatialRuntime.
 
 ## Development
 
