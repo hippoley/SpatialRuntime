@@ -20,6 +20,53 @@ WORKFLOW = re.compile(r"^\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml$")
 USE = re.compile(r"(?m)^\s*-?\s*uses:\s*['\"]?hippoley/SpatialRuntime/interop/conformance@([0-9a-f]{40})['\"]?\s*(?:#.*)?$")
 MAX_BYTES = 1000000
 
+# A string that looks like a YAML Action inside a shell block is NOT a
+# workflow step. Mask block scalar contents before searching for any step.
+BLOCK_SCALAR = re.compile(r"^(\s*)(?:[A-Za-z_][A-Za-z0-9_-]*):\s*[|>][+-]?\s*(?:#.*)?$")
+
+
+def _source_has_named_action(source: str, step_name: str, revision: str) -> bool:
+    """Fail closed outside simple unambiguous name/uses workflow-step syntax.
+
+    This intentionally is not a general YAML parser. Unsupported or ambiguous
+    workflow syntax must not close the external-adoption gate.
+    """
+    original_lines = source.splitlines()
+    lines = []
+    scalar_indent = None
+    for line in original_lines:
+        indent = len(line) - len(line.lstrip(" "))
+        if scalar_indent is not None:
+            if not line.strip() or indent > scalar_indent:
+                lines.append("")
+                continue
+            scalar_indent = None
+        scalar = BLOCK_SCALAR.fullmatch(line)
+        if scalar:
+            scalar_indent = len(scalar.group(1))
+        lines.append(line)
+
+    candidates = []
+    for index, line in enumerate(lines):
+        match = re.fullmatch(r"(\s*)-\s*name:\s*['\"]?(.+?)['\"]?\s*", line)
+        if not match or match.group(2).strip("'\" ") != step_name:
+            continue
+        indent = len(match.group(1))
+        direct = []
+        for following in lines[index + 1:]:
+            if not following.strip():
+                continue
+            level = len(following) - len(following.lstrip(" "))
+            if level <= indent:
+                break
+            if level == indent + 2:
+                direct.append(following)
+        uses = [line for line in direct if re.match(r"^\s*uses:", line)]
+        runs = [line for line in direct if re.match(r"^\s*run:", line)]
+        candidates.append(len(uses) == 1 and not runs and revision in set(USE.findall(uses[0])))
+    return len(candidates) == 1 and candidates[0]
+
+
 class Unverified(Exception):
     pass
 
@@ -106,23 +153,8 @@ def check(consumer: object) -> tuple[bool, str]:
         selected = [step for step in steps if isinstance(step, dict) and step.get("name") == step_name]
         if len(selected) != 1 or selected[0].get("conclusion") != "success" or selected[0].get("status") != "completed":
             return False, "named action step was skipped, failed or ambiguous"
-        # Bind named execution step to its own uses line, not an unused
-        # reference elsewhere in the workflow. Restrict to documented YAML syntax.
-        lines = raw.decode("utf-8").splitlines()
-        blocks = []
-        for index, line in enumerate(lines):
-            match = re.fullmatch(r"(\s*)-\s*name:\s*['\"]?(.+?)['\"]?\s*", line)
-            if not match or match.group(2).strip("'\" ") != step_name:
-                continue
-            indent = len(match.group(1))
-            block = []
-            for following in lines[index + 1:]:
-                if following.strip() and len(following) - len(following.lstrip(" ")) <= indent:
-                    break
-                block.append(following)
-            blocks.append("\n".join(block))
-        if len(blocks) != 1 or ref not in set(USE.findall(blocks[0])):
-            return False, "executed named step not bound to pinned Action source"
+        if not _source_has_named_action(raw.decode("utf-8"), step_name, ref):
+            return False, "successful named step is not a direct pinned Action invocation in workflow source"
     except (Unverified, TypeError, ValueError, UnicodeError) as error:
         return False, f"external evidence could not be independently verified: {error}"
     return True, "externally verified GitHub Actions consumer"
