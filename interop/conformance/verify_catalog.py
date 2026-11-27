@@ -82,6 +82,8 @@ def main() -> None:
             errors.append(f"{mode}: every canonical mode must declare structured_action_result=true")
         if "conformance_result" not in outputs:
             errors.append(f"{mode}: canonical mode missing conformance_result output")
+        if entry.get("supports_durable_report") is True and "report_path" not in outputs:
+            errors.append(f"{mode}: declared durable report missing report_path output")
         if entry.get("result_scope") == "envelope_only":
             for required_output in ("validation_result", "assessment_scope"):
                 if required_output not in outputs:
