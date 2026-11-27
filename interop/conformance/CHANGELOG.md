@@ -2,9 +2,31 @@
 
 This changelog tracks the public `interop/conformance` consumption surface, not the Python package as a whole.
 
-## Unreleased
+## Unreleased — candidate scope for conformance-v0.2.0 (NOT TAGGED OR PUBLISHED)
 
-No public conformance-surface changes yet.
+The next MINOR release candidate includes the following already merged functionality. This changelog is **release preparation**, not a new Git tag, GitHub Release, or external adoption claim.
+
+### Added
+
+- Opt-in `require_result: PASS` Action input for blocking release gates, while retaining the previous nonblocking UNRESOLVED observation default (PR #91).
+- Durable full JSON `report_path` for `decision-execution-binding` v0.1/v0.2, including UNRESOLVED and FAIL findings; real Composite Action uploads and tests (PR #98).
+- First-screen, copyable current Action CI example with immutable SHA and unconditional artifact retention (PR #100).
+
+### Correctness and security fixes
+
+- Strict release gates reject `effect-evidence-bundle` reference-only smoke PASS without a caller-owned adapter (PR #93).
+- External adoption claims no longer close from self-authored registry fields alone: require unrelated repository run, pinned workflow and actual successful Action step (PRs #90, #95).
+- Reject `uses:` strings fabricated inside `run: |` or other workflow block scalar text (PR #97).
+- Persist ARIB real-SDK cross-version and Kiri SQLite evidence with Git blob digests (PR #89).
+
+### Compatibility and assurance limits
+
+- Existing profile mode identifiers remain unchanged; historical `conformance-v0.1.0` stays pinned as published.
+- `interop/agent-effect-authority` remains a compatibility entrypoint.
+- Correctness-hardening may reject previously unsafe self-attested adoption claims; this is intentional and documented.
+- `PASS` is an assessment of supplied records, **not** producer authentication, independent physical effect confirmation, or proof of external adoption.
+- **Release blocker:** publish a `conformance-v0.2.0` tag and manifest only after validating catalog, registry, maturity, supported Python CI, versioned CHANGELOG and current immutable release SHA. No tag is created by this changelog edit.
+
 
 ## conformance-v0.1.0 — 2026-10-09
 
