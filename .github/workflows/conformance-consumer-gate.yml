@@ -64,6 +64,28 @@ jobs:
         run: |
           test "${{ steps.strict_fail.outcome }}" = "failure"
           test "${{ steps.strict_fail.outputs.conformance_result }}" = "FAIL"
+      - name: Default reference bundle may run as a diagnostic smoke test
+        id: reference_smoke
+        uses: ./interop/conformance
+        with:
+          mode: effect-evidence-bundle
+      - name: Require reference-only scope is not mistaken for business evidence
+        shell: bash
+        run: |
+          test "${{ steps.reference_smoke.outcome }}" = "success"
+          test "${{ steps.reference_smoke.outputs.conformance_result }}" = "PASS"
+      - name: Strict gate must reject a reference-only bundle PASS
+        id: strict_reference_only
+        continue-on-error: true
+        uses: ./interop/conformance
+        with:
+          mode: effect-evidence-bundle
+          require_result: PASS
+      - name: Confirm no adapter means unresolved business assurance
+        shell: bash
+        run: |
+          test "${{ steps.strict_reference_only.outcome }}" = "failure"
+          test "${{ steps.strict_reference_only.outputs.conformance_result }}" = "UNRESOLVED"
       - name: Invalid gate configuration must fail closed
         id: invalid
         continue-on-error: true
