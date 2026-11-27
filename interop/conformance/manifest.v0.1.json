@@ -79,11 +79,13 @@
       "outputs": [
         "conformance_result",
         "unresolved_count",
-        "error_count"
+        "error_count",
+        "report_path"
       ],
       "profile_source": "interop/decision-execution-binding/profile.v0.1.json",
       "profile_key": "profile",
-      "requires_file": true
+      "requires_file": true,
+      "supports_durable_report": true
     },
     {
       "mode": "decision-execution-binding-v0.2",
@@ -93,12 +95,14 @@
       "outputs": [
         "conformance_result",
         "unresolved_count",
-        "error_count"
+        "error_count",
+        "report_path"
       ],
       "profile_source": "interop/decision-execution-binding/profile.v0.2.json",
       "profile_key": "profile",
       "requires_file": true,
-      "additive_to": "decision-execution-binding"
+      "additive_to": "decision-execution-binding",
+      "supports_durable_report": true
     },
     {
       "mode": "effect-evidence-bundle",
