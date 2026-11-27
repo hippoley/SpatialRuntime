@@ -69,3 +69,7 @@ The first release is published:
 - release workflow run: `37878503867`
 
 The annotated tag contains the exact release manifest. The public Release page carries the same manifest as an asset. This closes AD-03 at the distribution/pinning layer; it does not promote profile semantic maturity or prove unrelated adoption.
+
+## Next candidate (not yet published)
+
+The additive public Action gate/receipt features and correctness hardening since the first release are documented under `CHANGELOG.md#unreleased` as a potential `conformance-v0.2.0` MINOR release. A green main branch or changelog entry does **not** create a release. Any published tag needs a new immutable release target, a generated manifest from that **exact** target and the required release checks. Until publication, consumers needing the new strict gate and durable binding receipts must use the already verified immutable commit `76407b7a29e552dd4d5d2ede8c29b6065d4fb0d1` rather than the older `conformance-v0.1.0` tag.
