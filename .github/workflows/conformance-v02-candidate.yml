@@ -2,6 +2,9 @@ name: Conformance v0.2.0 Release Candidate (read only)
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -13,16 +16,23 @@ concurrency:
 
 jobs:
   verify-candidate:
+    # Never consume an untrusted PR's workflow_run; only successful push CI on this repository's main.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     env:
       TAG: conformance-v0.2.0
-      EXPECTED_SHA: ${{ github.sha }}
+      EXPECTED_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout the immutable dispatch commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.EXPECTED_SHA }}
           fetch-depth: 0
           persist-credentials: false
       - name: Require exact current main target and unpublished tag
@@ -89,7 +99,7 @@ jobs:
       - name: Upload candidate evidence (not a published release)
         uses: actions/upload-artifact@v4
         with:
-          name: conformance-v0.2.0-UNPUBLISHED-candidate-${{ github.sha }}
+          name: conformance-v0.2.0-UNPUBLISHED-candidate-${{ env.EXPECTED_SHA }}
           path: release-candidate/
           if-no-files-found: error
           retention-days: 90
