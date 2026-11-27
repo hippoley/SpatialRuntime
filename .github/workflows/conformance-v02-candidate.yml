@@ -63,6 +63,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install the same dev/test dependencies as main CI
+        shell: bash
+        run: |
+          python -m pip install -U pip
+          python -m pip install -e '.[dev]'
       - name: Validate catalog, registry, maturity, P0 and release policy
         shell: bash
         run: |
