@@ -41,6 +41,16 @@ def test_candidate_is_exact_current_green_main_and_new_tag():
         assert required in text
 
 
+def test_candidate_installs_real_test_dependencies_before_p0_checks():
+    text = WORKFLOW.read_text(encoding="utf-8")
+    setup = text.index("actions/setup-python@v5")
+    install = text.index("python -m pip install -e '.[dev]'")
+    p0 = text.index("python docs/verify_p0_closure.py")
+    assert setup < install < p0
+    # Main CI uses the same extras to execute subprocess-based P0-D/P0-E tests.
+    assert "python -m pip install -U pip" in text
+
+
 def test_candidate_revalidates_and_retains_nonpublication_evidence():
     text = WORKFLOW.read_text(encoding="utf-8")
     for required in (
