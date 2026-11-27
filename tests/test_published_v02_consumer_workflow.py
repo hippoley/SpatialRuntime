@@ -15,8 +15,9 @@ def test_released_action_preserves_three_state_and_failing_receipts():
     s = WORKFLOW.read_text(encoding="utf-8")
     for name in ("released_pass", "released_unresolved", "released_fail"):
         assert f"id: {name}" in s
+    assert s.count("outputs.conformance_result") == 3
     for expected in ("PASS", "UNRESOLVED", "FAIL"):
-        assert f'conformance_result }}' not in '' or expected in s
+        assert f'= "{expected}"' in s
     for path in ("pass.json", "unresolved.json", "fail.json"):
         assert f"published-receipts/{path}" in s
     assert s.count("continue-on-error: true") == 2
