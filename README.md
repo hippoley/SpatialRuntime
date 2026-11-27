@@ -31,25 +31,46 @@ The first stable distribution snapshot is `conformance-v0.1.0`. It freezes the n
 **Adoption claim ceiling:** repository self-tests, our own downstream repos, analyst-authored mappings, and queued external workflows do not count as unrelated adoption. Issue #14 remains the external-consumer gate.
 
 
-#### 60-second CI quickstart
+#### First integration: real evidence and a reviewable CI receipt
 
-Pin the stable conformance release. Use an exact commit SHA only when reproducing older historical evidence; do **not** pin `main`.
+The historical `conformance-v0.1.0` release is still useful for its published baseline, but **it does not implement** the later opt-in `require_result: PASS` strict gate or durable binding `report_path`. For a new *blocking* consumer, pin the tested PR #98 commit below (never use a floating `main` reference):
 
 ```yaml
-- name: Check decision/execution binding
-  id: spatialruntime
-  uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.1.0
-  with:
-    mode: decision-execution-binding-v0.2
-    file: evidence/decision-execution-binding.json
+name: Verify execution binding
+on: [pull_request]
+permissions:
+  contents: read
 
-- name: Require resolved conformance
-  run: test "${{ steps.spatialruntime.outputs.conformance_result }}" = "PASS"
+jobs:
+  evidence-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Conformance over project-owned evidence
+        id: spatialruntime
+        uses: hippoley/SpatialRuntime/interop/conformance@76407b7a29e552dd4d5d2ede8c29b6065d4fb0d1
+        with:
+          mode: decision-execution-binding
+          file: evidence/decision-execution.json
+          require_result: PASS
+          report_path: artifacts/binding-review.json
+      - name: Keep full assessment when the release gate rejects evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: binding-review
+          path: artifacts/binding-review.json
+          if-no-files-found: error
 ```
 
-For declaration-only modes such as `claim` and `mapping`, a valid envelope returns `validation_result=PASS` but `conformance_result=UNRESOLVED`; envelope validity is not independent evidence verification.
+**Before using it:** generate `evidence/decision-execution.json` from your own runtime. The repository's bundled PASS fixtures are examples **not proof of your implementation**. `UNRESOLVED` and `FAIL` both block this strict gate, while their full JSON findings remain reviewable. The result checks consistency of **supplied** evidence; it does not authenticate the producer or independently confirm an external physical effect. Review the contents for secrets before storing an artifact.
 
-See `interop/conformance/README.md` for external-verifier mode, durable reports, and all supported modes.
+For smoke-only checks against SpatialRuntime's own reference vectors, the older `conformance-v0.1.0` tag remains valid but is **not** a business release assurance. Declaration-only `claim` and `mapping` modes expose `validation_result=PASS` while conformance remains `UNRESOLVED`.
+
+See [strict release-gate consumer guide](interop/conformance/examples/strict-release-gate.md) for the canonical copyable workflow, and [conformance README](interop/conformance/README.md) for verifier modes and their claim ceilings. **An owned CI run is not an unrelated adopter**; see [external-adoption issue #14](https://github.com/hippoley/SpatialRuntime/issues/14).
 
 ### If you are here for the spatial runtime
 
