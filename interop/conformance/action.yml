@@ -128,6 +128,11 @@ runs:
             python "$ROOT/decision-execution-binding/verify_v0_2.py"            "$CONFORMANCE_FILE"               --github-output "$GITHUB_OUTPUT"
             ;;
           effect-evidence-bundle)
+            if [[ "$CONFORMANCE_REQUIRE_RESULT" == "PASS" && -z "$CONFORMANCE_ADAPTER_COMMAND" ]]; then
+              echo "strict conformance gate requires adapter_command for effect-evidence-bundle; built-in reference vectors are not external-runtime proof" >&2
+              echo "conformance_result=UNRESOLVED" >> "$GITHUB_OUTPUT"
+              exit 2
+            fi
             args=(--github-output "$GITHUB_OUTPUT")
             if [[ -n "$CONFORMANCE_ADAPTER_COMMAND" ]]; then
               args+=(--adapter-command "$CONFORMANCE_ADAPTER_COMMAND")
