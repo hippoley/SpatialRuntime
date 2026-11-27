@@ -21,7 +21,7 @@ class RegistryAdoptionTests(unittest.TestCase):
         e["external_consumption"] = True
         e["adoption_claim"] = True
         e["consumer"] = {"project_owned_evidence": True, "repository": "outside-lab/runtime",
-                         "workflow_run_id": 123, "workflow_run_url": "https://github.com/outside-lab/runtime/actions/runs/123",
+                         "workflow_run_id": 123, "workflow_job_id": 987, "action_step_name": "Verify execution evidence", "workflow_run_url": "https://github.com/outside-lab/runtime/actions/runs/123",
                          "workflow_path": ".github/workflows/conformance.yml",
                          "workflow_commit": "a"*40, "spatialruntime_commit": "b"*40}
         return doc
