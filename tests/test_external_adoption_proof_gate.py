@@ -50,7 +50,7 @@ def fake_api(url):
     if "/contents/" in url:
         return {"encoding": "base64", "type": "file",
                 "content": base64.b64encode(
-                    ("steps:\n  - uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n").encode()
+                    ("steps:\n  - name: Check SpatialRuntime evidence\n    uses: hippoley/SpatialRuntime/interop/conformance@" + REV + "\n").encode()
                 ).decode()}
     raise AssertionError("unexpected API request")
 
