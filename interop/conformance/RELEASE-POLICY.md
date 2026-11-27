@@ -73,3 +73,9 @@ The annotated tag contains the exact release manifest. The public Release page c
 ## Next candidate (not yet published)
 
 The additive public Action gate/receipt features and correctness hardening since the first release are documented under `CHANGELOG.md#unreleased` as a potential `conformance-v0.2.0` MINOR release. A green main branch or changelog entry does **not** create a release. Any published tag needs a new immutable release target, a generated manifest from that **exact** target and the required release checks. Until publication, consumers needing the new strict gate and durable binding receipts must use the already verified immutable commit `76407b7a29e552dd4d5d2ede8c29b6065d4fb0d1` rather than the older `conformance-v0.1.0` tag.
+
+## Manual read-only v0.2.0 candidate evidence
+
+The [conformance-v02-candidate workflow](../../.github/workflows/conformance-v02-candidate.yml) is a **manual, read-only** release-readiness check. It runs only when explicitly dispatched on `main`, rechecks the exact current branch head and a successful push-triggered CI run for that SHA, rejects an existing `conformance-v0.2.0` tag, reruns the catalog, registry, maturity, P0 and release-contract validators, and uploads a manifest + SHA-256 digest + `STATUS=UNPUBLISHED_CANDIDATE`.
+
+A successful candidate run **is not** a published Git tag, an immutable GitHub Release, a signature, independent conformance certification or unrelated adoption. Its Actions artifact is retention-limited. Publishing a later approved release requires a **separate** explicitly authorized tagging/publishing operation against exactly the validated commit, with independent checks of the tag target and released asset. The current ChatGPT GitHub integration does not expose a tag or GitHub Release creation operation. If `main` changes between the candidate run and publication, generate and validate a new candidate rather than reusing the stale one.
