@@ -1,0 +1,76 @@
+name: Public v0.2.0 pinned consumer conformance
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/published-conformance-v02-consumer.yml'
+      - 'tests/test_published_v02_consumer_workflow.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  published-tag-tristate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Released Action accepts supplied PASS binding
+        id: released_pass
+        uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.2.0
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/per-call-pass.json
+          require_result: PASS
+          report_path: published-receipts/pass.json
+      - name: Released Action rejects insufficient binding evidence
+        id: released_unresolved
+        continue-on-error: true
+        uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.2.0
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/standing-not-checked.json
+          require_result: PASS
+          report_path: published-receipts/unresolved.json
+      - name: Released Action rejects contradictory binding evidence
+        id: released_fail
+        continue-on-error: true
+        uses: hippoley/SpatialRuntime/interop/conformance@conformance-v0.2.0
+        with:
+          mode: decision-execution-binding
+          file: interop/decision-execution-binding/fixtures/deny-with-execution.json
+          require_result: PASS
+          report_path: published-receipts/fail.json
+      - name: Require actual released semantics and matching retained receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ steps.released_pass.outcome }}" = "success"
+          test "${{ steps.released_unresolved.outcome }}" = "failure"
+          test "${{ steps.released_fail.outcome }}" = "failure"
+          test "${{ steps.released_pass.outputs.conformance_result }}" = "PASS"
+          test "${{ steps.released_unresolved.outputs.conformance_result }}" = "UNRESOLVED"
+          test "${{ steps.released_fail.outputs.conformance_result }}" = "FAIL"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name, result in (
+              ("pass.json", "PASS"),
+              ("unresolved.json", "UNRESOLVED"),
+              ("fail.json", "FAIL"),
+          ):
+              evidence = json.loads((Path("published-receipts") / name).read_text())
+              assert evidence["result"] == result, (name, evidence.get("result"))
+              assert evidence["external_effect_confirmation"] is False
+              assert isinstance(evidence["errors"], list)
+              assert isinstance(evidence["unresolved"], list)
+              print(name, result)
+          PY
+      - name: Retain all released Action observations, including rejected gates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-v02-three-state-receipts
+          path: published-receipts/*.json
+          if-no-files-found: error
