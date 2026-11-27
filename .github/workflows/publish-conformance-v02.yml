@@ -1,0 +1,131 @@
+name: Publish Conformance v0.2.0 (owner-authorized)
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: publish-conformance-v0.2.0
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # Single explicit owner instruction on the tracked issue; not CI-triggered.
+    if: >-
+      github.event.issue.number == 104 &&
+      github.event.issue.pull_request == null &&
+      github.actor == 'hippoley' &&
+      github.event.comment.author_association == 'OWNER' &&
+      github.event.comment.body == '/publish-conformance-v0.2.0'
+    runs-on: ubuntu-latest
+    env:
+      TAG: conformance-v0.2.0
+      SOURCE_SHA: 8668ba93ad689fea5957de46d98cd138d8ac7865
+      MANIFEST_SHA256: 25ed96cb44c66d2d62f3372ac663ffd3e6d3f41fb21a4024e31f169eac047e13
+      CANDIDATE_RUN: '45965585857'
+      CANDIDATE_ARTIFACT: '15181404876'
+      ARTIFACT_ZIP_DIGEST: sha256:13ba2f8e9ea9cc6c1b2a2c87953ecae9463c5cc4a982b629aa74c11d4eda6b84
+      MAIN_CI_RUN: '45965514662'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out exact validated candidate source
+        uses: actions/checkout@v4
+        with:
+          ref: 8668ba93ad689fea5957de46d98cd138d8ac7865
+          fetch-depth: 0
+      - name: Recheck source ancestry and real CI and candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$SOURCE_SHA" origin/main
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$MAIN_CI_RUN" |
+            jq -e --arg sha "$SOURCE_SHA" '
+              .head_sha == $sha and .head_branch == "main" and
+              .event == "push" and .status == "completed" and
+              .conclusion == "success" and .name == "CI"'
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CANDIDATE_RUN" |
+            jq -e --arg sha "$SOURCE_SHA" '
+              .head_sha == $sha and .head_branch == "main" and
+              .event == "workflow_run" and .status == "completed" and
+              .conclusion == "success" and
+              .name == "Conformance v0.2.0 Release Candidate (read only)"'
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$CANDIDATE_ARTIFACT" |
+            jq -e --arg sha "$SOURCE_SHA" --arg digest "$ARTIFACT_ZIP_DIGEST" '
+              .workflow_run.head_sha == $sha and
+              .digest == $digest and .expired == false'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate exact release manifest and reproducible contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python interop/conformance/verify_catalog.py
+          python interop/external-results/verify_registry.py
+          python interop/verify_maturity.py
+          python interop/conformance/verify_release_contract.py
+          python interop/conformance/prepare_release.py \
+            --tag "$TAG" --commit "$SOURCE_SHA" --output /tmp/conformance-release.json
+          printf '%s  %s\n' "$MANIFEST_SHA256" /tmp/conformance-release.json |
+            sha256sum --check --status
+          python - <<'PY'
+          import json, os
+          doc=json.load(open('/tmp/conformance-release.json', encoding='utf-8'))
+          assert doc['commit'] == os.environ['SOURCE_SHA']
+          assert doc['tag'] == os.environ['TAG']
+          assert doc['preferred_action'] == 'interop/conformance'
+          assert 'interop/agent-effect-authority' in doc['compatibility_aliases']
+          PY
+      - name: Create immutable tag if absent; verify existing target if present
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            git fetch origin "refs/tags/$TAG:refs/tags/$TAG"
+            test "$(git rev-list -n 1 "$TAG")" = "$SOURCE_SHA" || {
+              echo "Immutable tag exists at a DIFFERENT target; refusing" >&2
+              exit 1
+            }
+          else
+            git tag -a "$TAG" "$SOURCE_SHA" -F /tmp/conformance-release.json
+            git push origin "refs/tags/$TAG"
+          fi
+      - name: Create release asset once and verify its public bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/notes.md <<'EOF'
+          # SpatialRuntime Conformance v0.2.0
+
+          Independent, model-neutral agent decision→execution evidence checks:
+          opt-in PASS-only release gates, durable JSON PASS/UNRESOLVED/FAIL
+          reports and source/reference correctness hardening.
+
+          This is a distribution of the validated immutable source commit.
+          It does not authenticate an untrusted evidence producer, independently
+          confirm physical effects or prove external third-party adoption.
+          The attached manifest binds the exact tag target and included modes.
+          EOF
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Existing release; checking its asset instead of replacing"
+          else
+            gh release create "$TAG" /tmp/conformance-release.json \
+              --repo "$GITHUB_REPOSITORY" --verify-tag \
+              --title 'SpatialRuntime Conformance v0.2.0' \
+              --notes-file /tmp/notes.md
+          fi
+          mkdir -p /tmp/published
+          gh release download "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern conformance-release.json --dir /tmp/published
+          cmp /tmp/conformance-release.json /tmp/published/conformance-release.json
+          test "$(git rev-list -n 1 "$TAG")" = "$SOURCE_SHA"
+          echo "Published exact candidate SHA and verified public manifest bytes"
