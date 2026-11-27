@@ -6,7 +6,7 @@ A conformance decision has three states: **PASS**, **UNRESOLVED** and **FAIL**. 
 
 ## Minimal blocking check
 
-Paste this in your **own repository**, use the immutable merged commit of PR #91 (`d1951faad027fc55264759376980272788d4f874`) as shown below, and supply actual evidence under your ownership:
+Paste this in your **own repository**, use the immutable merged commit of PR #93 (`a62e595314f83cd359bbf6a8923b585d0449a41e`) as shown below, and supply actual evidence under your ownership:
 
 ```yaml
 name: Verify agent decision-to-execution binding
@@ -23,7 +23,7 @@ jobs:
           python-version: '3.12'
       - name: Require grounded decision-to-execution proof
         id: verify
-        uses: hippoley/SpatialRuntime/interop/conformance@d1951faad027fc55264759376980272788d4f874
+        uses: hippoley/SpatialRuntime/interop/conformance@a62e595314f83cd359bbf6a8923b585d0449a41e
         with:
           mode: decision-execution-binding
           file: evidence/decision-execution.json
@@ -49,7 +49,7 @@ When `require_result: PASS` is selected, the Action now fails closed if `mode: e
 
 For actual customer evidence, either use `decision-execution-binding` with your runtime-owned evidence file, or supply a genuine, runtime-owned adapter using the established `effect-evidence-adapter.v0.1` protocol. The Action cannot authenticate the adapter solely from a command string; inspect and review its actual provenance separately.
 
-**Pinning:** the earlier PR #91 commit (`d1951faad027fc55264759376980272788d4f874`) has the initial strict release gate but **not** this reference-only guard. Use the merged revision of this fix for the stronger behavior after its CI is successful.
+**Pinning:** the earlier PR #91 commit (`a62e595314f83cd359bbf6a8923b585d0449a41e`) has the initial strict release gate but **not** this reference-only guard. Use the merged revision of this fix for the stronger behavior after its CI is successful.
 
 ## Assurance limits
 
