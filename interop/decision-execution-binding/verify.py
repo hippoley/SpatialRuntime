@@ -193,11 +193,15 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("claim", type=Path)
     parser.add_argument("--github-output", type=Path)
+    parser.add_argument("--report", type=Path, help="Write durable machine-readable JSON report")
     args = parser.parse_args()
 
     doc = json.loads(args.claim.read_text(encoding="utf-8"))
     report = verify(doc)
     print(json.dumps(report, indent=2))
+    if args.report is not None:
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     if args.github_output is not None:
         write_github_outputs(report, args.github_output)
     raise SystemExit(1 if report["result"] == "FAIL" else 0)
