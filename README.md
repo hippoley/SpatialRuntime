@@ -30,6 +30,8 @@ The current published distribution for new consumers is [`conformance-v0.2.0`](h
 
 **Adoption claim ceiling:** repository self-tests, our own downstream repos, analyst-authored mappings, and queued external workflows do not count as unrelated adoption. Issue #14 remains the external-consumer gate.
 
+**External public references (independently verifiable, not independent CI adoption):** [awesome-verified-agents PR #17](https://github.com/tonydzi/awesome-verified-agents/pull/17) was **merged by the unrelated directory maintainer** at [`bda4bb4`](https://github.com/tonydzi/awesome-verified-agents/commit/bda4bb472bac2b01f9221143aa084ae5f68a041a), listing only the Conformance Action in *Output verification* with receipts, an explicit evidence boundary, and a `†` owner self-submission marker. The maintainer explicitly says the Action was **not run** by the directory. Separately, [ARIB upstream `ba96925`](https://github.com/tonydzi/agent-runtime-integrity-bench/commit/ba96925e3f041ec4215eea991f1cc2c041245fbdb9557) cited a pinned cross-version test receipt as **reproduced by hippoley, not re-run by maintainers**. Neither citation closes [CF-06](https://github.com/hippoley/SpatialRuntime/issues/14).
+
 
 #### First integration: real evidence and a reviewable CI receipt
 
