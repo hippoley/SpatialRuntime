@@ -1,6 +1,17 @@
 # SpatialRuntime Product Boundary and User-Story Audit
 
-Status date: 2026-10-09
+Status baseline: 2026-10-09; external acceptance addendum: 2026-11-28.
+
+## External-independence addendum — 2026-11-28
+
+Two **unrelated maintainer-owned references** now exist:
+
+- **Curated tool discovery:** [tonydzi/awesome-verified-agents PR #17](https://github.com/tonydzi/awesome-verified-agents/pull/17) merged at [`bda4bb472bac`](https://github.com/tonydzi/awesome-verified-agents/commit/bda4bb472bac2b01f9221143aa084ae5f68a041a), adding one `SpatialRuntime Conformance Action †` row under `Output verification`. The directory maintainer used the project owner's submitted patch and explicitly stated they did **not run** the Action; this is independently accepted **directory listing/citation**, not `externally-consumed` status.
+- **Upstream experiment citation:** [tonydzi/agent-runtime-integrity-bench `ba96925`](https://github.com/tonydzi/agent-runtime-integrity-bench/commit/ba96925e3f041ec4215eea991f1cc3a9aec2abd3) cites pinned ARIB cross-version data and clearly notes **reproduced by hippoley, not re-run by maintainers**.
+
+The [public `conformance-v0.2.0` Release](https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.2.0) and tagged-Action three-state consumer test close the **distribution** story [#104](https://github.com/hippoley/SpatialRuntime/issues/104), but the consuming workflow is owned by `hippoley`. **CF-06 remains OPEN** pending a genuinely unrelated project using the Action in its own CI/release/review process.
+
+**Still partial, unchanged:** SR-04 (repo-local ContamX), SR-05 (measured physical convergence), SR-06 (field restart with unresolved device effect), SR-07 (unrelated BIM/CAD/SLAM source), and CF-07 (Assay Stage 3 maintainer's corpus acceptance). Those user stories require new external or field evidence, not extra self-tests.
 
 ## Executive decision
 

@@ -1,18 +1,25 @@
 # External distribution handoff: SpatialRuntime → awesome-verified-agents
 
-**Updated:** 2026-11-27 (UTC+8). **Status:** [external resource suggestion #16](https://github.com/tonydzi/awesome-verified-agents/issues/16) delivered, **human curator review received**, single-row patch corrected; **normal upstream Fork → PR still NOT SUBMITTED**. The GitHub connection cannot create a fork and upstream branch creation returned 403. Curator acceptance of the evidence bar is not a merged directory entry or independent CI consumption.
+**Updated:** 2026-11-28. **Status: ACCEPTED AND MERGED UPSTREAM.** Independent directory maintainer `tonydzi` applied the owner's reviewed single-row patch and merged [upstream PR #17](https://github.com/tonydzi/awesome-verified-agents/pull/17) to [main `bda4bb472bac`](https://github.com/tonydzi/awesome-verified-agents/commit/bda4bb472bac2b01f9221143aa084ae5f68a041a); [review Issue #16](https://github.com/tonydzi/awesome-verified-agents/issues/16) is CLOSED. This is a **maintainer-curated listing and citation**, not execution of the SpatialRuntime Action by an unrelated consumer.
 
 ## Why this is a better next node
 
-The directory's contributor bar asks for a publicly inspectable post-run artifact, a concrete limitation, one project per PR, a verified license/stars/last-commit date, and a reason for section choice. SpatialRuntime now supplies a model-independent conformance Action and independently inspectable GitHub CI receipts. Being listed would improve discoverability, but would **not** be an unrelated CI consumer or close CF-06.
+The directory's contributor bar asks for a publicly inspectable post-run artifact, a concrete limitation, one project per PR, a verified license/stars/last-commit date, and a reason for section choice. SpatialRuntime now supplies a model-independent conformance Action and independently inspectable GitHub CI receipts. Listing now improves discoverability, but does **not** establish an unrelated CI consumer or close CF-06.
 
 **Curator-confirmed section:** Output verification, not Runtime enforcement. The listing points specifically to the **SpatialRuntime Conformance Action and its inspectable receipts**, rather than treating the entire spatial-runtime and hardware-control product as verified. SpatialRuntime checks the submitted agent evidence after the fact. Its Action can block downstream CI when configured for PASS-only, but this does **not** make it an inline tool-call prevention runtime.
 
 **Project:** `hippoley/SpatialRuntime` (self-submission by project owner). **License:** MIT. **Stars:** 1. **Last push date:** 2026-11-27 (checked against the GitHub repository API on the preparation date). Refresh stars and last commit date when the upstream PR is actually opened.
 
-**Duplicate check:** no `SpatialRuntime` or `hippoley` entry in upstream README at the original inspected `main` snapshot `f045cbce588efe3e3b119ffe1f57d630f96e2b7e`, and still absent when revisited on 2026-11-27. Refresh before a real PR.
+**Upstream inclusion verified:** the exact [SpatialRuntime Conformance Action row](https://github.com/tonydzi/awesome-verified-agents/blob/bda4bb472bac2b01f9221143aa084ae5f68a041a/README.md) is in `Output verification` at upstream `bda4bb472bac`, with `†` self-submission marker, receipts and explicit no-independent-effect boundary. Maintainer says they did **not** run the Action.
 
-**Exact corrected one-row patch (adds self-submission `†` and directly links Action + receipt):** [`awesome-verified-agents-single-project.patch`](awesome-verified-agents-single-project.patch). The patch is targeted at upstream README and has not been applied to that repository.
+**Exact corrected one-row patch (adds self-submission `†` and directly links Action + receipt):** [`awesome-verified-agents-single-project.patch`](awesome-verified-agents-single-project.patch). The patch was **applied upstream by the maintainer**, rather than through a fork from the owner's GitHub integration. The original local patch is retained only for source-lineage traceability.
+
+## Upstream acceptance and limitations
+
+- [Upstream pull request #17](https://github.com/tonydzi/awesome-verified-agents/pull/17) — merged, independently owned and executed by `tonydzi` as a maintainer contribution.
+- [Exact upstream merge commit `bda4bb4`](https://github.com/tonydzi/awesome-verified-agents/commit/bda4bb472bac2b01f9221143aa084ae5f68a041a) — one README row, credited in the commit trailer as `Co-authored-by: hippoley`.
+- [Issue #16 maintainer closure comment](https://github.com/tonydzi/awesome-verified-agents/issues/16#issuecomment-7231852175) — no fork needed; the maintainer states **not independently run**, **listing not endorsement**.
+- **Maturity boundary:** this is external curation/citation, not `externally-consumed` conformance. The unrelated-consumer gate remains [CF-06 #14](https://github.com/hippoley/SpatialRuntime/issues/14) OPEN.
 
 ## Evidence a reviewer can inspect
 
