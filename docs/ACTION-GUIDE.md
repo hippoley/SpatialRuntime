@@ -15,7 +15,7 @@ The spatial lane now returns to maintenance/grounding mode.
 
 Current investment order:
 
-1. **CF-06 unrelated consumer / falsification contribution**
+1. **CF-06 unrelated consumer Action execution**
    - highest identity transition;
    - closes the gap between “we built a verifier” and “another project depends on the boundary”.
 
@@ -29,7 +29,7 @@ Current investment order:
 
 4. **CF-07 upstream vector/corpus acceptance**
    - Assay Stage-3 is already scoped to a measured discrimination gap;
-   - advance only on maintainer review/adoption, not by adding private variants.
+   - advance only on maintainer review/adoption, not by adding private variants. [The maintainer has accepted the pinned patch for review](https://github.com/Rul1an/assay/issues/1840#issuecomment-7126579965); canonical regeneration, discrimination measurement and final acceptance remain pending. Do not duplicate the request.
 
 Switch away from any line when two high-quality external attempts produce no maintainer response, consumer run, counterexample, citation, or upstream path.
 
@@ -116,9 +116,11 @@ Until then, stars, self-consumption and our own cross-repo use are supporting si
 Do not relabel CF-06 as unfinished P0. The repository cannot honestly self-manufacture an unrelated consumer.
 
 
-## 7. Release discipline — first release completed
+## 7. Release discipline — v0.2.0 distribution completed
 
 `conformance-v0.1.0` is published at green commit `6d8e0d4a5c9c665e10dad853ab6aadc280db6b55`, with an annotated-tag manifest and a GitHub Release asset.
+
+The current public release is [conformance-v0.2.0](https://github.com/hippoley/SpatialRuntime/releases/tag/conformance-v0.2.0), at `8668ba93ad689fea5957de46d98cd138d8ac7865`. The owned tagged-Action three-state test closes distribution issue #104, not CF-06. See the 2026-11-28 product audit addendum.
 
 For future releases, keep the same gate:
 1. repository CI green;
@@ -137,7 +139,7 @@ After the first released consumption boundary, the repository does not create a 
 Residual gates are handled by their evidence owner:
 
 - field hardware gates wait for real device movement/restart evidence;
-- unrelated-adoption gates wait for unrelated project-owned use or falsification;
+- unrelated-adoption gates wait for unrelated project-owned Action execution; falsification is separate research evidence;
 - upstream gates wait for maintainer review/corpus/spec/test changes;
 - owned-downstream grounding is preserved without duplicating the same integration in this repository.
 
@@ -192,4 +194,4 @@ Treat this as a scope result:
 Current external attention moves to:
 1. ANP #105 — SDK execution of existing scenario vectors, if maintainers accept the contribution direction;
 2. Assay Stage-3 vector review/adoption;
-3. CF-06 — unrelated consumption/falsification of the neutral conformance surface.
+3. CF-06 — unrelated project-owned execution of the neutral conformance Action.
